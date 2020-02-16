@@ -1,0 +1,22 @@
+module.exports = app => {
+    const mongoose = app.mongoose,
+        Schema = mongoose.Schema;
+
+    let d = new Date();
+    const AdminSchema = new Schema({
+        _id: { type: Schema.Types.ObjectId },
+        username: { type: String },
+        password: { type: String },
+        mobile: { type: String },
+        email: { type: String },
+        status: { type: Number, default: 1 },
+        role_id: { type: Schema.Types.ObjectId },
+        add_time: {
+            type: Number,
+            default: d.getTime()
+        },
+        is_super: { type: Number }
+    });
+
+    return mongoose.model('Admin', AdminSchema, 'admin');
+}

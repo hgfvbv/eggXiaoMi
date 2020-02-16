@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <title>小米商城后台管理系统-STL@hgfvbv</title>
+    <link rel="shortcut icon" href="/public/favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+    <!--The content below is only a placeholder and can be replaced.-->
+
+    <link rel="stylesheet" href="/public/admin/bootstrap/css/bootstrap.css">
+
+    <link rel="stylesheet" href="/public/admin/css/basic.css">
+
+    <script type="text/javascript" src="/public/admin/bootstrap/js/jquery-1.10.1.js"></script>
+
+    <script type="text/javascript" src="/public/admin/js/base.js"></script>
+    <script type="text/javascript" src="/public/admin/js/jquery-3.1.4.min.js"></script>
+
+
+
+
+    <nav class="navbar navbar-inverse" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+
+                <img src="/public/admin/images/node.jpg" height="44px;" />
+
+            </div>
+            <div class="collapse navbar-collapse" id="example-navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a>欢迎您,<%=userinfo.username%></a>
+                    </li>
+                    <li><a onclick="javascript:return confirm('您确定要退出吗？');" href="/admin/loginOut">安全退出</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>

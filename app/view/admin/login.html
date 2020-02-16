@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+    <title>用户登录</title>
+
+    <link rel="stylesheet" href="/public/admin/css/login.css">
+    <link rel="shortcut icon" href="/public/favicon.ico" type="image/x-icon">
+    <script type="text/javascript" src="/public/admin/js/jquery-3.1.4.min.js"></script>
+    <script>
+        $(function () {
+            $('#myform').submit(function () {
+                var params = {
+                    username: $('#username').val(),
+                    password: $('#password').val(),
+                    verify: $('#verify').val()
+                };
+
+                if (params.username == '') {
+                    alert('请输入管理员姓名！');
+                    return false;
+                }
+                if (params.password == '') {
+                    alert('请输入管理员密码');
+                    return false;
+                }
+                if (params.verify == '') {
+                    alert('请输入验证码');
+                    return false;
+                }
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div id="login">
+            <form action="/admin/doLogin" method="post" id="myform" autocomplete="off">
+                <input type="hidden" name="_csrf" value="<%=csrf%>">
+                <div class="l_title">小米商城后台管理系统-STL@hgfvbv</div>
+                <dl>
+                    <dd>管理员姓名：<input class="text" type="text" name="username" id="username" placeholder="管理员姓名"></dd>
+                    <dd>管理员密码：<input class="text" type="password" name="password" id="password" placeholder="管理员密码">
+                    </dd>
+                    <dd>验　证　码：<input id="verify" type="text" name="verify" placeholder="验证码">
+                        <img id="verify_img" src="/admin/verify" title="看不清？点击刷新"
+                            onclick="javascript:this.src='/admin/verify?mt='+Math.random()">
+                    </dd>
+                    <dd><input type="submit" class="submit" name="dosubmit" value=""></dd>
+                </dl>
+            </form>
+        </div>
+    </div>
+
+</body>
+
+
+
+</html>
