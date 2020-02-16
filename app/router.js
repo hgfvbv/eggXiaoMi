@@ -17,9 +17,12 @@ module.exports = app => {
 
   router.get('/admin/role', controller.admin.role.index);
   router.get('/admin/role/add', controller.admin.role.add);
+  router.post('/admin/role/doAdd', controller.admin.role.doAdd);
   router.get('/admin/role/edit', controller.admin.role.edit);
+  router.post('/admin/role/doEdit', controller.admin.role.doEdit);
 
   router.get('/admin/verify', controller.admin.base.verify);
+  router.get('/admin/delete', controller.admin.base.delete);
   router.get('/admin/login', controller.admin.login.index);
   router.get('/admin/loginOut', controller.admin.login.loginOut);
   router.post('/admin/doLogin', controller.admin.login.doLogin);

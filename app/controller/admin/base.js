@@ -22,6 +22,29 @@ class BaseController extends Controller {
         this.ctx.response.type = 'image/svg+xml';
         this.ctx.body = captcha.data;
     }
+
+    async delete() {
+        const { ctx } = this;
+        let model = ctx.request.query.model,
+            params = ctx.request.query,
+            where = {};
+
+        if (params.id == '') {
+            await this.error(ctx.state.prevPage, '对不起！服务器繁忙！要不稍后再试试？');
+            return;
+        }
+
+        where = {
+            _id: params.id
+        };
+
+        let result = await ctx.model[model].deleteOne(where);
+        if (result.deletedCount > 0) {
+            await ctx.redirect(ctx.state.prevPage);
+        } else {
+            await this.error(ctx.state.prevPage, '删除角色失败！');
+        }
+    }
 }
 
 module.exports = BaseController;

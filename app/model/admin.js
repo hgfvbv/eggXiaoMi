@@ -4,7 +4,6 @@ module.exports = app => {
 
     let d = new Date();
     const AdminSchema = new Schema({
-        _id: { type: Schema.Types.ObjectId },
         username: { type: String },
         password: { type: String },
         mobile: { type: String },
