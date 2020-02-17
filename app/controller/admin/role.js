@@ -37,7 +37,8 @@ class RoleController extends BaseController {
         let role = new ctx.model.Role({
             title: params.title,
             description: params.description,
-            status: params.status ? 1 : 0
+            status: params.status ? 1 : 0,
+            add_time: await ctx.service.tools.getTime()
         });
         try {
             await role.save();
@@ -92,7 +93,7 @@ class RoleController extends BaseController {
         if (role.nModified > 0) {
             await ctx.redirect('/admin/role');
         } else {
-            await this.error('/admin/role/add', '编辑角色失败！');
+            await this.error(`/admin/role/edit?id=${params.id}`, '编辑角色失败！');
         }
     }
 }
