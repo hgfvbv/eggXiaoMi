@@ -9,16 +9,19 @@ class LoginController extends BaseController {
 
     async doLogin() {
         const { ctx } = this;
-        let params = ctx.request.body;
+        let params = ctx.request.body,
+            username = params.username ? params.username.trim() : '',
+            password = params.password ? params.password.trim() : '',
+            verify = params.verify ? params.verify.trim() : '';
 
-        if (params.username == '' || params.password == '' || params.verify == '') {
+        if (username == '' || password == '' || verify == '') {
             await this.error('/admin/login', '对不起！服务器繁忙！要不稍后再试试？');
         }
 
-        if (params.verify.toUpperCase() == ctx.session.code.toUpperCase()) {
-            let password = await this.service.tools.md5(await this.service.tools.md5(params.password)),
-                result = await ctx.model.Admin.find({ 'username': params.username, password });
-            
+        if (verify.toUpperCase() == ctx.session.code.toUpperCase()) {
+            password = await this.service.tools.md5(await this.service.tools.md5(password));
+            let result = await ctx.model.Admin.find({ username, password });
+
             if (result && result.length > 0) {
                 ctx.session.userinfo = result[0];
                 ctx.redirect('/admin/manager');

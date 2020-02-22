@@ -27,15 +27,16 @@ class BaseController extends Controller {
         const { ctx } = this;
         let model = ctx.request.query.model,
             params = ctx.request.query,
+            id = params.id ? params.id.trim() : '',
             where = {};
 
-        if (params.id == '') {
+        if (id == '') {
             await this.error(ctx.state.prevPage, '对不起！服务器繁忙！要不稍后再试试？');
             return;
         }
 
         where = {
-            _id: params.id
+            _id: id
         };
 
         let result = await ctx.model[model].deleteOne(where);

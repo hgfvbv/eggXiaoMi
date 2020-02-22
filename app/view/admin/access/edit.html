@@ -1,41 +1,129 @@
 <%- include ../public/page_header.html %>
+<script>
+    $(function () {
+        $('#type').change(function () {
+            var type = $(this).val();
+            switch (type) {
+                case '1':
+                    $('#action_name').val('').attr("disabled", true);
+                    $('#url').val('').attr('disabled', true);
+                    $('#module_id').append('<option value="0">---顶级模块---</option>');
+                    $('#module_id').val('0').attr('disabled', true);
+                    break;
+                case '2':
+                    $('#action_name').attr("disabled", false);
+                    $('#url').attr('disabled', false);
+                    $('#module_id option[value="0"]').remove();
+                    $('#module_id').attr('disabled', false);
+                    break;
+                case '3':
+                    $('#action_name').attr("disabled", false);
+                    $('#url').attr('disabled', false);
+                    $('#module_id option[value="0"]').remove();
+                    $('#module_id').attr('disabled', false);
+                    break;
+            }
+        });
 
+        $('#myform').submit(function () {
+            var params = {
+                module_name: $('#module_name').val().trim(),
+                action_name: $('#action_name').val().trim(),
+                url: $('#url').val().trim(),
+                sort: $('#sort').val().trim(),
+                type: $('#type').val()
+            };
+
+            if (params.module_name == '') {
+                alert('请输入模块名称！');
+                return false;
+            }
+            if (params.type != 1 && params.action_name == '') {
+                alert('请输入操作名称！');
+                return false;
+            }
+            if (params.type != 1 && params.url == '') {
+                alert('请输入操作地址！');
+                return false;
+            }
+            if (params.sort == '') {
+                alert('请输入排序！');
+                return false;
+            } else if (!(/^\d+$/.test(params.sort))) {
+                alert('请正确输入排序！');
+                return false;
+            }
+        });
+    });
+</script>
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-2">
-            
-            <%- include ../public/page_aside.html %>	
-          
+
+            <%- include ../public/page_aside.html %>
+
         </div>
         <div class="col-sm-10">
-          
-            <div class="panel panel-default">              
-			    <div class="panel-heading">
-                  编辑权限
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    编辑权限
                 </div>
                 <div class="panel-body">
                     <div class="table-responsive input-form">
-                        <form action="/doAdd" method="post">
+                        <form action="/admin/access/doEdit" method="post" id='myform' autocomplete="off">
                             <ul>
-                                <li>  商品名称: <input type="text" name="title"/></li>
-
-                                <li>  商品图片: <input type="file" name="pic"/></li>
-                                <li>  商品价格: <input type="text" name="price"/></li>
-                                <li>  商品邮费: <input type="text" name="fee"/></li>
-
-                                <li>
-                                    商品描述:
-                                    <textarea name="description" id="" cols="60" rows="8"></textarea>
+                                <input type="hidden" name="_csrf" value="<%=csrf%>">
+                                <input type="hidden" name="id" value="<%=result._id%>">
+                                <li> 生&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;效: <input type="checkbox" id="status"
+                                        name="status" <%=result.status==1?"checked":""%> />
                                 </li>
-
+                                <li> 模块名称: <input type="text" id="module_name" name="module_name" placeholder="请输入模块名称"
+                                        value="<%=result.module_name%>" /></li>
                                 <li>
-                                    <br/>
-                                    <button type="submit" class="btn btn-default">提交</button>
+                                    节点类型:
+                                    <!-- 1、表示模块   2、表示菜单     3、操作 -->
+                                    <select name="type" id="type" <%=result.type==1?"disabled='false'":""%>>
+                                        <option value="1" <%=result.type==1?"selected":""%>>模块</option>
+                                        <option value="2" <%=result.type==2?"selected":""%>>菜单</option>
+                                        <option value="3" <%=result.type==3?"selected":""%>>操作</option>
+                                    </select>
                                 </li>
-
+                                <li> 操作名称: <input type="text" id="action_name" name="action_name"
+                                        placeholder=<%=result.type==1?"无需输入操作名称":"请输入操作名称"%>
+                                        value="<%=result.action_name%>" <%=result.type==1?"disabled='false'":""%> />
+                                </li>
+                                <li> 操作地址: <input type="text" id="url" name="url"
+                                        placeholder=<%=result.type==1?"无需输入操作地址":"请输入操作地址"%> value="<%=result.url%>"
+                                        <%=result.type==1?"disabled='false'":""%> /></li>
+                                <li> 所属模块:
+                                    <select name="module_id" id="module_id"
+                                        <%=result.type==1?"disabled='false'":""%></select>
+                                        <%if(result.type==1){%>
+                                        <option value="0" selected>---顶级模块---</option>
+                                        <%}%>
+                                        <%for(let i=0;i<list.length;i++){%>
+                                        <option value="<%=list[i]._id%>"
+                                            <%=result.module_id.toString()==list[i]._id.toString()?"selected":""%>>
+                                            <%=list[i].module_name%></option>
+                                        <%}%>
+                                    </select>
+                                </li>
+                                <li> 排&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;序: <input type="text" id="sort"
+                                        name="sort" placeholder="请输入排序" value="<%=result.sort%>" /></li>
+                                <li>
+                                    描&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;述:
+                                    <textarea name="description" id="description" cols="60" rows="5"
+                                        placeholder="请输入描述"><%=result.description%></textarea>
+                                </li>
+                                <li>
+                                    <br />
+                                    <button type="submit" class="btn btn-default"
+                                        <%=result._id.toString()=="5e50e212368c3a24b0c12605"?"disabled=false":""%>>提交</button>
+                                    <button type="button" class="btn btn-default"
+                                        onclick="javascript:location.href='/admin/access';">返回</button>
+                                </li>
                             </ul>
-
-
                         </form>
                     </div>
                 </div>
@@ -48,4 +136,5 @@
 </div>
 
 </body>
+
 </html>

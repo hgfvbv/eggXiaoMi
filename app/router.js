@@ -9,7 +9,10 @@ module.exports = app => {
 
   router.get('/admin/access', controller.admin.access.index);
   router.get('/admin/access/add', controller.admin.access.add);
+  router.post('/admin/access/doAdd', controller.admin.access.doAdd);
   router.get('/admin/access/edit', controller.admin.access.edit);
+  router.post('/admin/access/doEdit', controller.admin.access.doEdit);
+  router.get('/admin/access/delete', controller.admin.access.delete);
 
   router.get('/admin/manager', controller.admin.manager.index);
   router.get('/admin/manager/add', controller.admin.manager.add);
@@ -22,6 +25,7 @@ module.exports = app => {
   router.post('/admin/role/doAdd', controller.admin.role.doAdd);
   router.get('/admin/role/edit', controller.admin.role.edit);
   router.post('/admin/role/doEdit', controller.admin.role.doEdit);
+  router.get('/admin/role/delete', controller.admin.role.delete);
 
   router.get('/admin/verify', controller.admin.base.verify);
   router.get('/admin/delete', controller.admin.base.delete);

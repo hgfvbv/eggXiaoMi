@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"eggxiaomi.order"}],"uuid":"13e9f1147ffb48cc87cfb5a1161e79f8"}

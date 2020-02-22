@@ -3,21 +3,22 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-2">
-         	
-            <%- include ../public/page_aside.html %>	
-          
+
+            <%- include ../public/page_aside.html %>
+
         </div>
         <div class="col-sm-10">
-           
+
             <div class="panel panel-default">
                 <div class="panel-heading">
                     搜索权限
                 </div>
                 <div class="panel-body">
-                    <form role="form" class="form-inline">
+                    <form action="/admin/access" method="GET" role="form" class="form-inline" autocomplete="off">
                         <div class="form-group">
-                            <label for="name">名称</label>
-                            <input type="text" class="form-control" id="name" placeholder="请输入名称">
+                            <label for="name">权限名称</label>
+                            <input type="text" class="form-control" name="module_name" id="module_name"
+                                placeholder="请输入权限名称" value="<%=params.module_name%>">
                         </div>
 
                         <div class="form-group">
@@ -32,46 +33,86 @@
             <div class="table-responsive">
                 <table class="table table-bordered">
                     <thead>
-                    <tr class="th">
-                        <th>编号</th>
-                        <th>图标</th>
-                        <th>名称</th>
-                        <th>价格</th>
-                        <th>邮费</th>
-                       
-                        <th class="text-center">操作</th>
-                    </tr>
+                        <tr class="th">
+                            <th class="text-center">模块名称</th>
+                            <th class="text-center">节点类型</th>
+                            <th class="text-center">操作名称</th>
+                            <th class="text-center">操作地址</th>
+                            <th class="text-center">排序</th>
+                            <th class="text-center">描述</th>
+                            <th class="text-center">增加时间</th>
+                            <th class="text-center">状态</th>
+
+                            <th class="text-center">操作</th>
+                        </tr>
                     </thead>
                     <tbody>
-
-                    <tr>
-                        <td>1</td>
-                        <td>图标</td>
-                        <td>背包1111111</td>
-                        <td>20元</td>
-                        <td>10元</td>
-                      
-                        <td class="text-center">修改  删除</td>
-                    </tr>
-					   <tr>
-                        <td>2</td>
-                        <td>图标</td>
-                        <td>thinpad笔记本电脑</td>
-                        <td>20元</td>
-                        <td>10元</td>
-                      
-                        <td class="text-center">修改  删除</td>
-                    </tr>
-					   <tr>
-                        <td>3</td>
-                        <td>图标</td>
-                        <td>iphone7</td>
-                        <td>20元</td>
-                        <td>10元</td>
-                      
-                        <td class="text-center">修改  删除</td>
-                    </tr>
-
+                        <%for(let i=0;i<list.length;i++){%>
+                        <tr>
+                            <td><%=list[i].module_name%></td>
+                            <td class="text-center">
+                                <%if(list[i].type==1){%>
+                                模块
+                                <%}else if(list[i].type==2){%>
+                                菜单
+                                <%}else{%>
+                                操作
+                                <%}%>
+                            </td>
+                            <td class="text-center"><%=list[i].action_name%></td>
+                            <td class="text-center"><%=list[i].url%></td>
+                            <td class="text-center"><%=list[i].sort%></td>
+                            <td class="text-center"><%=list[i].description%></td>
+                            <td class="text-center"><%=helper.formartTime(list[i].add_time)%></td>
+                            <td class="text-center">
+                                <% if(list[i].status==1) { %>
+                                <img src="/public/admin/images/yes.gif" alt="生效"></a>
+                                <%} else { %>
+                                <img src="/public/admin/images/no.gif" alt="未生效"></a>
+                                <% } %>
+                            </td>
+                            <td class="text-center">
+                                <a href="/admin/access/edit?id=<%=list[i]._id%>">修改</a>
+                                <%if(list[i]._id.toString()=="5e50e212368c3a24b0c12605"){%>
+                                　<a href="#" onclick="javascript:alert('此模块不可删除！');return false;">删除</a>
+                                <%}else{%>
+                                　<a href="/admin/access/delete?id=<%=list[i]._id%>"
+                                    onclick="javascript:return confirm('顶级模块删除将删除其所有子模块！\r\n您确定要删除吗？');">删除</a>
+                                <%}%>
+                                </td>
+                            </tr>
+                            <%for(let j=0;j<list[i].child.length;j++){%>
+                        <tr>
+                            <td>——<%=list[i].child[j].module_name%></td>
+                            <td class="text-center">
+                                <%if(list[i].child[j].type==1){%>
+                                模块
+                                <%}else if(list[i].child[j].type==2){%>
+                                菜单
+                                <%}else{%>
+                                操作
+                                <%}%>
+                            </td>
+                            <td class="text-center"><%=list[i].child[j].action_name%></td>
+                            <td class="text-center"><%=list[i].child[j].url%></td>
+                            <td class="text-center"><%=list[i].child[j].sort%></td>
+                            <td class="text-center"><%=list[i].child[j].description%></td>
+                            <td class="text-center"><%=helper.formartTime(list[i].child[j].add_time)%></td>
+                            <td class="text-center">
+                                <% if(list[i].child[j].status==1) { %>
+                                <img src="/public/admin/images/yes.gif" alt="生效"></a>
+                                <%} else { %>
+                                <img src="/public/admin/images/no.gif" alt="未生效"></a>
+                                <% } %>
+                            </td>
+                            <td class="text-center">
+                                <a href="/admin/access/edit?id=<%=list[i].child[j]._id%>">修改</a>
+                                　<a href="/admin/access/delete?id=<%=list[i].child[j]._id%>"
+                                    onclick="javascript:return confirm('您确定要删除吗？');">删除</a>
+                            </td>
+                        </tr>
+                        <%}%>
+                                <%}%>
                     </tbody>
                 </table>
             </div>
@@ -81,4 +122,5 @@
 </div>
 
 </body>
+
 </html>

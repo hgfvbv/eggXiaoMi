@@ -3,7 +3,7 @@
     $(function () {
         $('#myform').submit(function () {
             var params = {
-                title: $('#title').val(),
+                title: $('#title').val().trim(),
             };
 
             if (params.title == '') {

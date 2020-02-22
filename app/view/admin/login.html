@@ -11,9 +11,9 @@
         $(function () {
             $('#myform').submit(function () {
                 var params = {
-                    username: $('#username').val(),
-                    password: $('#password').val(),
-                    verify: $('#verify').val()
+                    username: $('#username').val().trim(),
+                    password: $('#password').val().trim(),
+                    verify: $('#verify').val().trim()
                 };
 
                 if (params.username == '') {

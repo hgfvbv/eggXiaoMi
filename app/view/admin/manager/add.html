@@ -3,10 +3,10 @@
     $(function () {
         $('#myform').submit(function () {
             var params = {
-                username: $('#username').val(),
-                password: $('#password').val(),
-                mobile: $('#mobile').val(),
-                email: $('#email').val()
+                username: $('#username').val().trim(),
+                password: $('#password').val().trim(),
+                mobile: $('#mobile').val().trim(),
+                email: $('#email').val().trim()
             };
 
             if (params.username == '') {
