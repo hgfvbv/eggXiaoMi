@@ -4,7 +4,7 @@ const BaseController = require('./base');
 
 class LoginController extends BaseController {
     async index() {
-        await this.ctx.render('admin/login');
+        await this.ctx.render('/admin/login');
     }
 
     async doLogin() {
@@ -23,8 +23,12 @@ class LoginController extends BaseController {
             let result = await ctx.model.Admin.find({ username, password });
 
             if (result && result.length > 0) {
-                ctx.session.userinfo = result[0];
-                ctx.redirect('/admin/manager');
+                if (result[0].status == 1) {
+                    ctx.session.userinfo = result[0];
+                    ctx.redirect('/admin/manager');
+                } else {
+                    await this.error('/admin/login', '对不起！您已被锁定！请联系管理员！');
+                }
             } else {
                 await this.error('/admin/login', '用户名或密码错误！');
             }

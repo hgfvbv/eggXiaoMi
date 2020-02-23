@@ -133,12 +133,124 @@ class RoleController extends BaseController {
         if (result.deletedCount > 0) {
             let uResult = await ctx.model.Admin.updateMany({ role_id: id }, { role_id: '5e4cdb709ddce035b8ce650e' });
             if (uResult.ok > 0) {
-                await ctx.redirect(ctx.state.prevPage);
+                //删除该角色所有权限
+                let roleAccessResult = await ctx.model.RoleAccess.deleteMany({ role_id: id });
+                if (roleAccessResult.deletedCount > 0) {
+                    await ctx.redirect(ctx.state.prevPage);
+                } else {
+                    await this.error(ctx.state.prevPage, '删除角色失败！');
+                }
             } else {
                 await this.error(ctx.state.prevPage, '删除角色失败！');
             }
         } else {
             await this.error(ctx.state.prevPage, '删除角色失败！');
+        }
+    }
+
+    async auth() {
+        const { ctx, app } = this;
+        let params = ctx.query,
+            id = params.id ? params.id.trim() : '',
+            roleAccessArray = [],
+            where = {};
+
+        if (id == '' || id == '5e4cdb709ddce035b8ce650e') {
+            await this.error('/admin/role', '对不起！服务器繁忙！要不稍后再试试？');
+            return;
+        }
+
+        where = {
+            role_id: id
+        };
+
+        let list = await ctx.model.Access.aggregate([
+            {
+                $lookup: {
+                    from: 'access',
+                    localField: '_id',
+                    foreignField: 'module_id',
+                    as: 'child'
+                }
+            },
+            {
+                $match: {
+                    $and: [
+                        { status: 1 },
+                        { module_id: '0' },
+                        { _id: { $nin: [app.mongoose.Types.ObjectId('5e50e212368c3a24b0c12605')] } }
+                    ]
+                }
+            },
+            {
+                $sort: {
+                    sort: 1
+                }
+            }
+        ]);
+        for (let i = 0; i < list.length; i++) {
+            //移除失效的子模块
+            list[i].child = list[i].child.filter((e => { return e.status == 1 }));
+            //子模块排序
+            list[i].child = await ctx.service.tools.jsonSort(list[i].child, 'sort', false);
+        }
+
+        let result = await ctx.model.RoleAccess.find(where);
+        result.forEach((val) => {
+            roleAccessArray.push(val.access_id.toString());
+        });
+
+        for (let i = 0; i < list.length; i++) {
+            if (roleAccessArray.indexOf(list[i]._id.toString()) != -1) {
+                list[i].checked = true;
+            }
+            for (let j = 0; j < list[i].child.length; j++) {
+                if (roleAccessArray.indexOf(list[i].child[j]._id.toString()) != -1) {
+                    list[i].child[j].checked = true;
+                }
+            }
+        }
+
+        await this.ctx.render(`/admin/role/auth`, { list, id });
+    }
+
+    async doAuth() {
+        const { ctx } = this;
+        let params = ctx.request.body,
+            id = params.id ? params.id.trim() : '',
+            access_node = params.access_node ? params.access_node : [],
+            where = {};
+
+        if (id == '' || id == '5e4cdb709ddce035b8ce650e') {
+            await this.error(`/admin/role/auth?id=${id}`, '对不起！服务器繁忙！要不稍后再试试？');
+            return;
+        }
+
+        where = {
+            role_id: id
+        };
+
+        let result = await ctx.model.RoleAccess.deleteMany(where),
+            isSuccess = true;
+
+        if (result.ok > 0) {
+            for (let i = 0; i < access_node.length; i++) {
+                let roleAccess = new ctx.model.RoleAccess({
+                    role_id: id,
+                    access_id: access_node[i]
+                });
+                try {
+                    await roleAccess.save();
+                } catch (err) {
+                    isSuccess = false;
+                    await this.error(`/admin/role/auth?id=${id}`, '角色授权失败！');
+                }
+            }
+            if (isSuccess) {
+                ctx.redirect(`/admin/role/auth?id=${id}`);
+            }
+        } else {
+            await this.error(`/admin/role/auth?id=${id}`, '角色授权失败！');
         }
     }
 }

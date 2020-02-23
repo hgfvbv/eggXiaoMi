@@ -9,20 +9,30 @@
                     $('#url').val('').attr('disabled', true);
                     $('#module_id').append('<option value="0">---顶级模块---</option>');
                     $('#module_id').val('0').attr('disabled', true);
+                    $('#module_name').val('顶级模块');
                     break;
                 case '2':
                     $('#action_name').attr("disabled", false);
                     $('#url').attr('disabled', false);
                     $('#module_id option[value="0"]').remove();
                     $('#module_id').attr('disabled', false);
+                    var text = $('#module_id').find('option:selected').text().trim();
+                    $('#module_name').val(text);
                     break;
                 case '3':
                     $('#action_name').attr("disabled", false);
                     $('#url').attr('disabled', false);
                     $('#module_id option[value="0"]').remove();
                     $('#module_id').attr('disabled', false);
+                    var text = $('#module_id').find('option:selected').text().trim();
+                    $('#module_name').val(text);
                     break;
             }
+        });
+
+        $('#module_id').change(function () {
+            var text = $(this).find('option:selected').text().trim();
+            $('#module_name').val(text);
         });
 
         $('#myform').submit(function () {
@@ -118,7 +128,7 @@
                                 </li>
                                 <li>
                                     <br />
-                                    <button type="submit" class="btn btn-default"
+                                    <button type="submit" class="btn btn-primary"
                                         <%=result._id.toString()=="5e50e212368c3a24b0c12605"?"disabled=false":""%>>提交</button>
                                     <button type="button" class="btn btn-default"
                                         onclick="javascript:location.href='/admin/access';">返回</button>

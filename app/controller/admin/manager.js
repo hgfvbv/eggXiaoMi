@@ -32,14 +32,14 @@ class ManagerController extends BaseController {
             }
         ]);
 
-        await this.ctx.render('admin/manager/index', { params, list });
+        await this.ctx.render('/admin/manager/index', { params, list });
     }
 
     async add() {
         const { ctx } = this;
 
         let list = await ctx.model.Role.find({ 'status': 1 }, { '_id': 1, 'title': 1 });
-        await this.ctx.render('admin/manager/add', { list });
+        await this.ctx.render('/admin/manager/add', { list });
     }
 
     async doAdd() {
@@ -92,7 +92,7 @@ class ManagerController extends BaseController {
         let list = await ctx.model.Role.find({ 'status': 1 }, { '_id': 1, 'title': 1 }),
             result = await ctx.model.Admin.find(where);
 
-        await this.ctx.render('admin/manager/edit', { list, result: result[0] });
+        await this.ctx.render('/admin/manager/edit', { list, result: result[0] });
     }
 
     async doEdit() {

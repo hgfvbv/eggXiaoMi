@@ -59,12 +59,15 @@
                                 <% } %>
                             </td>
                             <td>
-                                <a href="/admin/role/edit?id=<%=list[i]._id%>">修改</a>
+                                <%if(list[i]._id.toString()!="5e4cdb709ddce035b8ce650e"){%>
+                                <a href="/admin/role/auth?id=<%=list[i]._id%>">授权</a>
+                                <%}%>
+                                　<a href="/admin/role/edit?id=<%=list[i]._id%>">修改</a>
                                 <%if(list[i]._id.toString()=="5e4cdb709ddce035b8ce650e"){%>
                                 　<a href="#" onclick="javascript:alert('此角色不可删除！');return false;">删除</a>
                                 <%}else{%>
                                 　<a href="/admin/role/delete?id=<%=list[i]._id%>"
-                                    onclick="javascript:return confirm('您确定要删除吗？');">删除</a>
+                                    onclick="javascript:return confirm('将删除该角色所有权限！您确定要删除吗？');">删除</a>
                                 <%}%>
                             </td>
                         </tr>

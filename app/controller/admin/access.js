@@ -40,12 +40,12 @@ class AccessController extends BaseController {
         for (let i = 0; i < list.length; i++) {
             list[i].child = await ctx.service.tools.jsonSort(list[i].child, 'sort', false);
         }
-        await this.ctx.render('admin/access/index', { params, list });
+        await this.ctx.render('/admin/access/index', { params, list });
     }
 
     async add() {
         let list = await this.ctx.model.Access.find({ module_id: '0', status: 1 }, { _id: 1, module_name: 1 });
-        await this.ctx.render('admin/access/add', { list });
+        await this.ctx.render('/admin/access/add', { list });
     }
 
     async doAdd() {
@@ -108,7 +108,7 @@ class AccessController extends BaseController {
 
         let result = await ctx.model.Access.find(where);
         let list = await this.ctx.model.Access.find({ module_id: '0', status: 1 }, { _id: 1, module_name: 1 });
-        await this.ctx.render('admin/access/edit', { result: result[0], list });
+        await this.ctx.render('/admin/access/edit', { result: result[0], list });
     }
 
     async doEdit() {
@@ -191,14 +191,41 @@ class AccessController extends BaseController {
             result = await ctx.model.Access.deleteOne(where);
         if (result.deletedCount > 0) {
             if (access[0].type == 1) {
-                let dResult = await ctx.model.Access.deleteMany({ module_id: app.mongoose.Types.ObjectId(id) });
-                if (dResult.ok > 0) {
-                    await ctx.redirect('/admin/access');
+                //删除所有角色该顶级模块权限
+                let childIds = await ctx.model.Access.find({ module_id: app.mongoose.Types.ObjectId(id) }, { _id: 1 }),
+                    roleAccessPResult = await ctx.model.RoleAccess.deleteOne({ access_id: id }),
+                    isSuccess = roleAccessPResult.deletedCount > 0;
+
+                if (isSuccess) {
+                    //删除所有角色该权限
+                    for (let i = 0; i < childIds.length; i++) {
+                        let roleAccessResult = await ctx.model.RoleAccess.deleteMany({ access_id: childIds[i]._id });
+                        if (roleAccessResult.deletedCount <= 0) {
+                            isSuccess = false;
+                        }
+                    }
+                    if (isSuccess) {
+                        //删除子模块
+                        let dResult = await ctx.model.Access.deleteMany({ module_id: app.mongoose.Types.ObjectId(id) });
+                        if (dResult.ok > 0) {
+                            await ctx.redirect('/admin/access');
+                        } else {
+                            await this.error(`/admin/access/edit?id=${id}`, '删除模块失败！');
+                        }
+                    } else {
+                        await this.error(`/admin/access/edit?id=${id}`, '删除模块失败！');
+                    }
                 } else {
                     await this.error(`/admin/access/edit?id=${id}`, '删除模块失败！');
                 }
             } else {
-                await ctx.redirect('/admin/access');
+                //删除被删模块所在中间表的数据
+                let roleAccessResult = await ctx.model.RoleAccess.deleteMany({ access_id: id });
+                if (roleAccessResult.deletedCount > 0) {
+                    await ctx.redirect('/admin/access');
+                } else {
+                    await this.error(ctx.state.prevPage, '删除模块失败！');
+                }
             }
         } else {
             await this.error(ctx.state.prevPage, '删除模块失败！');
