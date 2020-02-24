@@ -1,6 +1,39 @@
 <%- include ../public/page_header.html %>
 <script>
     $(function () {
+        $('#status').change(function () {
+            if ($(this).prop('checked')) {
+                $('#role_id option[value="<%=rwait%>"]').remove();
+            } else {
+                $('#role_id').append('<option value="<%=rwait%>">待定</option>');
+            }
+        });
+
+        $('#is_super').change(function () {
+            if ($(this).prop('checked')) {
+                $('#role_id option[value=<%=isuper%>]').prop('selected', true);
+                $('#role_id').prop('disabled', true);
+                $('#status').prop({ 'disabled': false });
+            } else {
+                $('#role_id option')[0].selected = true;
+                $('#role_id').prop('disabled', false);
+            }
+        });
+
+        $('#role_id').change(function () {
+            if ($(this).val() == '<%=rwait%>') {
+                $('#status').prop({ 'disabled': true, 'checked': false });
+            } else {
+                $('#status').prop({ 'disabled': false });
+            }
+
+            if ($(this).val() == '<%=isuper%>') {
+                $('#is_super').prop({ 'disabled': true, 'checked': true });
+            } else {
+                $('#is_super').prop({ 'disabled': false, 'checked': false });
+            }
+        });
+
         $('#myform').submit(function () {
             var params = {
                 username: $('#username').val().trim(),
@@ -39,7 +72,7 @@
 
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    编辑商品
+                    编辑商管理员
                 </div>
                 <div class="panel-body">
                     <div class="table-responsive input-form">
@@ -48,7 +81,8 @@
                                 <input type="hidden" name="_csrf" value="<%=csrf%>">
                                 <input type="hidden" name="id" value="<%=result._id%>">
                                 <li> 生&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;效: <input
-                                        type="checkbox" id="status" name="status" <%=result.status==1?"checked":""%> />
+                                        type="checkbox" id="status" name="status" <%=result.status==1?"checked":""%>
+                                        <%=result.role_id.toString()==rwait?"disabled":""%> />
                                 <li> 超级管理员: <input type="checkbox" id="is_super" name="is_super"
                                         <%=result.is_super==1?"checked":""%> />
                                 </li>
@@ -63,14 +97,18 @@
                                 <li> 管理员邮箱: <input type="text" id="email" name="email" value="<%=result.email%>"
                                         placeholder="请输入管理员邮箱" /></li>
                                 <li> 管理员角色:
-                                    <select name="role_id" id="role_id">
+                                    <select name="role_id" id="role_id" <%=result.is_super==1?"disabled":""%>>
                                         <%for(let i=0;i<list.length;i++){%>
+                                        <%if(result.status==1&&list[i]._id.toString()==rwait){%>
+                                        <%continue;%>
+                                        <%}%>
                                         <%if(result.role_id.toString()==list[i]._id.toString()){%>
                                         <option value="<%=list[i]._id%>" selected><%=list[i].title%></option>
                                         <%}else{%>
                                         <option value="<%=list[i]._id%>"><%=list[i].title%></option>
                                         <%}%>
                                         <%}%>
+
                                     </select>
                                 </li>
 

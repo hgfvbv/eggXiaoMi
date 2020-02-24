@@ -23,9 +23,12 @@ class LoginController extends BaseController {
             let result = await ctx.model.Admin.find({ username, password });
 
             if (result && result.length > 0) {
-                if (result[0].status == 1) {
-                    ctx.session.userinfo = result[0];
-                    ctx.redirect('/admin/manager');
+                let userinfo = result[0];
+                if (userinfo.status == 1) {
+                    let roleTitle = (await ctx.model.Role.findOne({ _id: userinfo.role_id }, { title: 1 })).title;
+                    ctx.session.userinfo = userinfo;
+                    ctx.session.roleTitle = roleTitle;
+                    ctx.redirect('/admin');
                 } else {
                     await this.error('/admin/login', '对不起！您已被锁定！请联系管理员！');
                 }
@@ -39,6 +42,7 @@ class LoginController extends BaseController {
 
     async loginOut() {
         this.ctx.session.userinfo = null;
+        this.ctx.session.roleTitle = null;
         this.ctx.redirect('/admin/login');
     }
 }

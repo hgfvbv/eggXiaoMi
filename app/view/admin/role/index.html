@@ -43,7 +43,7 @@
                             <th class="text-center">操作</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody style="background-color:#FFFFFF">
 
                         <%for(let i=0;i<list.length;i++){%>
                         <tr class="text-center">
@@ -59,11 +59,11 @@
                                 <% } %>
                             </td>
                             <td>
-                                <%if(list[i]._id.toString()!="5e4cdb709ddce035b8ce650e"){%>
+                                <%if(list[i]._id.toString()!=rwait){%>
                                 <a href="/admin/role/auth?id=<%=list[i]._id%>">授权</a>
                                 <%}%>
                                 　<a href="/admin/role/edit?id=<%=list[i]._id%>">修改</a>
-                                <%if(list[i]._id.toString()=="5e4cdb709ddce035b8ce650e"){%>
+                                <%if(list[i]._id.toString()==rwait||list[i]._id.toString()==isuper){%>
                                 　<a href="#" onclick="javascript:alert('此角色不可删除！');return false;">删除</a>
                                 <%}else{%>
                                 　<a href="/admin/role/delete?id=<%=list[i]._id%>"

@@ -7,6 +7,7 @@ module.exports = (options, app) => {
 
         if (ctx.session.userinfo) {
             ctx.state.userinfo = ctx.session.userinfo;
+            ctx.state.roleTitle = ctx.session.roleTitle;
             await next();
         } else {
             let pathname = url.parse(ctx.request.url).pathname;

@@ -46,8 +46,11 @@
 
                                 <li>
                                     <br />
-                                    <button type="submit" class="btn btn-primary"
-                                        <%=result._id.toString()=="5e4cdb709ddce035b8ce650e"?"disabled=false":""%>>提交</button>
+                                    <%if(result._id.toString()==rwait||result._id.toString()==isuper){%>
+                                    <button type="submit" class="btn btn-primary" disabled=false>提交</button>
+                                    <%}else{%>
+                                    <button type="submit" class="btn btn-primary">提交</button>
+                                    <%}%>
                                     <button type="button" class="btn btn-default"
                                         onclick="javascript:location.href='/admin/role';">返回</button>
                                 </li>

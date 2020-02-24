@@ -46,7 +46,7 @@
                             <th class="text-center">操作</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody style="background-color:#FFFFFF">
                         <%for(let i=0;i<list.length;i++){%>
                         <tr>
                             <td><%=list[i].module_name%></td>
@@ -73,7 +73,7 @@
                             </td>
                             <td class="text-center">
                                 <a href="/admin/access/edit?id=<%=list[i]._id%>">修改</a>
-                                <%if(list[i]._id.toString()=="5e50e212368c3a24b0c12605"){%>
+                                <%if(list[i]._id.toString()==await){%>
                                 　<a href="#" onclick="javascript:alert('此模块不可删除！');return false;">删除</a>
                                 <%}else{%>
                                 　<a href="/admin/access/delete?id=<%=list[i]._id%>"

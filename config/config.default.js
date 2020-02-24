@@ -22,6 +22,14 @@ module.exports = appInfo => {
     match: '/admin'
   };
 
+  //此配置用于更改数据库必有字段时与数据库同步
+  config.isuperTxt = '超级管理员';
+  config.isuper = '5b8dee0a3811c10b70b08067';
+  config.rwaitTxt = '待定';  //角色管理待定
+  config.rwait = '5e4cdb709ddce035b8ce650e';
+  config.awaitTxt = '待定';  //权限管理待定
+  config.await = '5e50e212368c3a24b0c12605';
+
   config.session = {
     key: 'SESSION_ID',
     maxAge: 1200000,

@@ -4,7 +4,8 @@ const BaseController = require('./base');
 
 class AccessController extends BaseController {
     async index() {
-        const { ctx } = this;
+        const { ctx, config } = this;
+
         let params = ctx.query,
             module_name = params.module_name ? params.module_name.trim() : '',
             where = '';
@@ -40,7 +41,7 @@ class AccessController extends BaseController {
         for (let i = 0; i < list.length; i++) {
             list[i].child = await ctx.service.tools.jsonSort(list[i].child, 'sort', false);
         }
-        await this.ctx.render('/admin/access/index', { params, list });
+        await this.ctx.render('/admin/access/index', { params, list, await: config.await });
     }
 
     async add() {
@@ -49,7 +50,7 @@ class AccessController extends BaseController {
     }
 
     async doAdd() {
-        const { ctx, app } = this;
+        const { ctx, app, config } = this;
         let params = ctx.request.body,
             module_name = params.module_name ? params.module_name.trim() : '',
             action_name = params.action_name ? params.action_name.trim() : '',
@@ -58,17 +59,22 @@ class AccessController extends BaseController {
             sort = params.sort ? params.sort.trim() : '',
             description = params.description ? params.description.trim() : '';
 
-        if (params.type == 1) {
-            if (module_name == '' || sort == '' || !(/^\d+$/.test(sort))) {
-                await this.error('/admin/access/add', '对不起！服务器繁忙！要不稍后再试试？');
-                return;
+        if (module_name != config.awaitTxt) {
+            if (params.type == 1) {
+                if (module_name == '' || sort == '' || !(/^\d+$/.test(sort))) {
+                    await this.error('/admin/access/add', '对不起！服务器繁忙！要不稍后再试试？');
+                    return;
+                }
+                module_id = '0';
+            } else {
+                if (module_name == '' || action_name == '' || url == '' || sort == '' || !(/^\d+$/.test(sort))) {
+                    await this.error('/admin/access/add', '对不起！服务器繁忙！要不稍后再试试？');
+                    return;
+                }
             }
-            module_id = '0';
         } else {
-            if (module_name == '' || action_name == '' || url == '' || sort == '' || !(/^\d+$/.test(sort))) {
-                await this.error('/admin/access/add', '对不起！服务器繁忙！要不稍后再试试？');
-                return;
-            }
+            await this.error('/admin/access/add', '对不起！服务器繁忙！要不稍后再试试？');
+            return;
         }
 
         let access = new ctx.model.Access({
@@ -84,7 +90,10 @@ class AccessController extends BaseController {
         });
 
         try {
-            await access.save();
+            access = await access.save();
+            if (module_name == config.awaitTxt) {
+                config.await = access._id.toString();
+            }
             await ctx.redirect('/admin/access');
         } catch (err) {
             await this.error('/admin/access/add', '增加权限失败！');
@@ -92,7 +101,7 @@ class AccessController extends BaseController {
     }
 
     async edit() {
-        const { ctx } = this;
+        const { ctx, config } = this;
         let params = ctx.query,
             id = params.id ? params.id.trim() : '',
             where = {};
@@ -108,11 +117,11 @@ class AccessController extends BaseController {
 
         let result = await ctx.model.Access.find(where);
         let list = await this.ctx.model.Access.find({ module_id: '0', status: 1 }, { _id: 1, module_name: 1 });
-        await this.ctx.render('/admin/access/edit', { result: result[0], list });
+        await this.ctx.render('/admin/access/edit', { result: result[0], list, await: config.await });
     }
 
     async doEdit() {
-        const { ctx, app } = this;
+        const { ctx, app, config } = this;
         let params = ctx.request.body,
             id = params.id ? params.id.trim() : '',
             module_name = params.module_name ? params.module_name.trim() : '',
@@ -125,17 +134,22 @@ class AccessController extends BaseController {
             where = {},
             uParams = {};
 
-        if (type == 1) {
-            if (id == '' || id == '5e50e212368c3a24b0c12605' || module_name == '' || sort == '' || !(/^\d+$/.test(sort))) {
-                await this.error(`/admin/access/edit?id=${id}`, '对不起！服务器繁忙！要不稍后再试试？');
-                return;
+        if (module_name != config.awaitTxt) {
+            if (type == 1) {
+                if (id == '' || id == config.await || module_name == '' || sort == '' || !(/^\d+$/.test(sort))) {
+                    await this.error(`/admin/access/edit?id=${id}`, '对不起！服务器繁忙！要不稍后再试试？');
+                    return;
+                }
+                module_id = '0';
+            } else {
+                if (id == '' || id == config.await || module_name == '' || action_name == '' || url == '' || sort == '' || !(/^\d+$/.test(sort))) {
+                    await this.error(`/admin/access/edit?id=${id}`, '对不起！服务器繁忙！要不稍后再试试？');
+                    return;
+                }
             }
-            module_id = '0';
         } else {
-            if (id == '' || id == '5e50e212368c3a24b0c12605' || module_name == '' || action_name == '' || url == '' || sort == '' || !(/^\d+$/.test(sort))) {
-                await this.error(`/admin/access/edit?id=${id}`, '对不起！服务器繁忙！要不稍后再试试？');
-                return;
-            }
+            await this.error(`/admin/access/edit?id=${id}`, '对不起！服务器繁忙！要不稍后再试试？');
+            return;
         }
 
         where = {
@@ -158,7 +172,7 @@ class AccessController extends BaseController {
 
         if (access.nModified > 0) {
             if (uParams.type == 1 && uParams.status == 0) {
-                let uResult = await ctx.model.Access.updateMany({ module_id: app.mongoose.Types.ObjectId(id) }, { module_id: app.mongoose.Types.ObjectId('5e50e212368c3a24b0c12605') });
+                let uResult = await ctx.model.Access.updateMany({ module_id: app.mongoose.Types.ObjectId(id) }, { module_id: app.mongoose.Types.ObjectId(config.await) });
                 if (uResult.ok > 0) {
                     await ctx.redirect('/admin/access');
                 } else {
@@ -173,12 +187,12 @@ class AccessController extends BaseController {
     }
 
     async delete() {
-        const { ctx, app } = this;
+        const { ctx, app, config } = this;
         let params = ctx.query,
             id = params.id ? params.id.trim() : '',
             where = {};
 
-        if (id == '' || id == '5e50e212368c3a24b0c12605') {
+        if (id == '' || id == config.await) {
             await this.error('/admin/access', '对不起！服务器繁忙！要不稍后再试试？');
             return;
         }
@@ -194,13 +208,13 @@ class AccessController extends BaseController {
                 //删除所有角色该顶级模块权限
                 let childIds = await ctx.model.Access.find({ module_id: app.mongoose.Types.ObjectId(id) }, { _id: 1 }),
                     roleAccessPResult = await ctx.model.RoleAccess.deleteOne({ access_id: id }),
-                    isSuccess = roleAccessPResult.deletedCount > 0;
+                    isSuccess = roleAccessPResult.ok > 0;
 
                 if (isSuccess) {
                     //删除所有角色该权限
                     for (let i = 0; i < childIds.length; i++) {
                         let roleAccessResult = await ctx.model.RoleAccess.deleteMany({ access_id: childIds[i]._id });
-                        if (roleAccessResult.deletedCount <= 0) {
+                        if (roleAccessResult.ok <= 0) {
                             isSuccess = false;
                         }
                     }
@@ -221,7 +235,7 @@ class AccessController extends BaseController {
             } else {
                 //删除被删模块所在中间表的数据
                 let roleAccessResult = await ctx.model.RoleAccess.deleteMany({ access_id: id });
-                if (roleAccessResult.deletedCount > 0) {
+                if (roleAccessResult.ok > 0) {
                     await ctx.redirect('/admin/access');
                 } else {
                     await this.error(ctx.state.prevPage, '删除模块失败！');

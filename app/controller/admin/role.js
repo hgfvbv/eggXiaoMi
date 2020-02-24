@@ -4,7 +4,8 @@ const BaseController = require('./base');
 
 class RoleController extends BaseController {
     async index() {
-        const { ctx } = this;
+        const { ctx, config } = this;
+
         let params = ctx.query,
             title = params.title ? params.title.trim() : '',
             where = {};
@@ -19,7 +20,7 @@ class RoleController extends BaseController {
         };
 
         let list = await ctx.model.Role.find(where);
-        await ctx.render('admin/role/index', { params, list });
+        await ctx.render('admin/role/index', { params, list, rwait: config.rwait, isuper: config.isuper });
     }
 
     async add() {
@@ -27,12 +28,12 @@ class RoleController extends BaseController {
     }
 
     async doAdd() {
-        const { ctx } = this;
+        const { ctx, config } = this;
         let params = ctx.request.body,
             title = params.title ? params.title.trim() : '',
             description = params.description ? params.description.trim() : '';
 
-        if (title == '') {
+        if (title == '' || title == config.rwaitTxt || title == config.isuperTxt) {
             await this.error('/admin/role/add', '对不起！服务器繁忙！要不稍后再试试？');
             return;
         }
@@ -45,7 +46,13 @@ class RoleController extends BaseController {
         });
 
         try {
-            await role.save();
+            role = await role.save();
+            if (title == config.rwaitTxt) {
+                config.rwait = role._id.toString();
+            }
+            if (title == config.isuperTxt) {
+                config.isuper = role._id.toString();
+            }
             await ctx.redirect('/admin/role');
         } catch (err) {
             await this.error('/admin/role/add', '增加角色失败！');
@@ -53,7 +60,7 @@ class RoleController extends BaseController {
     }
 
     async edit() {
-        const { ctx } = this;
+        const { ctx, config } = this;
         let params = ctx.query,
             id = params.id ? params.id.trim() : '',
             where = {};
@@ -68,11 +75,11 @@ class RoleController extends BaseController {
         };
 
         let result = await ctx.model.Role.find(where);
-        await this.ctx.render('admin/role/edit', { result: result[0] });
+        await this.ctx.render('admin/role/edit', { result: result[0], rwait: config.rwait, isuper: config.isuper });
     }
 
     async doEdit() {
-        const { ctx } = this;
+        const { ctx, config } = this;
         let params = ctx.request.body,
             id = params.id ? params.id.trim() : '',
             title = params.title ? params.title.trim() : '',
@@ -80,7 +87,7 @@ class RoleController extends BaseController {
             where = {},
             uParams = {};
 
-        if (id == '' || id == '5e4cdb709ddce035b8ce650e' || title == '') {
+        if (id == '' || id == config.rwait || title == '' || title == config.rwaitTxt || title == config.isuperTxt) {
             await this.error(`/admin/role/edit?id=${id}`, '对不起！服务器繁忙！要不稍后再试试？');
             return;
         }
@@ -100,7 +107,7 @@ class RoleController extends BaseController {
 
         if (role.nModified > 0) {
             if (uParams.status == 0) {
-                let uResult = await ctx.model.Admin.updateMany({ role_id: id }, { role_id: '5e4cdb709ddce035b8ce650e' });
+                let uResult = await ctx.model.Admin.updateMany({ role_id: id }, { role_id: config.rwait, status: 0 });
                 if (uResult.ok > 0) {
                     await ctx.redirect('/admin/role');
                 } else {
@@ -115,12 +122,12 @@ class RoleController extends BaseController {
     }
 
     async delete() {
-        const { ctx } = this;
+        const { ctx, config } = this;
         let params = ctx.query,
             id = params.id ? params.id.trim() : '',
             where = {};
 
-        if (id == '' || id == '5e4cdb709ddce035b8ce650e') {
+        if (id == '' || id == config.rwait || id == config.isuper) {
             await this.error('/admin/role', '对不起！服务器繁忙！要不稍后再试试？');
             return;
         }
@@ -131,11 +138,11 @@ class RoleController extends BaseController {
 
         let result = await ctx.model.Role.deleteOne(where);
         if (result.deletedCount > 0) {
-            let uResult = await ctx.model.Admin.updateMany({ role_id: id }, { role_id: '5e4cdb709ddce035b8ce650e' });
+            let uResult = await ctx.model.Admin.updateMany({ role_id: id }, { role_id: config.rwait, status: 0 });
             if (uResult.ok > 0) {
                 //删除该角色所有权限
                 let roleAccessResult = await ctx.model.RoleAccess.deleteMany({ role_id: id });
-                if (roleAccessResult.deletedCount > 0) {
+                if (roleAccessResult.ok > 0) {
                     await ctx.redirect(ctx.state.prevPage);
                 } else {
                     await this.error(ctx.state.prevPage, '删除角色失败！');
@@ -149,13 +156,13 @@ class RoleController extends BaseController {
     }
 
     async auth() {
-        const { ctx, app } = this;
+        const { ctx, app, config } = this;
         let params = ctx.query,
             id = params.id ? params.id.trim() : '',
             roleAccessArray = [],
             where = {};
 
-        if (id == '' || id == '5e4cdb709ddce035b8ce650e') {
+        if (id == '' || id == config.rwait) {
             await this.error('/admin/role', '对不起！服务器繁忙！要不稍后再试试？');
             return;
         }
@@ -178,7 +185,7 @@ class RoleController extends BaseController {
                     $and: [
                         { status: 1 },
                         { module_id: '0' },
-                        { _id: { $nin: [app.mongoose.Types.ObjectId('5e50e212368c3a24b0c12605')] } }
+                        { _id: { $nin: [app.mongoose.Types.ObjectId(config.await)] } }
                     ]
                 }
             },
@@ -211,17 +218,17 @@ class RoleController extends BaseController {
             }
         }
 
-        await this.ctx.render(`/admin/role/auth`, { list, id });
+        await this.ctx.render(`/admin/role/auth`, { list, id, isuper: config.isuper });
     }
 
     async doAuth() {
-        const { ctx } = this;
+        const { ctx, config } = this;
         let params = ctx.request.body,
             id = params.id ? params.id.trim() : '',
             access_node = params.access_node ? params.access_node : [],
             where = {};
 
-        if (id == '' || id == '5e4cdb709ddce035b8ce650e') {
+        if (id == '' || id == config.rwait || id == config.isuper) {
             await this.error(`/admin/role/auth?id=${id}`, '对不起！服务器繁忙！要不稍后再试试？');
             return;
         }
