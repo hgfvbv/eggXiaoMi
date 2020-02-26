@@ -30,6 +30,20 @@ module.exports = appInfo => {
   config.awaitTxt = '待定';  //权限管理待定
   config.await = '5e50e212368c3a24b0c12605';
 
+  config.loginFilter = [
+    '/admin/login',
+    '/admin/doLogin',
+    '/admin/verify'
+  ];
+
+  config.accessFilter = [
+    '/admin/login',
+    '/admin/doLogin',
+    '/admin/verify',
+    '/admin/loginOut',
+    '/admin'
+  ];
+
   config.session = {
     key: 'SESSION_ID',
     maxAge: 1200000,

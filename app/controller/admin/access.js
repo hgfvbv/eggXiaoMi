@@ -172,14 +172,43 @@ class AccessController extends BaseController {
 
         if (access.nModified > 0) {
             if (uParams.type == 1 && uParams.status == 0) {
-                let uResult = await ctx.model.Access.updateMany({ module_id: app.mongoose.Types.ObjectId(id) }, { module_id: app.mongoose.Types.ObjectId(config.await) });
+                let childIds = await ctx.model.Access.find({ module_id: app.mongoose.Types.ObjectId(id) }, { _id: 1 }),
+                    uResult = await ctx.model.Access.updateMany({ module_id: app.mongoose.Types.ObjectId(id) }, { module_id: app.mongoose.Types.ObjectId(config.await) });
                 if (uResult.ok > 0) {
-                    await ctx.redirect('/admin/access');
+                    //删除所有角色该顶级模块权限
+                    let roleAccessPResult = await ctx.model.RoleAccess.deleteMany({ access_id: id, role_id: { $nin: [config.isuper] } }),
+                        isSuccess = roleAccessPResult.ok > 0;
+
+                    if (isSuccess) {
+                        //删除所有角色该权限
+                        for (let i = 0; i < childIds.length; i++) {
+                            let roleAccessResult = await ctx.model.RoleAccess.deleteMany({ access_id: childIds[i]._id, role_id: { $nin: [config.isuper] } });
+                            if (roleAccessResult.ok <= 0) {
+                                isSuccess = false;
+                            }
+                        }
+                        if (isSuccess) {
+                            await ctx.redirect('/admin/access');
+                        } else {
+                            await this.error(`/admin/access/edit?id=${id}`, '编辑权限失败！');
+                        }
+                    } else {
+                        await this.error(`/admin/access/edit?id=${id}`, '编辑权限失败！');
+                    }
                 } else {
                     await this.error(`/admin/access/edit?id=${id}`, '编辑权限失败！');
                 }
             } else {
-                await ctx.redirect('/admin/access');
+                if (uParams.status == 0) {
+                    let dResult = await ctx.model.RoleAccess.deleteMany({ access_id: id, role_id: { $nin: [config.isuper] } });
+                    if (dResult.ok > 0) {
+                        await ctx.redirect('/admin/access');
+                    } else {
+                        await this.error(`/admin/access/edit?id=${id}`, '编辑权限失败！');
+                    }
+                } else {
+                    await ctx.redirect('/admin/access');
+                }
             }
         } else {
             await this.error(`/admin/access/edit?id=${id}`, '编辑权限失败！');
@@ -207,13 +236,13 @@ class AccessController extends BaseController {
             if (access[0].type == 1) {
                 //删除所有角色该顶级模块权限
                 let childIds = await ctx.model.Access.find({ module_id: app.mongoose.Types.ObjectId(id) }, { _id: 1 }),
-                    roleAccessPResult = await ctx.model.RoleAccess.deleteOne({ access_id: id }),
+                    roleAccessPResult = await ctx.model.RoleAccess.deleteMany({ access_id: id, role_id: { $nin: [config.isuper] } }),
                     isSuccess = roleAccessPResult.ok > 0;
 
                 if (isSuccess) {
                     //删除所有角色该权限
                     for (let i = 0; i < childIds.length; i++) {
-                        let roleAccessResult = await ctx.model.RoleAccess.deleteMany({ access_id: childIds[i]._id });
+                        let roleAccessResult = await ctx.model.RoleAccess.deleteMany({ access_id: childIds[i]._id, role_id: { $nin: [config.isuper] } });
                         if (roleAccessResult.ok <= 0) {
                             isSuccess = false;
                         }
@@ -234,7 +263,7 @@ class AccessController extends BaseController {
                 }
             } else {
                 //删除被删模块所在中间表的数据
-                let roleAccessResult = await ctx.model.RoleAccess.deleteMany({ access_id: id });
+                let roleAccessResult = await ctx.model.RoleAccess.deleteMany({ access_id: id, role_id: { $nin: [config.isuper] } });
                 if (roleAccessResult.ok > 0) {
                     await ctx.redirect('/admin/access');
                 } else {

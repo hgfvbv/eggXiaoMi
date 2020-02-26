@@ -8,10 +8,20 @@ module.exports = (options, app) => {
         if (ctx.session.userinfo) {
             ctx.state.userinfo = ctx.session.userinfo;
             ctx.state.roleTitle = ctx.session.roleTitle;
-            await next();
+
+            let isSuccess = await ctx.service.admin.checkAuth();
+            if (isSuccess) {
+                ctx.state.asideList = await ctx.service.admin.getAuthList();
+                await next();
+            } else {
+                await ctx.render('admin/public/error', {
+                    redirectUrl: '/admin',
+                    msg: '对不起！您无此权限！如有疑问可联系管理员！'
+                });
+            }
         } else {
             let pathname = url.parse(ctx.request.url).pathname;
-            if (pathname == '/admin/login' || pathname == '/admin/doLogin' || pathname == '/admin/verify') {
+            if (app.config.loginFilter.indexOf(pathname) != -1) {
                 await next();
             } else {
                 await ctx.redirect('/admin/login');

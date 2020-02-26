@@ -21,11 +21,11 @@ class LoginController extends BaseController {
         if (verify.toUpperCase() == ctx.session.code.toUpperCase()) {
             password = await this.service.tools.md5(await this.service.tools.md5(password));
             let result = await ctx.model.Admin.find({ username, password });
-
             if (result && result.length > 0) {
                 let userinfo = result[0];
                 if (userinfo.status == 1) {
                     let roleTitle = (await ctx.model.Role.findOne({ _id: userinfo.role_id }, { title: 1 })).title;
+                   
                     ctx.session.userinfo = userinfo;
                     ctx.session.roleTitle = roleTitle;
                     ctx.redirect('/admin');
