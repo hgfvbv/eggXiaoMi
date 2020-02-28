@@ -215,6 +215,76 @@ class AccessController extends BaseController {
         }
     }
 
+    async changeStatus() {
+        const { ctx, config, app } = this;
+        let params = ctx.request.body,
+            id = params.id ? params.id.trim() : '',
+            type = params.type ? params.type.trim() : 1,
+            where = {};
+
+        if (id == '' || id == config.await) {
+            ctx.body = { 'message': '对不起！服务器繁忙！要不稍后再试试？', 'success': false };
+            return;
+        }
+
+        where = {
+            _id: id
+        };
+
+        let result = await ctx.model.Access.findOne(where);
+        if (result) {
+            let uParams = result.status == 0 ? { status: 1, type } : { status: 0, type };
+
+            let access = await ctx.model.Access.updateOne(where, uParams);
+
+            if (access.nModified > 0) {
+                if (uParams.type == 1 && uParams.status == 0) {
+                    let childIds = await ctx.model.Access.find({ module_id: app.mongoose.Types.ObjectId(id) }, { _id: 1 }),
+                        uResult = await ctx.model.Access.updateMany({ module_id: app.mongoose.Types.ObjectId(id) }, { module_id: app.mongoose.Types.ObjectId(config.await) });
+                    if (uResult.ok > 0) {
+                        //删除所有角色该顶级模块权限
+                        let roleAccessPResult = await ctx.model.RoleAccess.deleteMany({ access_id: id, role_id: { $nin: [config.isuper] } }),
+                            isSuccess = roleAccessPResult.ok > 0;
+
+                        if (isSuccess) {
+                            //删除所有角色该权限
+                            for (let i = 0; i < childIds.length; i++) {
+                                let roleAccessResult = await ctx.model.RoleAccess.deleteMany({ access_id: childIds[i]._id, role_id: { $nin: [config.isuper] } });
+                                if (roleAccessResult.ok <= 0) {
+                                    isSuccess = false;
+                                }
+                            }
+                            if (isSuccess) {
+                                ctx.body = { 'message': '更新成功', 'success': true };
+                            } else {
+                                ctx.body = { 'message': '更新失败', 'success': false };
+                            }
+                        } else {
+                            ctx.body = { 'message': '更新失败', 'success': false };
+                        }
+                    } else {
+                        ctx.body = { 'message': '更新失败', 'success': false };
+                    }
+                } else {
+                    if (uParams.status == 0) {
+                        let dResult = await ctx.model.RoleAccess.deleteMany({ access_id: id, role_id: { $nin: [config.isuper] } });
+                        if (dResult.ok > 0) {
+                            ctx.body = { 'message': '更新成功', 'success': true };
+                        } else {
+                            ctx.body = { 'message': '更新失败', 'success': false };
+                        }
+                    } else {
+                        ctx.body = { 'message': '更新成功', 'success': true };
+                    }
+                }
+            } else {
+                ctx.body = { 'message': '更新失败', 'success': false };
+            }
+        } else {
+            ctx.body = { 'message': '更新失败，参数错误', 'success': false };
+        }
+    }
+
     async delete() {
         const { ctx, app, config } = this;
         let params = ctx.query,

@@ -66,9 +66,11 @@
                             <td class="text-center"><%=helper.formartTime(list[i].add_time)%></td>
                             <td class="text-center">
                                 <% if(list[i].status==1) { %>
-                                <img src="/public/admin/images/yes.gif" alt="生效"></a>
+                                <img src="/public/admin/images/yes.gif" alt="生效"
+                                    onclick="app.changeStatus(this,'Access','status','<%=list[i]._id%>','<%=csrf%>','<%=list[i].type%>')"></a>
                                 <%} else { %>
-                                <img src="/public/admin/images/no.gif" alt="未生效"></a>
+                                <img src="/public/admin/images/no.gif" alt="未生效"
+                                    onclick="app.changeStatus(this,'Access','status','<%=list[i]._id%>','<%=csrf%>','<%=list[i].type%>')"></a>
                                 <% } %>
                             </td>
                             <td class="text-center">
@@ -100,9 +102,11 @@
                             <td class="text-center"><%=helper.formartTime(list[i].child[j].add_time)%></td>
                             <td class="text-center">
                                 <% if(list[i].child[j].status==1) { %>
-                                <img src="/public/admin/images/yes.gif" alt="生效"></a>
+                                <img src="/public/admin/images/yes.gif" alt="生效"
+                                    onclick="app.changeStatus(this,'Access','status','<%=list[i].child[j]._id%>','<%=csrf%>','<%=list[i].type%>')"></a>
                                 <%} else { %>
-                                <img src="/public/admin/images/no.gif" alt="未生效"></a>
+                                <img src="/public/admin/images/no.gif" alt="未生效"
+                                    onclick="app.changeStatus(this,'Access','status','<%=list[i].child[j]._id%>','<%=csrf%>','<%=list[i].type%>')"></a>
                                 <% } %>
                             </td>
                             <td class="text-center">
