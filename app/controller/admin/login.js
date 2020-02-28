@@ -24,6 +24,9 @@ class LoginController extends BaseController {
             if (result && result.length > 0) {
                 let userinfo = result[0];
                 if (userinfo.status == 1) {
+                    console.log(`登陆IP：${ctx.request.header['x-real-ip']}`)
+                    console.log(`代理、登陆IP：${ctx.request.header['x-forwarded-for']}`)
+                    console.log(ctx.request.ips)
                     let roleTitle = (await ctx.model.Role.findOne({ _id: userinfo.role_id }, { title: 1 })).title;
                    
                     ctx.session.userinfo = userinfo;

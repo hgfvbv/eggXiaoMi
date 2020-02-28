@@ -29,8 +29,8 @@ class BaseController extends Controller {
 
     async delete() {
         const { ctx } = this;
-        let model = ctx.request.query.model,
-            params = ctx.request.query,
+        let params = ctx.request.query,
+            model = params.model,
             id = params.id ? params.id.trim() : '',
             where = {};
 
@@ -48,6 +48,51 @@ class BaseController extends Controller {
             await ctx.redirect(ctx.state.prevPage);
         } else {
             await this.error(ctx.state.prevPage, '删除角色失败！');
+        }
+    }
+
+    //改变状态的方法  Api接口
+    async changeStatus() {
+        const { ctx } = this;
+        let params = ctx.request.body,
+            model = params.model,
+            id = params.id ? params.id.trim() : '',
+            attr = params.attr ? params.attr.trim() : '',
+            where = {};
+
+        if (id == '' || attr == '') {
+            ctx.body = { 'message': '对不起！服务器繁忙！要不稍后再试试？', 'success': false };
+            return;
+        }
+
+        where = {
+            _id: id
+        };
+
+        let result = await ctx.model[model].findOne(where);
+        if (result) {
+            let json = {};
+            if (result[attr] == 0) {
+                //es6 属性表达式
+                //相当于：attr=status;  json={status:1}
+                json = {
+                    [attr]: 1
+                };
+            } else {
+                json = {
+                    [attr]: 0
+                };
+            }
+
+            let updateResult = await ctx.model[model].updateOne(where, json);
+
+            if (updateResult.nModified > 0) {
+                ctx.body = { 'message': '更新成功', 'success': true };
+            } else {
+                ctx.body = { 'message': '更新失败', 'success': false };
+            }
+        } else {
+            ctx.body = { 'message': '更新失败，参数错误', 'success': false };
         }
     }
 }

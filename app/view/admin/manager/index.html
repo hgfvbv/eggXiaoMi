@@ -63,9 +63,13 @@
                             </td>
                             <td>
                                 <% if(list[i].status==1) { %>
-                                <img src="/public/admin/images/yes.gif" alt="生效"></a>
+                                <img src="/public/admin/images/yes.gif"
+                                    onclick="app.changeStatus(this,'Admin','status','<%=list[i]._id%>','<%=csrf%>')"
+                                    alt="生效"></a>
                                 <%} else { %>
-                                <img src="/public/admin/images/no.gif" alt="未生效"></a>
+                                <img src="/public/admin/images/no.gif"
+                                    onclick="app.changeStatus(this,'Admin','status','<%=list[i]._id%>','<%=csrf%>')"
+                                    alt="未生效"></a>
                                 <% } %>
                             </td>
                             <td><a href="/admin/manager/edit?id=<%=list[i]._id%>">修改</a> 　　<a

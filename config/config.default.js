@@ -52,6 +52,8 @@ module.exports = appInfo => {
     renew: true //  延长会话有效期       
   }
 
+  exports.proxy = true;
+
   exports.mongoose = {
     client: {
       url: 'mongodb://127.0.0.1/eggxiaomi',

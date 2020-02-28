@@ -14,6 +14,7 @@ module.exports = app => {
   router.post('/admin/access/doAdd', controller.admin.access.doAdd);
   router.get('/admin/access/edit', controller.admin.access.edit);
   router.post('/admin/access/doEdit', controller.admin.access.doEdit);
+  router.post('/admin/access/changeStatus', controller.admin.access.changeStatus);
   router.get('/admin/access/delete', controller.admin.access.delete);
 
   router.get('/admin/manager', controller.admin.manager.index);
@@ -27,12 +28,14 @@ module.exports = app => {
   router.post('/admin/role/doAdd', controller.admin.role.doAdd);
   router.get('/admin/role/edit', controller.admin.role.edit);
   router.post('/admin/role/doEdit', controller.admin.role.doEdit);
+  router.post('/admin/role/changeStatus', controller.admin.role.changeStatus);
   router.get('/admin/role/delete', controller.admin.role.delete);
   router.get('/admin/role/auth', controller.admin.role.auth);
   router.post('/admin/role/doAuth', controller.admin.role.doAuth);
 
   router.get('/admin/verify', controller.admin.base.verify);
   router.get('/admin/delete', controller.admin.base.delete);
+  router.post('/admin/changeStatus', controller.admin.base.changeStatus);
   router.get('/admin/login', controller.admin.login.index);
   router.get('/admin/loginOut', controller.admin.login.loginOut);
   router.post('/admin/doLogin', controller.admin.login.doLogin);
