@@ -40,6 +40,14 @@ class AdminService extends Service {
             role_id = userinfo.role_id,
             access = await ctx.model.Access.aggregate([
                 {
+                    $lookup: {
+                        from: 'access',
+                        localField: '_id',
+                        foreignField: 'module_id',
+                        as: 'child'
+                    }
+                },
+                {
                     $match: {
                         $and: [
                             { status: 1 },
@@ -49,11 +57,8 @@ class AdminService extends Service {
                     }
                 },
                 {
-                    $lookup: {
-                        from: 'access',
-                        localField: '_id',
-                        foreignField: 'module_id',
-                        as: 'child'
+                    $sort: {
+                        sort: 1
                     }
                 },
                 {
@@ -66,11 +71,6 @@ class AdminService extends Service {
                         'child': 1
                     }
                 },
-                {
-                    $sort: {
-                        sort: 1
-                    }
-                }
             ]),
             roleAccess = [],
             roleAccessResult = await ctx.model.RoleAccess.find({ role_id }, { access_id: 1 });

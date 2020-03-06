@@ -30,6 +30,8 @@ module.exports = appInfo => {
   config.awaitTxt = '待定';  //权限管理待定
   config.await = '5e50e212368c3a24b0c12605';
 
+  config.uploadDir = 'app/public/admin/upload';
+
   config.loginFilter = [
     '/admin/login',
     '/admin/doLogin',
@@ -50,6 +52,10 @@ module.exports = appInfo => {
     httpOnly: true,
     encrypt: true,
     renew: true //  延长会话有效期       
+  }
+
+  exports.multipart = {
+    whitelist: ['.png', '.jfif', '.jpg', '.jpeg', '.gif', '.ico']
   }
 
   exports.proxy = true;

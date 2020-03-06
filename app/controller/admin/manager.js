@@ -122,6 +122,11 @@ class ManagerController extends BaseController {
             where = {},
             uParams = {};
 
+        if (id == '') {
+            await this.error('/admin/manager', '对不起！服务器繁忙！要不稍后再试试？');
+            return;
+        }
+
         if (username == '' || (mobile != '' && !/^1[3456789]\d{9}$/.test(mobile)) || (email != '' && !/^[A-Za-z0-9]+([_\.][A-Za-z0-9]+)*@([A-Za-z0-9\-]+\.)+[A-Za-z]{2,6}$/.test(email))) {
             await this.error(`/admin/manager/edit?id=${id}`, '对不起！服务器繁忙！要不稍后再试试？');
             return;

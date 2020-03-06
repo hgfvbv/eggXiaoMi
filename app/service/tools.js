@@ -2,7 +2,10 @@
 
 const svgCaptcha = require('svg-captcha'),
     md5 = require('md5'),
-    Service = require('egg').Service;
+    Service = require('egg').Service,
+    sd = require('silly-datetime'),
+    path = require('path'),
+    mkdirp = require('mz-modules/mkdirp');
 
 class ToolsService extends Service {
     async captcha(isMath, params = { size: 4, fontSize: 50, width: 100, height: 32, noise: 1, background: '#cc9966', color: false, mathOperator: '', mathMin: 1, mathMax: 9 }) {
@@ -59,6 +62,20 @@ class ToolsService extends Service {
             array.reverse();
         }
         return array;
+    }
+
+    async getUploadFile(filename) {
+        let day = sd.format(new Date(), 'YYYYMMDD'),
+            d = await this.getTime(),
+            dir = path.join(this.config.uploadDir, day),
+            uploadDir = path.join(dir, d + path.extname(filename));
+
+        await mkdirp(dir);
+        // \app\public\admin\upload\20200305\1583412665865.jpg
+        return {
+            uploadDir,
+            saveDir: uploadDir.slice(3).replace(/\\/g, '/')
+        };
     }
 }
 

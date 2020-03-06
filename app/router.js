@@ -33,6 +33,12 @@ module.exports = app => {
   router.get('/admin/role/auth', controller.admin.role.auth);
   router.post('/admin/role/doAuth', controller.admin.role.doAuth);
 
+  router.get('/admin/focus', controller.admin.focus.index);
+  router.get('/admin/focus/add', controller.admin.focus.add);
+  router.post('/admin/focus/doAdd', controller.admin.focus.doAdd);
+  router.get('/admin/focus/edit', controller.admin.focus.edit);
+  router.post('/admin/focus/doEdit', controller.admin.focus.doEdit);
+
   router.get('/admin/verify', controller.admin.base.verify);
   router.get('/admin/delete', controller.admin.base.delete);
   router.post('/admin/changeStatus', controller.admin.base.changeStatus);

@@ -45,7 +45,7 @@ class AccessController extends BaseController {
     }
 
     async add() {
-        let list = await this.ctx.model.Access.find({ module_id: '0', status: 1 }, { _id: 1, module_name: 1 });
+        let list = await this.ctx.model.Access.find({ module_id: '0', status: 1 }, { _id: 1, module_name: 1 }).sort({ sort: 1 });
         await this.ctx.render('/admin/access/add', { list });
     }
 
@@ -116,7 +116,7 @@ class AccessController extends BaseController {
         };
 
         let result = await ctx.model.Access.find(where);
-        let list = await this.ctx.model.Access.find({ module_id: '0', status: 1 }, { _id: 1, module_name: 1 });
+        let list = await this.ctx.model.Access.find({ module_id: '0', status: 1 }, { _id: 1, module_name: 1 }).sort({ sort: 1 });
         await this.ctx.render('/admin/access/edit', { result: result[0], list, await: config.await });
     }
 
@@ -134,15 +134,20 @@ class AccessController extends BaseController {
             where = {},
             uParams = {};
 
+        if (id == '') {
+            await this.error('/admin/access', '对不起！服务器繁忙！要不稍后再试试？');
+            return;
+        }
+
         if (module_name != config.awaitTxt) {
             if (type == 1) {
-                if (id == '' || id == config.await || module_name == '' || sort == '' || !(/^\d+$/.test(sort))) {
+                if (id == config.await || module_name == '' || sort == '' || !(/^\d+$/.test(sort))) {
                     await this.error(`/admin/access/edit?id=${id}`, '对不起！服务器繁忙！要不稍后再试试？');
                     return;
                 }
                 module_id = '0';
             } else {
-                if (id == '' || id == config.await || module_name == '' || action_name == '' || url == '' || sort == '' || !(/^\d+$/.test(sort))) {
+                if (id == config.await || module_name == '' || action_name == '' || url == '' || sort == '' || !(/^\d+$/.test(sort))) {
                     await this.error(`/admin/access/edit?id=${id}`, '对不起！服务器繁忙！要不稍后再试试？');
                     return;
                 }

@@ -76,3 +76,7 @@ body {
   background-size: 100% 100%;
   background-attachment: fixed;
 }
+
+.pic {
+  max-width: 100px;
+}

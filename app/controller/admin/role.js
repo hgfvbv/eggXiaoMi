@@ -87,7 +87,12 @@ class RoleController extends BaseController {
             where = {},
             uParams = {};
 
-        if (id == '' || id == config.rwait || title == '' || title == config.rwaitTxt || title == config.isuperTxt) {
+        if (id == '') {
+            await this.error('/admin/role', '对不起！服务器繁忙！要不稍后再试试？');
+            return;
+        }
+
+        if (id == config.rwait || title == '' || title == config.rwaitTxt || title == config.isuperTxt) {
             await this.error(`/admin/role/edit?id=${id}`, '对不起！服务器繁忙！要不稍后再试试？');
             return;
         }
@@ -268,7 +273,12 @@ class RoleController extends BaseController {
             access_node = params.access_node ? params.access_node : [],
             where = {};
 
-        if (id == '' || id == config.rwait || id == config.isuper) {
+        if (id == '') {
+            await this.error('/admin/role', '对不起！服务器繁忙！要不稍后再试试？');
+            return;
+        }
+
+        if (id == config.rwait || id == config.isuper) {
             await this.error(`/admin/role/auth?id=${id}`, '对不起！服务器繁忙！要不稍后再试试？');
             return;
         }
@@ -294,7 +304,7 @@ class RoleController extends BaseController {
                 }
             }
             if (isSuccess) {
-                ctx.redirect(`/admin/role/auth?id=${id}`);
+                await this.success(`/admin/role/auth?id=${id}`, '角色授权成功！');
             }
         } else {
             await this.error(`/admin/role/auth?id=${id}`, '角色授权失败！');
