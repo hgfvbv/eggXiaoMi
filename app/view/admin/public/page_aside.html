@@ -1,21 +1,21 @@
 <ul class="aside">
 
     <li>
-        <h4><%=roleTitle%>：<%=userinfo.username%></h4>
+        <h4><%=roleTitle%>：<%=userinfo.username%><span class="nav_open"></span></h4>
 
         <ul>
-            <li class="list-group-item"> <a href="/admin"> 首页</a></li>
+            <li class="list-group-item"> <a href="/admin/welcome" target="rightMain"> 首页</a></li>
         </ul>
     </li>
     <%for(let i=0;i<asideList.length;i++){%>
     <li>
         <%if((asideList[i].checked&&asideList[i].type==1)||(userinfo.is_super==1&&asideList[i].type==1)){%>
-        <h4><%=asideList[i].module_name%></h4>
+        <h4><%=asideList[i].module_name%><span class="nav_open"></span></h4>
 
-        <ul>
+        <ul style="display: none;">
             <%for(let j=0;j<asideList[i].child.length;j++){%>
             <%if((asideList[i].child[j].checked&&asideList[i].child[j].type==2)||(userinfo.is_super==1&&asideList[i].child[j].type==2)){%>
-            <li class="list-group-item"> <a href="<%=asideList[i].child[j].url%>">
+            <li class="list-group-item"> <a href="<%=asideList[i].child[j].url%>" target="rightMain">
                     <%=asideList[i].child[j].action_name%></a></li>
             <%}%>
             <%}%>

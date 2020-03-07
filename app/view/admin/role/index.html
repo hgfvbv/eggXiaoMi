@@ -1,87 +1,71 @@
 <%- include ../public/page_header.html %>
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-2">
-
-            <%- include ../public/page_aside.html %>
-
-        </div>
-        <div class="col-sm-10">
-
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    搜索角色
-                </div>
-                <div class="panel-body">
-                    <form action="/admin/role" method="GET" role="form" class="form-inline" autocomplete="off">
-                        <div class="form-group">
-                            <label for="name">角色名称</label>
-                            <input type="text" class="form-control" name="title" id="title" placeholder="请输入角色名称"
-                                value="<%=params.title%>">
-                        </div>
-
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-default">开始搜索</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <!--
-                列表展示
-            -->
-            <div class="table-responsive">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr class="th">
-                            <th class="text-center">角色名称</th>
-                            <th class="text-center">描述</th>
-                            <th class="text-center">增加时间</th>
-                            <th class="text-center">修改时间</th>
-                            <th class="text-center">状态</th>
-
-                            <th class="text-center">操作</th>
-                        </tr>
-                    </thead>
-                    <tbody style="background-color:#FFFFFF">
-
-                        <%for(let i=0;i<list.length;i++){%>
-                        <tr class="text-center">
-                            <td><%=list[i].title%></td>
-                            <td><%=list[i].description%></td>
-                            <td><%=helper.formartTime(list[i].add_time)%></td>
-                            <td><%=helper.formartTime(list[i].edit_time)%></td>
-                            <td>
-                                <% if(list[i].status==1) { %>
-                                <img src="/public/admin/images/yes.gif" alt="生效"
-                                    onclick="app.changeStatus(this,'Role','status','<%=list[i]._id%>','<%=csrf%>')"></a>
-                                <%} else { %>
-                                <img src="/public/admin/images/no.gif" alt="未生效"
-                                    onclick="app.changeStatus(this,'Role','status','<%=list[i]._id%>','<%=csrf%>')"></a>
-                                <% } %>
-                            </td>
-                            <td>
-                                <%if(list[i]._id.toString()!=rwait){%>
-                                <a href="/admin/role/auth?id=<%=list[i]._id%>">授权</a>
-                                <%}%>
-                                　<a href="/admin/role/edit?id=<%=list[i]._id%>">修改</a>
-                                <%if(list[i]._id.toString()==rwait||list[i]._id.toString()==isuper){%>
-                                　<a href="#" onclick="javascript:alert('此角色不可删除！');return false;">删除</a>
-                                <%}else{%>
-                                　<a href="/admin/role/delete?id=<%=list[i]._id%>"
-                                    onclick="javascript:return confirm('将删除该角色所有权限！您确定要删除吗？');">删除</a>
-                                <%}%>
-                            </td>
-                        </tr>
-                        <%}%>
-                    </tbody>
-                </table>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        搜索角色
+    </div>
+    <div class="panel-body">
+        <form action="/admin/role" method="GET" role="form" class="form-inline" autocomplete="off">
+            <div class="form-group">
+                <label for="name">角色名称</label>
+                <input type="text" class="form-control" name="title" id="title" placeholder="请输入角色名称"
+                    value="<%=params.title%>">
             </div>
 
-        </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-default">开始搜索</button>
+            </div>
+        </form>
     </div>
 </div>
+<!-- 列表展示 -->
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <thead>
+            <tr class="th">
+                <th class="text-center">角色名称</th>
+                <th class="text-center">描述</th>
+                <th class="text-center">增加时间</th>
+                <th class="text-center">修改时间</th>
+                <th class="text-center">状态</th>
 
+                <th class="text-center">操作</th>
+            </tr>
+        </thead>
+        <tbody style="background-color:#FFFFFF">
+
+            <%for(let i=0;i<list.length;i++){%>
+            <tr class="text-center">
+                <td><%=list[i].title%></td>
+                <td><%=list[i].description%></td>
+                <td><%=helper.formartTime(list[i].add_time)%></td>
+                <td><%=helper.formartTime(list[i].edit_time)%></td>
+                <td>
+                    <% if(list[i].status==1) { %>
+                    <img src="/public/admin/images/yes.gif" alt="生效"
+                        onclick="app.changeStatus(this,'Role','status','<%=list[i]._id%>','<%=csrf%>')"></a>
+                    <%} else { %>
+                    <img src="/public/admin/images/no.gif" alt="未生效"
+                        onclick="app.changeStatus(this,'Role','status','<%=list[i]._id%>','<%=csrf%>')"></a>
+                    <% } %>
+                </td>
+                <td>
+                    <%if(list[i]._id.toString()!=rwait){%>
+                    <a href="/admin/role/auth?id=<%=list[i]._id%>">授权</a>
+                    <%}%>
+                                　<a href="/admin/role/edit?id=<%=list[i]._id%>">修改</a>
+                    <%if(list[i]._id.toString()==rwait||list[i]._id.toString()==isuper){%>
+                    　<a href="#" onclick="javascript:alert('此角色不可删除！');return false;">删除</a>
+                    <%}else{%>
+                    　<a href="/admin/role/delete?id=<%=list[i]._id%>"
+                        onclick="javascript:return confirm('将删除该角色所有权限！您确定要删除吗？');">删除</a>
+                    <%}%>
+                </td>
+            </tr>
+            <%}%>
+        </tbody>
+    </table>
+</div>
 </body>
 
 </html>

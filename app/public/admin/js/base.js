@@ -1,24 +1,42 @@
 $(function () {
 
 	app.init();
+});
+
+$(window).resize(function () {
+
+	app.resizeIframe();
 })
 
-
 var app = {
-
-
 	init: function () {
 		this.toggleAside();
 		this.deleteConfirm();
+		this.resizeIframe();
 	},
 	deleteConfirm: function () {
 		$('.delete').click(function () {
 			return confirm('您确定要删除吗？');
 		});
 	},
+	resizeIframe: function () {
+		var height = document.documentElement.clientHeight - 100;
+		document.getElementById('rightMain').height = height;
+	},
 	toggleAside: function () {
-
 		$('.aside h4').click(function () {
+			if ($(this).find('span').hasClass('nav_close')) {
+				$(this).find('span').removeClass('nav_close').addClass('nav_open');
+			} else {
+				$(this).find('span').removeClass('nav_open').addClass('nav_close');
+			}
+
+			//同样的效果
+			// if ($(this).siblings('ul').is(":hidden")) {
+			// 	$(this).siblings('ul').slideDown();
+			// } else {
+			// 	$(this).siblings('ul').slideUp();
+			// }
 
 			$(this).siblings('ul').slideToggle();
 		})

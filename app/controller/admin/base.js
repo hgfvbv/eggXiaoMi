@@ -3,10 +3,6 @@
 const Controller = require('egg').Controller;
 
 class BaseController extends Controller {
-    async index() {
-        await this.ctx.render('admin/index');
-    }
-
     async success(redirectUrl, msg = '操作成功') {
         await this.ctx.render('admin/public/success', {
             redirectUrl,

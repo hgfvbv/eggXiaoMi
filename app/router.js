@@ -7,7 +7,15 @@ module.exports = app => {
   const { router, controller } = app;
   router.get('/', controller.home.index);
 
-  router.get('/admin', controller.admin.base.index);
+  router.get('/admin', controller.admin.main.index);
+  router.get('/admin/welcome', controller.admin.main.welcome);
+  router.get('/admin/verify', controller.admin.base.verify);
+  router.get('/admin/delete', controller.admin.base.delete);
+  router.post('/admin/changeStatus', controller.admin.base.changeStatus);
+  router.post('/admin/changeNum', controller.admin.base.changeNum);
+  router.get('/admin/login', controller.admin.login.index);
+  router.get('/admin/loginOut', controller.admin.login.loginOut);
+  router.post('/admin/doLogin', controller.admin.login.doLogin);
 
   router.get('/admin/access', controller.admin.access.index);
   router.get('/admin/access/add', controller.admin.access.add);
@@ -38,12 +46,4 @@ module.exports = app => {
   router.post('/admin/focus/doAdd', controller.admin.focus.doAdd);
   router.get('/admin/focus/edit', controller.admin.focus.edit);
   router.post('/admin/focus/doEdit', controller.admin.focus.doEdit);
-
-  router.get('/admin/verify', controller.admin.base.verify);
-  router.get('/admin/delete', controller.admin.base.delete);
-  router.post('/admin/changeStatus', controller.admin.base.changeStatus);
-  router.post('/admin/changeNum', controller.admin.base.changeNum);
-  router.get('/admin/login', controller.admin.login.index);
-  router.get('/admin/loginOut', controller.admin.login.loginOut);
-  router.post('/admin/doLogin', controller.admin.login.doLogin);
 };
