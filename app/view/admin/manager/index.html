@@ -72,9 +72,8 @@
                                     alt="未生效"></a>
                                 <% } %>
                             </td>
-                            <td><a href="/admin/manager/edit?id=<%=list[i]._id%>">修改</a> 　　<a
-                                    href="/admin/delete?model=Admin&id=<%=list[i]._id%>"
-                                    onclick="javascript:return confirm('您确定要删除吗？');">删除</a></td>
+                            <td><a href="/admin/manager/edit?id=<%=list[i]._id%>">修改</a> 　　<a class="delete"
+                                    href="/admin/delete?model=Admin&id=<%=list[i]._id%>">删除</a></td>
                         </tr>
                         <%}%>
                     </tbody>

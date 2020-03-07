@@ -80,3 +80,14 @@ body {
 .pic {
   max-width: 100px;
 }
+
+/*数量*/
+.table .text-center span {
+  display: block;
+  /* background: red; */
+  /* cursor: pointer; */
+  text-align: center;
+}
+.table .text-center span input {
+  width: 60px;
+}

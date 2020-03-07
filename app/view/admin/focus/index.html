@@ -39,6 +39,7 @@
                             <th class="text-center">图片</th>
                             <th class="text-center">跳转地址</th>
                             <th class="text-center">增加时间</th>
+                            <th class="text-center">排序</th>
                             <th class="text-center">状态</th>
 
                             <th class="text-center">操作</th>
@@ -62,6 +63,11 @@
                             <td><%=list[i].link%></td>
                             <td><%=helper.formartTime(list[i].add_time)%></td>
                             <td>
+                                <span onclick="app.changeNum(this,'Focus','sort','<%=list[i]._id%>','<%=csrf%>')">
+                                    <%=list[i].sort%>
+                                </span>
+                            </td>
+                            <td>
                                 <% if(list[i].status==1) { %>
                                 <img src="/public/admin/images/yes.gif"
                                     onclick="app.changeStatus(this,'Focus','status','<%=list[i]._id%>','<%=csrf%>')"
@@ -72,9 +78,8 @@
                                     alt="未生效"></a>
                                 <% } %>
                             </td>
-                            <td><a href="/admin/focus/edit?id=<%=list[i]._id%>">修改</a> 　　<a
-                                    href="/admin/delete?model=Focus&id=<%=list[i]._id%>"
-                                    onclick="javascript:return confirm('您确定要删除吗？');">删除</a></td>
+                            <td><a href="/admin/focus/edit?id=<%=list[i]._id%>">修改</a> 　　<a class="delete"
+                                    href="/admin/delete?model=Focus&id=<%=list[i]._id%>">删除</a></td>
                         </tr>
                         <%}%>
                     </tbody>

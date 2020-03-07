@@ -61,7 +61,11 @@
                             </td>
                             <td class="text-center"><%=list[i].action_name%></td>
                             <td class="text-center"><%=list[i].url%></td>
-                            <td class="text-center"><%=list[i].sort%></td>
+                            <td class="text-center">
+                                <span onclick="app.changeNum(this,'Access','sort','<%=list[i]._id%>','<%=csrf%>')">
+                                    <%=list[i].sort%>
+                                </span>
+                            </td>
                             <td class="text-center"><%=list[i].description%></td>
                             <td class="text-center"><%=helper.formartTime(list[i].add_time)%></td>
                             <td class="text-center">
@@ -97,7 +101,12 @@
                             </td>
                             <td class="text-center"><%=list[i].child[j].action_name%></td>
                             <td class="text-center"><%=list[i].child[j].url%></td>
-                            <td class="text-center"><%=list[i].child[j].sort%></td>
+                            <td class="text-center">
+                                <span
+                                    onclick="app.changeNum(this,'Access','sort','<%=list[i].child[j]._id%>','<%=csrf%>')">
+                                    <%=list[i].child[j].sort%>
+                                </span>
+                            </td>
                             <td class="text-center"><%=list[i].child[j].description%></td>
                             <td class="text-center"><%=helper.formartTime(list[i].child[j].add_time)%></td>
                             <td class="text-center">
@@ -111,8 +120,7 @@
                             </td>
                             <td class="text-center">
                                 <a href="/admin/access/edit?id=<%=list[i].child[j]._id%>">修改</a>
-                                　<a href="/admin/access/delete?id=<%=list[i].child[j]._id%>"
-                                    onclick="javascript:return confirm('您确定要删除吗？');">删除</a>
+                                　<a class="delete" href="/admin/access/delete?id=<%=list[i].child[j]._id%>">删除</a>
                             </td>
                         </tr>
                         <%}%>

@@ -55,12 +55,12 @@ class BaseController extends Controller {
     async changeStatus() {
         const { ctx } = this;
         let params = ctx.request.body,
-            model = params.model,
+            model = params.model ? params.model.trim() : '',
             id = params.id ? params.id.trim() : '',
             attr = params.attr ? params.attr.trim() : '',
             where = {};
 
-        if (id == '' || attr == '') {
+        if (id == '' || attr == '' || model == '') {
             ctx.body = { 'message': '对不起！服务器繁忙！要不稍后再试试？', 'success': false };
             return;
         }
@@ -83,6 +83,43 @@ class BaseController extends Controller {
                     [attr]: 0
                 };
             }
+
+            let updateResult = await ctx.model[model].updateOne(where, json);
+
+            if (updateResult.nModified > 0) {
+                ctx.body = { 'message': '更新成功', 'success': true };
+            } else {
+                ctx.body = { 'message': '更新失败', 'success': false };
+            }
+        } else {
+            ctx.body = { 'message': '更新失败，参数错误', 'success': false };
+        }
+    }
+
+    //改变数量的方法  Api接口
+    async changeNum() {
+        const { ctx } = this;
+        let params = ctx.request.body,
+            model = params.model ? params.model.trim() : '',
+            id = params.id ? params.id.trim() : '',
+            attr = params.attr ? params.attr.trim() : '',
+            num = params.num ? params.num.trim() : '',
+            where = {};
+
+        if (id == '' || attr == '' || num == '' || !(/^\d+$/.test(num)) || model == '') {
+            ctx.body = { 'message': '对不起！服务器繁忙！要不稍后再试试？', 'success': false };
+            return;
+        }
+
+        where = {
+            _id: id
+        };
+
+        let result = await ctx.model[model].findOne(where);
+        if (result) {
+            let json = {
+                [attr]: num
+            };
 
             let updateResult = await ctx.model[model].updateOne(where, json);
 
