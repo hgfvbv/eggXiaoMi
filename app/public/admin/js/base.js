@@ -25,21 +25,25 @@ var app = {
 	},
 	toggleAside: function () {
 		$('.aside h4').click(function () {
-			if ($(this).find('span').hasClass('nav_close')) {
-				$(this).find('span').removeClass('nav_close').addClass('nav_open');
-			} else {
-				$(this).find('span').removeClass('nav_open').addClass('nav_close');
-			}
+			//另一种效果
+			$(this).next().slideDown(700).parent().siblings('li').children('ul').slideUp(700);
 
-			//同样的效果
-			// if ($(this).siblings('ul').is(":hidden")) {
-			// 	$(this).siblings('ul').slideDown();
+			//默认效果
+			// if ($(this).find('span').hasClass('nav_close')) {
+			// 	$(this).find('span').removeClass('nav_close').addClass('nav_open');
 			// } else {
-			// 	$(this).siblings('ul').slideUp();
+			// 	$(this).find('span').removeClass('nav_open').addClass('nav_close');
 			// }
+				
+			// //同样的效果
+			// // if ($(this).siblings('ul').is(":hidden")) {
+			// // 	$(this).siblings('ul').slideDown();
+			// // } else {
+			// // 	$(this).siblings('ul').slideUp();
+			// // }
 
-			$(this).siblings('ul').slideToggle();
-		})
+			//$(this).siblings('ul').slideToggle();
+		});
 	},
 	changeStatus: function (el, model, attr, id, _csrf, type) {
 		switch (model) {
