@@ -15,7 +15,7 @@ module.exports = (options, app) => {
                 await next();
             } else {
                 await ctx.render('admin/public/error', {
-                    redirectUrl: '/admin',
+                    redirectUrl: '/admin/welcome',
                     msg: '对不起！您无此权限！如有疑问可联系管理员！'
                 });
             }

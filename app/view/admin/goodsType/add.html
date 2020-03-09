@@ -1,0 +1,50 @@
+<%- include ../public/page_header.html %>
+<script>
+    $(function () {
+        $('#myform').submit(function () {
+            var params = {
+                title: $('#title').val().trim(),
+            };
+
+            if (params.title == '') {
+                alert('请输入商品类型名称！');
+                return false;
+            }
+        });
+    });
+</script>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        增加商品类型
+    </div>
+    <div class="panel-body">
+        <div class="table-responsive input-form">
+            <form action="/admin/goodsType/doAdd" method="post" id='myform' autocomplete="off">
+                <ul>
+                    <input type="hidden" name="_csrf" value="<%=csrf%>">
+                    <li class="line">
+                        生&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;效: <input
+                            type="checkbox" id="status" name="status" />
+                    </li>
+                    <li class="line"> 商品类型名称: <input type="text" id="title" name="title" placeholder="请输入商品类型名称" /></li>
+                    <li>
+                        商品类型描述:
+                        <textarea name="description" id="description" cols="60" rows="8"
+                            placeholder="请输入商品类型描述"></textarea>
+                    </li>
+
+                    <li>
+                        <br />
+                        <button type="submit" class="btn btn-primary">提交</button>
+                        <button type="button" class="btn btn-default"
+                            onclick="javascript:location.href='/admin/goodsType';">返回</button>
+                    </li>
+                </ul>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>

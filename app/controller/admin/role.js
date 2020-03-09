@@ -304,7 +304,7 @@ class RoleController extends BaseController {
                 }
             }
             if (isSuccess) {
-                await this.success(`/admin/role/auth?id=${id}`, '角色授权成功！');
+                await this.success(`/admin/role/auth?id=${id}`, '角色授权成功！需要手动刷新页面！');
             }
         } else {
             await this.error(`/admin/role/auth?id=${id}`, '角色授权失败！');
