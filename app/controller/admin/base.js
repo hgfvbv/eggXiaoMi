@@ -22,6 +22,10 @@ class BaseController extends Controller {
         this.ctx.response.type = 'image/svg+xml';
         this.ctx.body = captcha.data;
     }
+    
+    async exit() {
+        await this.ctx.render('admin/public/exit');
+    }
 
     async delete() {
         const { ctx } = this;

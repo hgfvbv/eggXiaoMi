@@ -24,7 +24,7 @@ module.exports = (options, app) => {
             if (app.config.loginFilter.indexOf(pathname) != -1) {
                 await next();
             } else {
-                await ctx.redirect('/admin/login');
+                await ctx.redirect('/admin/exit');
             }
         }
     };

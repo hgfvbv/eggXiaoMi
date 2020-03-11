@@ -15,6 +15,7 @@ module.exports = app => {
   router.post('/admin/changeNum', controller.admin.base.changeNum);
   router.get('/admin/login', controller.admin.login.index);
   router.get('/admin/loginOut', controller.admin.login.loginOut);
+  router.get('/admin/exit', controller.admin.base.exit);
   router.post('/admin/doLogin', controller.admin.login.doLogin);
 
   router.get('/admin/access', controller.admin.access.index);
@@ -52,4 +53,10 @@ module.exports = app => {
   router.post('/admin/goodsType/doAdd', controller.admin.goodsType.doAdd);
   router.get('/admin/goodsType/edit', controller.admin.goodsType.edit);
   router.post('/admin/goodsType/doEdit', controller.admin.goodsType.doEdit);
+
+  router.get('/admin/goodsTypeAttribute', controller.admin.goodsTypeAttributes.index);
+  router.get('/admin/goodsTypeAttribute/add', controller.admin.goodsTypeAttributes.add);
+  router.post('/admin/goodsTypeAttribute/doAdd', controller.admin.goodsTypeAttributes.doAdd);
+  router.get('/admin/goodsTypeAttribute/edit', controller.admin.goodsTypeAttributes.edit);
+  router.post('/admin/goodsTypeAttribute/doEdit', controller.admin.goodsTypeAttributes.doEdit);
 };

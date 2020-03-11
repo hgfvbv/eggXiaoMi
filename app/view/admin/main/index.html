@@ -9,6 +9,18 @@
     }
 </style>
 
+<script>
+    //设置iframe的高度
+
+    $(function () {
+        app.resizeIframe();
+    });
+
+    $(window).resize(function () {
+        app.resizeIframe();
+    });
+</script>
+
 <nav class="navbar navbar-inverse" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">

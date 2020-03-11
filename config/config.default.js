@@ -35,7 +35,9 @@ module.exports = appInfo => {
   config.loginFilter = [
     '/admin/login',
     '/admin/doLogin',
-    '/admin/verify'
+    '/admin/verify',
+    '/admin/loginOut',
+    '/admin/exit'
   ];
 
   config.accessFilter = [
@@ -44,7 +46,8 @@ module.exports = appInfo => {
     '/admin/verify',
     '/admin/loginOut',
     '/admin',
-    '/admin/welcome'
+    '/admin/welcome',
+    '/admin/exit'
   ];
 
   config.session = {

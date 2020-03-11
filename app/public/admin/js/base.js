@@ -12,7 +12,7 @@ var app = {
 	init: function () {
 		this.toggleAside();
 		this.deleteConfirm();
-		this.resizeIframe();
+		//this.resizeIframe();
 	},
 	deleteConfirm: function () {
 		$('.delete').click(function () {
@@ -34,8 +34,8 @@ var app = {
 			// } else {
 			// 	$(this).find('span').removeClass('nav_open').addClass('nav_close');
 			// }
-				
-			// //同样的效果
+
+			// //同样的默认效果
 			// // if ($(this).siblings('ul').is(":hidden")) {
 			// // 	$(this).siblings('ul').slideDown();
 			// // } else {

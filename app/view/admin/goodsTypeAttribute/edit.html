@@ -1,0 +1,97 @@
+<%- include ../public/page_header.html %>
+<script>
+    $(function () {
+        $("input[name='attr_type']").change(function () {
+            if ($(this).val() == 3) {
+                $('#attr_value').attr('disabled', false);
+            } else {
+                $('#attr_value').val('').attr('disabled', true);
+            }
+        });
+
+        $('#myform').submit(function () {
+            var params = {
+                title: $('#title').val().trim(),
+                sort: $('#sort').val().trim(),
+                attr_type: $('input[name="attr_type"]:checked').val().trim(),
+                attr_value: $('#attr_value').val().trim()
+            };
+
+            if (params.title == '') {
+                alert('请输入属性名称');
+                return false;
+            }
+            if (params.sort == '') {
+                alert('请输入排序！');
+                return false;
+            } else if (!(/^\d+$/.test(params.sort))) {
+                alert('请正确输入排序！');
+                return false;
+            }
+            if (params.attr_type == 3 && params.attr_value == '') {
+                alert('请输入可选值列表！');
+                return false;
+            }
+        });
+    });
+</script>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        修改商品类型属性
+    </div>
+    <div class="panel-body">
+        <div class="table-responsive input-form">
+            <form action="/admin/goodsTypeAttribute/doEdit" method="post" id='myform' autocomplete="off">
+                <ul>
+                    <input type="hidden" name="_csrf" value="<%=csrf%>">
+                    <input type="hidden" name="id" value="<%=result._id%>">
+                    <input type="hidden" name="oldCate" value="<%=cate_id%>">
+                    <li class="line">
+                        生&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;效: <input type="checkbox" id="status" name="status"
+                            <%=result.status==1?"checked":""%> />
+                    </li>
+                    <li class="line"> 属性名称: <input type="text" id="title" name="title" placeholder="请输入属性名称"
+                            value="<%=result.title%>" /></li>
+                    <li class="line">
+                        所属类型:
+                        <select name="cate_id" id="cate_id">
+                            <%for(var i=0;i<goodsType.length;i++){%>
+                            <option
+                                <%if(result.cate_id.toString()==goodsType[i]._id.toString()){%>selected<%}%> value="<%=goodsType[i]._id%>">
+                                <%=goodsType[i].title%></option>
+                            <%}%>
+                        </select>
+                    </li> 
+                    <li class="line"> 排&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;序: <input type="text" id="sort"
+                        name="sort" placeholder="请输入排序" value="<%=result.sort%>" /></li>
+                    <li class="line"> 录入方式: <input type="radio" name="attr_type" value="1" checked="true"
+                            id="text" <%if(result.attr_type==1){%> checked="true" <%}%> /><label for="text">单行文本框</label> 　
+                        <input type="radio" name="attr_type" value="2" id="textarea" <%if(result.attr_type==2){%>
+                            checked="true" <%}%> /><label
+                            for="textarea">多行文本框</label> 　
+                        <input type="radio" name="attr_type" value="3" id="select" <%if(result.attr_type==3){%>
+                            checked="true"
+                            <%}%> /><label
+                            for="select">下拉列表（一行代表一个可选值）</label>　
+                    </li>
+                    <li>
+                        可选值列表:
+                        <textarea name="attr_value" id="attr_value" cols="60" rows="8"
+                            placeholder="一行代表一个可选值" <%if(result.attr_type!=3){%>disabled="disabled"<%}%>><%=result.attr_value%></textarea>
+                    </li>
+
+                    <li>
+                        <br />
+                        <button type="submit" class="btn btn-primary">提交</button>
+                        <button type="button" class="btn btn-default"
+                            onclick="javascript:location.href='/admin/goodsTypeAttribute?id=<%=cate_id%>';">返回</button>
+                    </li>
+                </ul>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>
