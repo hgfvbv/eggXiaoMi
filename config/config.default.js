@@ -34,6 +34,7 @@ module.exports = appInfo => {
 
   config.loginFilter = [
     '/admin/login',
+    '/admin/HV',
     '/admin/doLogin',
     '/admin/verify',
     '/admin/loginOut',
@@ -42,6 +43,7 @@ module.exports = appInfo => {
 
   config.accessFilter = [
     '/admin/login',
+    '/admin/HV',
     '/admin/doLogin',
     '/admin/verify',
     '/admin/loginOut',
@@ -60,7 +62,12 @@ module.exports = appInfo => {
 
   exports.multipart = {
     whitelist: ['.png', '.jfif', '.jpg', '.jpeg', '.gif', '.ico']
-  }
+  };
+
+  //配置表单数量
+  exports.multipart = {
+    fields: '50'
+  };
 
   exports.proxy = true;
 

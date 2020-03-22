@@ -5,7 +5,9 @@ const svgCaptcha = require('svg-captcha'),
     Service = require('egg').Service,
     sd = require('silly-datetime'),
     path = require('path'),
-    mkdirp = require('mz-modules/mkdirp');
+    mkdirp = require('mz-modules/mkdirp'),
+    _ = require('lodash'),
+    Jimp = require('jimp');
 
 class ToolsService extends Service {
     async captcha(isMath, params = { size: 4, fontSize: 50, width: 100, height: 32, noise: 1, background: '#cc9966', color: false, mathOperator: '', mathMin: 1, mathMax: 9 }) {
@@ -46,36 +48,44 @@ class ToolsService extends Service {
      * @param   reverse 是否倒序（默认为false）
      * @return  array  返回排序后的json数组
     */
-    async jsonSort(array, field, reverse) {
-        //数组长度小于2 或 没有指定排序字段 或 不是json格式数据
-        if (array.length < 2 || !field || typeof array[0] !== "object") return array;
-        //数字类型排序
-        if (typeof array[0][field] === "number") {
-            array.sort(function (x, y) { return x[field] - y[field] });
-        }
-        //字符串类型排序
-        if (typeof array[0][field] === "string") {
-            array.sort(function (x, y) { return x[field].localeCompare(y[field]) });
-        }
-        //倒序
+    async jsonSort(array, field, reverse = false) {
         if (reverse) {
-            array.reverse();
+            array = _.sortBy(array, (item) => {
+                return -item[field];
+            });
+        } else {
+            array = _.sortBy(array, (item) => {
+                return item[field];
+            });
         }
         return array;
     }
 
-    async getUploadFile(filename) {
+    async getUploadFile(filename, dirName) {
         let day = sd.format(new Date(), 'YYYYMMDD'),
             d = await this.getTime(),
-            dir = path.join(this.config.uploadDir, day),
+            dir = path.join(`${this.config.uploadDir}/${dirName}`, day),
             uploadDir = path.join(dir, d + path.extname(filename));
 
         await mkdirp(dir);
-        // \app\public\admin\upload\20200305\1583412665865.jpg
+        // \app\public\admin\upload\${dirName}\20200305\1583412665865.jpg
+
         return {
             uploadDir,
             saveDir: uploadDir.slice(3).replace(/\\/g, '/')
         };
+    }
+
+    //生成缩略图
+    async jimpImg(filePath, quality = 80, size = [{ width: 200, height: 200 }]) {
+        _.forEach(size, (item, i) => {
+            Jimp.read(filePath, (err, lenna) => {
+                if (err) throw err;
+                lenna.resize(item.width, item.height) // resize
+                    .quality(quality) // set JPEG quality                  
+                    .write(`${filePath}_${item.width}x${item.height}${path.extname(filePath)}`); // save
+            });
+        });
     }
 }
 

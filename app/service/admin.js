@@ -1,6 +1,7 @@
 'use strict';
 
 const Service = require('egg').Service,
+    _ = require('lodash'),
     url = require('url');
 
 class AdminService extends Service {
@@ -21,11 +22,11 @@ class AdminService extends Service {
             roleAccessResult = await ctx.model.RoleAccess.find({ role_id }, { access_id: 1 }),
             checkId = access ? access._id.toString() : '';
 
-        roleAccessResult.forEach(val => {
-            roleAccess.push(val.access_id.toString());
+        _.forEach(roleAccessResult, (item, i) => {
+            roleAccess.push(item.access_id.toString());
         });
 
-        if (roleAccess.indexOf(checkId) != -1) {
+        if (_.includes(roleAccess, checkId)) {
             isSuccess = true;
         } else {
             isSuccess = false;
@@ -75,6 +76,13 @@ class AdminService extends Service {
             roleAccess = [],
             roleAccessResult = await ctx.model.RoleAccess.find({ role_id }, { access_id: 1 });
 
+        // _.forEach(access, async (item, i) => {
+        //     //移除失效的子模块
+        //     access[i].child = item.child.filter((e => { return e.status == 1 }));
+        //     //子模块排序
+        //     access[i].child = await ctx.service.tools.jsonSort(item.child, 'sort', false);
+        // });
+
         for (let i = 0; i < access.length; i++) {
             //移除失效的子模块
             access[i].child = access[i].child.filter((e => { return e.status == 1 }));
@@ -82,9 +90,20 @@ class AdminService extends Service {
             access[i].child = await ctx.service.tools.jsonSort(access[i].child, 'sort', false);
         }
 
-        roleAccessResult.forEach(val => {
-            roleAccess.push(val.access_id.toString());
+        _.forEach(roleAccessResult, (item, i) => {
+            roleAccess.push(item.access_id.toString());
         });
+
+        // _.forEach(access, (item, i) => {
+        //     if (_.includes(roleAccess, item._id.toString())) {
+        //         access[i].checked = true;
+        //     }
+        //     _.forEach(item.child, (child, j) => {
+        //         if (_.includes(roleAccess, child._id.toString())) {
+        //             access[i].child[j].checked = true;
+        //         }
+        //     });
+        // });
 
         for (let i = 0; i < access.length; i++) {
             if (roleAccess.indexOf(access[i]._id.toString()) != -1) {

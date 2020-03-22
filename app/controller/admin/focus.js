@@ -21,7 +21,7 @@ class FocusController extends BaseController {
             };
         };
 
-        let list = await ctx.model.Focus.find(where);
+        let list = await ctx.model.Focus.find(where).sort({ sort: 1 });
         await ctx.render('admin/focus/index', { params, list });
     }
 
@@ -60,7 +60,7 @@ class FocusController extends BaseController {
                 return;
             } else {
                 let fieldname = stream.fieldname,
-                    dir = await service.tools.getUploadFile(stream.filename),
+                    dir = await service.tools.getUploadFile(fieldname, 'focus'),
                     writeStream = fs.createWriteStream(dir.uploadDir);
 
                 await pump(stream, writeStream);
@@ -141,7 +141,7 @@ class FocusController extends BaseController {
                 break;
             } else {
                 let fieldname = stream.fieldname,
-                    dir = await service.tools.getUploadFile(stream.filename),
+                    dir = await service.tools.getUploadFile(stream.filename, 'focus'),
                     writeStream = fs.createWriteStream(dir.uploadDir);
 
                 await pump(stream, writeStream);

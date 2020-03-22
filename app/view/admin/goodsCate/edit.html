@@ -1,0 +1,95 @@
+<%- include ../public/page_header.html %>
+<script>
+    $(function () {
+        $('#myform').submit(function () {
+            var params = {
+                title: $('#title').val().trim(),
+                sort: $('#sort').val().trim()
+            };
+
+            if (params.title == '') {
+                alert('请输入分类名称！');
+                return false;
+            }
+            if (params.sort == '') {
+                alert('请输入排序！');
+                return false;
+            } else if (!(/^\d+$/.test(params.sort))) {
+                alert('请正确输入排序！');
+                return false;
+            }
+        });
+    });
+</script>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        编辑商品分类
+    </div>
+    <div class="panel-body">
+        <div class="table-responsive input-form">
+            <form action="/admin/goodsCate/doEdit?_csrf=<%=csrf%>" method="post" id='myform' autocomplete="off"
+                enctype="multipart/form-data">
+                <ul>
+                    <input type="hidden" name="id" value="<%=result._id%>">
+                    <li class="line">
+                        <span> 生&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;效: </span><input type="checkbox" id="status"
+                            name="status" <%=result.status==1?"checked":""%> />
+                    </li>
+
+                    <li class="line"> <span>分类名称:</span> <input type="text" id="title" name="title" class="input"
+                            value="<%=result.title%>" />
+                    </li>
+
+                    <li class="line"> <span>上级分类:</span>
+                        <select name="pid" id="pid">
+                            <option value="0" <%=result.pid.toString()=='0'?"selected":""%>>顶级分类</option>
+                            <%for(var i=0;i<goodsCate.length;i++){%>
+                            <option value="<%=goodsCate[i]._id%>"
+                                <%=result.pid.toString()==goodsCate[i]._id.toString()?"selected":""%>>
+                                <%=goodsCate[i].title%></option>
+                            <%}%>
+                        </select>
+                    </li>
+
+                    <li class="line"> <span>筛选属性:</span> <input type="text" id="filter_attr" name="filter_attr" class="input" value="<%=result.filter_attr%>"
+                            /></li>
+
+                    <li class="line"> <span>跳转地址:</span> <input type="text" id="link" name="link" class="input"
+                            value="<%=result.link%>" /></li>
+
+                    <li class="line"> <span>分类模板:</span> <input type="text" id="template" name="template" class="input"
+                            value="<%=result.template%>" /><span style='color:red;'>空表示默认模板</span></li>
+
+                    <li class="line"> <span>Seo标题:</span> <input style='width: 603px;' type="text" id="sub_title"
+                            name="sub_title" class="input" value="<%=result.sub_title%>" /></li>
+
+                    <li class="line"> <span>Seo关键词: </span><input style='width: 589px;' type="text" id="keywords"
+                            name="keywords" class="input" value="<%=result.keywords%>" /></li>
+
+                    <li class="line"> <span>Seo描述:</span> <textarea name="description" id="description" cols="81"
+                            rows="4"><%=result.description%></textarea></li>
+
+                    <li class="line"> <span>排&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;序:</span> <input type="number"
+                            id="sort" name="sort" value="<%=result.sort%>" /></li>
+
+                    <li> <span>分类图片:</span><input type="file" id="cate_img" name="cate_img" />
+                        <br>
+                        <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <img class="pic" src="<%=result.cate_img%>" alt="分类图片">
+                    </li>
+
+                    <li>
+                        <br />
+                        <button type="submit" class="btn btn-primary">提交</button>
+                        <button type="button" class="btn btn-default"
+                            onclick="javascript:location.href='/admin/goodsCate';">返回</button>
+                    </li>
+                </ul>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>

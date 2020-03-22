@@ -1,0 +1,102 @@
+<%- include ../public/page_header.html %>
+
+<div class="panel panel-default">
+
+    <div class="panel-heading">
+        搜索商品分类
+    </div>
+    <div class="panel-body">
+        <form action="/admin/goodsCate" method="GET" role="form" class="form-inline" autocomplete="off">
+            <div class="form-group">
+                <label for="name">商品分类名称</label>
+                <input type="text" class="form-control" name="title" id="title" placeholder="请输入商品分类名称"
+                    value="<%=params.title%>">
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-default">开始搜索</button>
+            </div>
+
+            <div class="form-group" style="float:right;">
+                <a href="/admin/goodsCate/add" class="btn btn-primary">增加商品分类</a>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- 列表展示 -->
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <thead>
+            <tr class="th">
+                <th class="text-center">分类名称</th>
+                <th class="text-center">分类图片</th>
+                <th class="text-center">增加时间</th>
+                <th class="text-center">排序</th>
+                <th class="text-center">状态</th>
+
+                <th class="text-center">操作</th>
+            </tr>
+        </thead>
+        <tbody style="background-color:#FFFFFF">
+
+            <%for(let i=0;i<list.length;i++){%>
+            <tr>
+                <td><%=list[i].title%></td>
+                <td class="text-center"><img class="pic"
+                        src="<%=list[i].cate_img%>_64x64<%=helper.getExtName(list[i].cate_img?list[i].cate_img:'')%>"
+                        alt="分类图片"></td>
+                <td class="text-center"><%=helper.formartTime(list[i].add_time)%></td>
+                <td class="text-center">
+                    <span onclick="app.changeNum(this,'GoodsCate','sort','<%=list[i]._id%>','<%=csrf%>')">
+                        <%=list[i].sort%>
+                    </span>
+                </td>
+                <td class="text-center">
+                    <% if(list[i].status==1) { %>
+                    <img src="/public/admin/images/yes.gif" alt="生效"
+                        onclick="app.changeStatus(this,'GoodsCate','status','<%=list[i]._id%>','<%=csrf%>')"></a>
+                    <%} else { %>
+                    <img src="/public/admin/images/no.gif" alt="未生效"
+                        onclick="app.changeStatus(this,'GoodsCate','status','<%=list[i]._id%>','<%=csrf%>')"></a>
+                    <% } %>
+                </td>
+                <td class="text-center">
+                    <a href="/admin/goodsCate/edit?id=<%=list[i]._id%>">修改</a>
+                    　<a class="delete" href="/admin/delete?model=GoodsCate&id=<%=list[i]._id%>">删除</a>
+                </td>
+            </tr>
+
+            <%for(let j=0;j<list[i].child.length;j++){%>
+            <tr>
+                <td>——————————<%=list[i].child[j].title%></td>
+                <td class="text-center"><img class="pic"
+                        src="<%=list[i].child[j].cate_img%>_64x64<%=helper.getExtName(list[i].child[j].cate_img?list[i].child[j].cate_img:'')%>"
+                        alt="分类图片"></td>
+                <td class="text-center"><%=helper.formartTime(list[i].child[j].add_time)%></td>
+                <td class="text-center">
+                    <span onclick="app.changeNum(this,'GoodsCate','sort','<%=list[i].child[j]._id%>','<%=csrf%>')">
+                        <%=list[i].child[j].sort%>
+                    </span>
+                </td>
+                <td class="text-center">
+                    <% if(list[i].child[j].status==1) { %>
+                    <img src="/public/admin/images/yes.gif" alt="生效"
+                        onclick="app.changeStatus(this,'GoodsCate','status','<%=list[i].child[j]._id%>','<%=csrf%>','<%=list[i].type%>')"></a>
+                    <%} else { %>
+                    <img src="/public/admin/images/no.gif" alt="未生效"
+                        onclick="app.changeStatus(this,'GoodsCate','status','<%=list[i].child[j]._id%>','<%=csrf%>','<%=list[i].type%>')"></a>
+                    <% } %>
+                </td>
+                <td class="text-center">
+                    <a href="/admin/goodsCate/edit?id=<%=list[i].child[j]._id%>">修改</a>
+                    　<a class="delete" href="/admin/delete?model=GoodsCate&id=<%=list[i].child[j]._id%>">删除</a>
+                </td>
+            </tr>
+            <%}%>
+            <%}%>
+        </tbody>
+    </table>
+</div>
+</body>
+
+</html>
