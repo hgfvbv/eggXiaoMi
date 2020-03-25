@@ -1,0 +1,56 @@
+<%- include ../public/page_header.html %>
+<script>
+    $(function () {
+        $('#myform').submit(function () {
+            var params = {
+                color_name: $('#color_name').val().trim(),
+                color_value: $('#color_value').val().trim(),
+            };
+
+            if (params.color_name == '') {
+                alert('请输入颜色名称！');
+                return false;
+            }
+            if (params.color_value == '') {
+                alert('请输入颜色值！');
+                return false;
+            }
+        });
+    });
+</script>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        编辑商品颜色
+    </div>
+    <div class="panel-body">
+        <div class="table-responsive input-form">
+            <form action="/admin/goodsColor/doEdit" method="post" id='myform' autocomplete="off">
+                <ul>
+                    <input type="hidden" name="_csrf" value="<%=csrf%>">
+                    <input type="hidden" name="id" value="<%=result._id%>">
+                    <li class="line"> 生&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;效: <input type="checkbox" id="status"
+                            name="status" <%=result.status==1?"checked":""%> />
+                    </li>
+                    <li class="line"> 颜色名称: <input type="text" id="color_name" name="color_name" placeholder="请输入颜色名称"
+                            value="<%=result.color_name%>" /></li>
+                    <li>
+                        颜&nbsp;&nbsp;色&nbsp;&nbsp;值:
+                        <input type="text" id="color_value" name="color_value" placeholder="请输入颜色值"
+                            value="<%=result.color_value%>" /></li>
+                    </li>
+
+                    <li>
+                        <br />
+                        <button type="submit" class="btn btn-primary">提交</button>
+                        <button type="button" class="btn btn-default"
+                            onclick="javascript:location.href='/admin/goodsColor';">返回</button>
+                    </li>
+                </ul>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>

@@ -1,0 +1,63 @@
+<%- include ../public/page_header.html %>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        搜索商品颜色
+    </div>
+    <div class="panel-body">
+        <form action="/admin/goodsColor" method="GET" role="form" class="form-inline" autocomplete="off">
+            <div class="form-group">
+                <label for="name">颜色名称</label>
+                <input type="text" class="form-control" name="color_name" id="color_name" placeholder="请输入颜色名称"
+                    value="<%=params.color_name%>">
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-default">开始搜索</button>
+            </div>
+
+            <div class="form-group" style="float:right;">
+                <a href="/admin/goodsColor/add" class="btn btn-primary">增加商品颜色</a>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- 列表展示 -->
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <thead>
+            <tr class="th">
+                <th class="text-center">颜色名称</th>
+                <th class="text-center">颜色值</th>
+                <th class="text-center">状态</th>
+
+                <th class="text-center">操作</th>
+            </tr>
+        </thead>
+        <tbody style="background-color:#FFFFFF">
+
+            <%for(let i=0;i<list.length;i++){%>
+            <tr class="text-center">
+                <td><%=list[i].color_name%></td>
+                <td><%=list[i].color_value%></td>
+                <td>
+                    <% if(list[i].status==1) { %>
+                    <img src="/public/admin/images/yes.gif" alt="生效"
+                        onclick="app.changeStatus(this,'GoodsColor','status','<%=list[i]._id%>','<%=csrf%>')"></a>
+                    <%} else { %>
+                    <img src="/public/admin/images/no.gif" alt="未生效"
+                        onclick="app.changeStatus(this,'GoodsColor','status','<%=list[i]._id%>','<%=csrf%>')"></a>
+                    <% } %>
+                </td>
+                <td>
+                    　<a href="/admin/goodsColor/edit?id=<%=list[i]._id%>">修改</a>
+                    　<a class="delete" href="/admin/delete?model=GoodsColor&id=<%=list[i]._id%>">删除</a>
+                </td>
+            </tr>
+            <%}%>
+        </tbody>
+    </table>
+</div>
+</body>
+
+</html>
