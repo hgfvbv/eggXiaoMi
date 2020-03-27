@@ -49,7 +49,7 @@
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active"><a href="#general" role="tab" data-toggle="tab">通用信息</a></li>
                     <li role="presentation"><a href="#detail" role="tab" data-toggle="tab">详细描述</a></li>
-                    <li role="presentation"><a href="#mix" role="tab" data-toggle="tab">商品属性</a></li>
+                    <li role="presentation"><a href="#mix" role="tab" data-toggle="tab">其他信息</a></li>
                     <li role="presentation"><a href="#attribute" role="tab" data-toggle="tab">规格与包装</a></li>
                     <li role="presentation"><a href="#photo" role="tab" data-toggle="tab">商品相册</a></li>
                 </ul>
@@ -65,8 +65,15 @@
                             </li>
                             <li class="line"> <span>商品版本:</span> <input type="text" id="goods_version"
                                     name="goods_version" class="input" placeholder="请输入商品版本" /></li>
+                            <li class="line"> <span> SN编号:</span> <input type="text" id="goods_sn" name="goods_sn"
+                                    placeholder="请输入SN编号" /></li>
+                            <li class="line"> <span> 库存:</span> <input type="number" id="goods_number"
+                                    name="goods_number" placeholder="请输入库存" /></li>
+                            <li class="line"> <span> 商品图片:</span> <input type="file" id="goods_img" name="goods_img"
+                                    placeholder="请输入商品图片" />
+                            </li>
                             <li class="line"> <span>所属分类:</span>
-                                <select name="cid" id="cid">
+                                <select name="cate_id" id="cate_id">
                                     <%for(let i=0;i<goodsCate.length;i++){%>
                                     <option value="<%=goodsCate[i]._id%>"><%=goodsCate[i].title%></option>
                                     <%for(let j=0;j<goodsCate[i].child.length;j++){%>
@@ -76,48 +83,51 @@
                                     <%}%>
                                 </select>
                             </li>
-                            <li class="line"> <span> 商品图片:</span> <input type="file" id="pic" name="pic"
-                                    placeholder="请输入商品图片" />
-                            </li>
-                            <li class="line"> <span>商品价格:</span> <input type="text" id="price" name="price"
+                            <li class="line"> <span>商品价格:</span> <input type="number" id="shop_price" name="shop_price"
                                     placeholder="请输入商品价格" /></li>
-                            <li class="line"> <span>商品原价:</span> <input type="text" id="old_price" name="old_price"
-                                    placeholder="请输入商品原价" /></li>
+                            <li class="line"> <span>商品原价:</span> <input type="number" id="market_price"
+                                    name="market_price" placeholder="请输入商品原价" /></li>
                             <li class="line"> <span>商品状态:</span>　<input type="checkbox" id="status" name="status">
                                 <label for="status">选中为生效</label>
                             </li>
-                            <li class="line"> <span>加入推荐:</span>　<input type="checkbox" value="1" name="is_best"
-                                    id="is_best" /> <label for="is_best">精品</label>
-                                <input type="checkbox" value="1" name="is_hot" id="is_hot" /> <label
-                                    for="is_hot">热销</label>
-                                <input type="checkbox" value="1" name="is_new" id="is_new" /> <label
-                                    for="is_new">新品</label>
+                            <li class="line"> <span> 排序:</span> <input type="number" id="sort" name="sort"
+                                    placeholder="请输入排序" value="0" /></li>
+                            <li class="line"> <span>加入推荐:</span>　<input type="checkbox" name="is_best" id="is_best" />
+                                <label for="is_best">精品</label>
+                                <input type="checkbox" name="is_hot" id="is_hot" /> <label for="is_hot">热销</label>
+                                <input type="checkbox" name="is_new" id="is_new" /> <label for="is_new">新品</label>
                             </li>
                         </ul>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="detail">
-                        <textarea name="content" id="content"></textarea>
+                        <textarea name="goods_content" id="goods_content"></textarea>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="mix">
                         <ul class="form_input">
                             <li class="line"> <span>商品颜色:</span>
                                 <%for(var i=0;i<goodsColor.length;i++){%>
-                                <input type="checkbox" name="colors" value="<%=goodsColor[i]._id%>"
+                                <input type="checkbox" name="goods_color" value="<%=goodsColor[i]._id%>"
                                     id="color_<%=goodsColor[i]._id%>" /> <label
                                     for="color_<%=goodsColor[i]._id%>"><%=goodsColor[i].color_name%></label>
                                 <%}%>
                              </li>
                              <li class="line"> <span>关联商品:</span>
-                                    <input type="text" id="relation_goods" name="relation_goods" class="relation_goods" placeholder="请输入关联商品"/>  <i>填写关联商品的id 多个以逗号隔开 格式：23,24,39</i>
+                                    <input type="text" id="relation_goods" name="relation_goods" class="input" placeholder="请输入关联商品"/>  <i>可为空 填写关联商品的id 多个以逗号隔开 格式：23,24,39</i>
                             </li>      
                             <li class="line"> <span>关联赠品:</span>
-                                    <input type="text" id="goods_gift" name="goods_gift" class="goods_gift" placeholder="请输入关联赠品"/>  <i>可为空 格式：23-2,39-5 说明：例如23-2 中的23表示商品id,2表示商品数量</i>
+                                    <input type="text" id="goods_gift" name="goods_gift" class="input" placeholder="请输入关联赠品"/>  <i>可为空 格式：23-2,39-5 说明：例如23-2 中的23表示商品id,2表示商品数量</i>
                             </li>    
                             <li class="line"> <span>关联配件:</span>
-                                <input type="text" id="goods_fitting" name="goods_fitting" class="goods_fitting" placeholder="请输入关联配件"/>  <i>可为空 格式：23-2,39-5 说明：例如23-2 中的23表示商品id,2表示商品数量</i>
+                                <input type="text" id="goods_fitting" name="goods_fitting" class="input" placeholder="请输入关联配件"/>  <i>可为空 格式：23-2,39-5 说明：例如23-2 中的23表示商品id,2表示商品数量</i>
                             </li>    
                             <li class="line"> <span>更多属性:</span>
-                                    <input type="text" id="goods_attr" name="goods_attr" class="goods_attr" placeholder="请输入更多属性"/>  <i> 格式:  颜色:红色,白色,黄色 | 尺寸:41,42,43</i>
+                                    <input type="text" id="goods_attr" name="goods_attr" class="input" placeholder="请输入更多属性"/>  <i> 可为空 格式:  颜色:红色,白色,黄色 | 尺寸:41,42,43</i>
+                            </li>
+                            <li class="line"> <span>Seo关键词:</span>
+                                <input type="text" id="goods_keywords" name="goods_keywords" class="input" placeholder="请输入Seo关键词"/>  <i>可为空</i>
+                            </li>
+                            <li class="line"> <span>Seo描述:</span>
+                                <textarea name="goods_desc" id="goods_desc" cols="100" rows="4" placeholder="请输入Seo描述"></textarea>  <i>可为空</i>
                             </li>
                         </ul>
                     </div>
@@ -130,6 +140,7 @@
                                 <option value="<%=goodsType[i]._id%>"><%=goodsType[i].title%></option>
                                 <%}%>
                                 </select>
+                                <i>可不选 建议选择</i> 
                              </li>
                         </ul>
 
@@ -141,7 +152,7 @@
                             <li class="line">
                                 <div id="photoLib" class="photoLib"></div>
         
-                                <div id="photoList" align="center">
+                                <div id="photoList">
                                 </div>
                             </li>
                         </ul>
@@ -164,7 +175,7 @@
 <script>
     //富文本编辑器
     $(function () {
-        new FroalaEditor('textarea#content', {
+        new FroalaEditor('textarea#goods_content', {
             height: 300,    //给编辑器设置默认的高度
             language: 'zh_cn',
             imageUploadURL: '/admin/goods/goodsUploadImage',
@@ -185,7 +196,7 @@
                     var str = "";
                     for (var i = 0; i < data.length; i++) {
                         if (data[i].attr_type == 1) {
-                            str += '<li class="line"><span>' + data[i].title + ': 　</span><input type="hidden" name="attr_id_list" value="' + data[i]._id + '" />  <input type="text" name="attr_value_list" placeholder="请输入' + data[i].title + '"/></li>'
+                            str += '<li class="line"><span>' + data[i].title + ': 　</span><input type="hidden" name="attr_id_list" value="' + data[i]._id + '" />  <input type="text" name="attr_value_list" placeholder="请输入' + data[i].title + '" /></li>'
                         } else if (data[i].attr_type == 2) {
                             str += '<li class="line"><span>' + data[i].title + ': 　</span> <input type="hidden" name="attr_id_list" value="' + data[i]._id + '">  <textarea cols="50" rows="3" name="attr_value_list" placeholder="请输入' + data[i].title + '"></textarea></li>'
                         } else {

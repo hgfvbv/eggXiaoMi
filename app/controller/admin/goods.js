@@ -34,7 +34,7 @@ class GoodsController extends BaseController {
             stream;
 
         while ((stream = await parts()) != null) {
-            //警告：前端轮播图上传必须放在表单最底下，否则会获取不到完整的前端传值
+            //警告：前端图片上传必须放在表单最底下，否则会获取不到完整的前端传值
             params = parts.field;
 
             if (!stream.filename) {
@@ -65,7 +65,7 @@ class GoodsController extends BaseController {
             stream;
 
         while ((stream = await parts()) != null) {
-            //警告：前端轮播图上传必须放在表单最底下，否则会获取不到完整的前端传值
+            //警告：前端视频上传必须放在表单最底下，否则会获取不到完整的前端传值
             params = parts.field;
 
             if (!stream.filename) {
@@ -88,11 +88,10 @@ class GoodsController extends BaseController {
     }
 
     async goodsTypeAttribute() {
-        const { ctx, app } = this;
+        const { ctx } = this;
 
         let params = ctx.query,
-            cate_id = params.cate_id ? params.cate_id.trim() : '',
-            where = '';
+            cate_id = params.cate_id ? params.cate_id.trim() : '';
 
         if (cate_id == '') {
             await this.error('/admin/goods/add', '对不起！服务器繁忙！要不稍后再试试？');
@@ -112,7 +111,7 @@ class GoodsController extends BaseController {
             stream;
 
         while ((stream = await parts()) != null) {
-            //警告：前端轮播图上传必须放在表单最底下，否则会获取不到完整的前端传值
+            //警告：前端图片上传必须放在表单最底下，否则会获取不到完整的前端传值
             params = parts.field;
 
             if (!stream.filename) {
@@ -179,35 +178,46 @@ class GoodsController extends BaseController {
 
     async doAdd() {
         const { ctx, service } = this;
+        //金钱正则表达式
+        let money = /(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/;
+        
         let parts = ctx.multipart({ autoFields: true });
         let files = {},
             params,
             stream;
 
         while ((stream = await parts()) != null) {
-            //警告：前端商品分类图上传必须放在表单最底下，否则会获取不到完整的前端传值
+            //警告：前端图片上传必须放在表单最底下，否则会获取不到完整的前端传值
             params = parts.field;
 
             let title = params.title ? params.title.trim() : '',
+                sub_title = params.sub_title ? params.sub_title.trim() : '',
+                goods_version = params.goods_version ? params.goods_version.trim() : '',
+                goods_sn = params.goods_sn ? params.goods_sn.trim() : '',
+                shop_price = params.shop_price ? params.shop_price.trim() : '',
+                market_price = params.market_price ? params.market_price.trim() : '',
                 sort = params.sort ? params.sort.trim() : '',
+                goods_content = params.goods_content ? params.goods_content.trim() : '',
                 filename = stream.filename;
 
-
+            if (title == '' || sub_title == '' || goods_version == '' || goods_sn == '' || shop_price == '' || !money.test(shop_price) || market_price == '' || !money.test(market_price) || sort == '' || !(/^\d+$/.test(sort)) || goods_content == '') {
+                await this.error('/admin/goods/add', '对不起！服务器繁忙！要不稍后再试试？');
+                return;
+            }
 
 
             params.status = params.status ? 1 : 0;
+            params.is_best = params.is_best ? 1 : 0;
+            params.is_hot = params.is_hot ? 1 : 0;
+            params.is_new = params.is_new ? 1 : 0;
 
             if (!filename) {
                 break;
-                //await this.error('/admin/goods/add', '对不起！服务器繁忙！要不稍后再试试？');
-                //这里必须加ruturn，否则会死循环
-                //return;
             } else {
                 let fieldname = stream.fieldname,
                     dir = await service.tools.getUploadFile(filename, 'goods'),
                     writeStream = fs.createWriteStream(dir.uploadDir);
 
-                //因异步问题，无法进行顶级分类不上传图片的处理，会造成假死
                 await pump(stream, writeStream);
 
                 files = Object.assign(files, {
@@ -225,27 +235,35 @@ class GoodsController extends BaseController {
             { add_time: await ctx.service.tools.getTime() }
         );
 
+        if (!goods.goods_img) {
+            await this.error('/admin/goods/add', '对不起！服务器繁忙！要不稍后再试试？');
+            return;
+        }
+
         console.log(goods)
 
         /*
             {
-                pic: '/public/admin/upload/goods/20200326/1585206393967.jpg',
+                *goods_img: '/public/admin/upload/goods/20200327/1585274961950.jpg',
                 title: '1',
                 sub_title: '2',
                 goods_version: '3',
-                cid: '5be930619567312f28240bf6',
+                goods_sn: '4',
+                cate_id: '5be92c639567312f28240beb',
+                shop_price: '5',
+                market_price: '6',
                 status: 1,
-                price: '4',
-                old_price: '5',
-                is_best: '1',
-                content: '<p>6<img src="/public/admin/upload/goodsContentImage/20200326/1585206323982.jpg" style="width: 300px;" class="fr-fic fr-dib"><span class="fr-video fr-dvb fr-draggable" contenteditable="false" draggable="true"><video class="fr-draggable" controls="" src="/public/admin/upload/goodsContentVideo/20200326/1585206334148.mp4" style="width: 600px;">您的 浏览器不支持 HTML5 视频。</video></span></p>',
-                colors: [ '5bbb68c1fe498e2346af9e48', '5e7ad05a3380fd3e004b26ea' ],
-                relation_goods: '7',
-                goods_gift: '8',
-                goods_fitting: '9',
-                goods_attr: '10',
+                *is_new: '1',
+                content: '<p>7<img src="/public/admin/upload/goodsContentImage/20200327/1585274866643.jpg" style="width: 300px;" class="fr-fic fr-dib"><span class="fr-video fr-dvb fr-draggable" contenteditable="false" draggable="true"><video class="fr-draggable" controls="" src="/public/admin/upload/goodsContentVideo/20200327/1585274878357.mp4" style="width: 600px;">您的 浏览器不支持 HTML5 视频。</video></span></p>',
+                *goods_color: [ '5bbb68c1fe498e2346af9e48', '5e7ad05a3380fd3e004b26ea' ],
+                relation_goods: '8',
+                goods_gift: '9',
+                goods_fitting: '10',
+                goods_attr: '11',
+                goods_keywords: '12',
+                goods_desc: '13',
                 goods_type_id: '5baf319abee4cc26e47833de',
-                attr_id_list: [
+                *attr_id_list: [
                     '5baf521a7fea212078c7a299',
                     '5baf543d742ae71d744dce9d',
                     '5bbb2882fe9fc817a4411816',
@@ -254,17 +272,40 @@ class GoodsController extends BaseController {
                     '5bc0703626253f327017a01f',
                     '5bc0703d26253f327017a020'
                 ],
-                attr_value_list: [
-                    '11', '12', '否',
-                    '13', '14', '15',
-                    '16'
+                *attr_value_list: [
+                    '14', '15', '否',
+                    '16', '17', '18',
+                    '19'
                 ],
-                goods_image_list: [
-                    '/public/admin/upload/goodsContentPhoto/20200326/1585206389241.jpg',
-                    '/public/admin/upload/goodsContentPhoto/20200326/1585206391099.jpg',
-                    '/public/admin/upload/goodsContentPhoto/20200326/1585206391129.jpg'
+                *goods_image_list: [
+                    '/public/admin/upload/goodsContentPhoto/20200327/1585274957526.jpg',
+                    '/public/admin/upload/goodsContentPhoto/20200327/1585274958267.jpg',
+                    '/public/admin/upload/goodsContentPhoto/20200327/1585274958277.jpg',
+                    '/public/admin/upload/goodsContentPhoto/20200327/1585274958248.jpg'
                 ],
-                add_time: 1585206393981
+                add_time: 1585274961955
+            }
+
+            {
+                title: '',
+                sub_title: '',
+                goods_version: '',
+                goods_sn: '',
+                goods_number: '',
+                cate_id: '5bbf058f9079450a903cb77b',
+                shop_price: '',
+                market_price: '',
+                sort: '0',
+                goods_content: '',
+                relation_goods: '',
+                goods_gift: '',
+                goods_fitting: '',
+                goods_attr: '',
+                goods_keywords: '',
+                goods_desc: '',
+                goods_type_id: '0',
+                status: 0,
+                add_time: 1585278669306
             }
         */
 

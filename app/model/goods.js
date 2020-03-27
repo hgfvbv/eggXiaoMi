@@ -3,77 +3,87 @@ module.exports = app => {
         Schema = mongoose.Schema;
 
     const GoodsSchema = new Schema({
-        title: { type: String },
-        sub_title: { type: String },
-        goods_sn: { type: String },
+        title: { type: String, default: '' },
+        sub_title: { type: String, default: '' },
+        goods_sn: { type: String, default: '' },
         cate_id: { type: Schema.Types.ObjectId },
         click_count: {
             type: Number,
-            default: 100
+            default: 0
         },
         goods_number: {
             type: Number,
-            default: 1000
+            default: 0
         },
         shop_price: {
-            type: Number
-        },
-        market_price: {
-            type: Number
-        },
-        relation_goods: {
-            type: String
-        },
-        goods_attrs: {
-            type: String
-        },
-        goods_version: {        /*版本*/
-            type: String
-        },
-        goods_img: {
-            type: String
-        },
-        goods_gift: {
-            type: String
-        },
-        goods_fitting: {
-            type: String
-        },
-        goods_color: {
-            type: String
-        },
-        goods_keywords: {
-            type: String
-        },
-        goods_desc: {
-            type: String
-        },
-        goods_content: {
-            type: String
-        },
-        sort: {
             type: Number,
             default: 0
         },
-        is_delete: {
-            type: Number
+        market_price: {
+            type: Number,
+            default: 0
+        },
+        relation_goods: {
+            type: String,
+            default: ''
+        },
+        goods_attrs: {
+            type: String,
+            default: ''
+        },
+        goods_version: {        /*版本*/
+            type: String,
+            default: ''
+        },
+        goods_img: {
+            type: String,
+            default: ''
+        },
+        goods_gift: {
+            type: String,
+            default: ''
+        },
+        goods_fitting: {
+            type: String,
+            default: ''
+        },
+        goods_color: {
+            type: String,
+            default: ''
+        },
+        goods_keywords: {
+            type: String,
+            default: ''
+        },
+        goods_desc: {
+            type: String,
+            default: ''
+        },
+        goods_content: {
+            type: String,
+            default: ''
+        },
+        sort: { type: Number, default: 0 },
+        is_del: {
+            type: Number,
+            default: 0
         },
         is_hot: {
-            type: Number
+            type: Number,
+            default: 0
         },
         is_best: {
-            type: Number
+            type: Number,
+            default: 0
         },
         is_new: {
-            type: Number
+            type: Number,
+            default: 0
         },
         goods_type_id: {
-            type: { type: Schema.Types.ObjectId }
+            type: Schema.Types.Mixed    //混合类型 
         },
-        status: {
-            type: Number,
-            default: 1
-        },
+        status: { type: Number, default: 1 },
         add_time: {
             type: Number
         }
