@@ -32,6 +32,9 @@ module.exports = appInfo => {
 
   config.uploadDir = 'app/public/admin/upload';
 
+  //增加商品时用于删除缩略图的大小配置
+  config.jimpImgSizes=[{ width: 64, height: 64 }, { width: 100, height: 100 }, { width: 200, height: 200 }, { width: 400, height: 400 }];
+
   config.loginFilter = [
     '/admin/login',
     '/admin/HV',
@@ -74,7 +77,7 @@ module.exports = appInfo => {
     csrf: {
       // 判断是否需要 ignore 的方法，请求上下文 context 作为第一个参数
       ignore: ctx => {
-        if (ctx.request.url == '/admin/goods/goodsUploadImage' || ctx.request.url == '/admin/goods/goodsUploadPhoto' || ctx.request.url == '/admin/goods/goodsUploadVideo') {
+        if (ctx.request.url == '/admin/goods/goodsUploadImage' || ctx.request.url == '/admin/goods/goodsUploadPhoto' || ctx.request.url == '/admin/goods/goodsUploadVideo' || ctx.request.url == '/admin/goods/goodsUploadImg') {
           return true;
         }
         return false;

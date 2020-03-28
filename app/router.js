@@ -74,7 +74,8 @@ module.exports = app => {
   router.post('/admin/goods/goodsUploadImage', controller.admin.goods.goodsUploadImage);
   router.post('/admin/goods/goodsUploadVideo', controller.admin.goods.goodsUploadVideo);
   router.get('/admin/goods/goodsTypeAttribute', controller.admin.goods.goodsTypeAttribute);
-  router.post('/admin/goods/goodsUploadPhoto', controller.admin.goods.goodsUploadPhoto);
+  router.post('/admin/goods/goodsUploadPhoto', controller.admin.goods.goodsUploadPhoto);  
+  router.post('/admin/goods/goodsUploadImg', controller.admin.goods.goodsUploadImg);
 
   router.get('/admin/goodsColor', controller.admin.goodsColor.index);
   router.get('/admin/goodsColor/add', controller.admin.goodsColor.add);

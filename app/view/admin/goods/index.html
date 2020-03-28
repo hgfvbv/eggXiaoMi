@@ -5,7 +5,7 @@
         搜索商品
     </div>
     <div class="panel-body">
-        <form action="/admin/goodsColor" method="GET" role="form" class="form-inline" autocomplete="off">
+        <form action="/admin/goods" method="GET" role="form" class="form-inline" autocomplete="off">
             <div class="form-group">
                 <label for="name">商品名称</label>
                 <input type="text" class="form-control" name="title" id="title" placeholder="请输入商品名称"
@@ -31,21 +31,75 @@
                 <th class="text-center">货号</th>
                 <th class="text-center">价格</th>
                 <th class="text-center">点击量</th>
-                <th class="text-center">上架</th>
                 <th class="text-center">精品</th>
                 <th class="text-center">新品</th>
                 <th class="text-center">热销</th>
                 <th class="text-center">库存</th>
                 <th class="text-center">增加时间</th>
                 <th class="text-center">推荐排序</th>
-                <th class="text-center">状态</th>
+                <th class="text-center">上架</th>
 
                 <th class="text-center">操作</th>
             </tr>
         </thead>
         <tbody style="background-color:#FFFFFF">
-
-           
+            <%for(let i=0;i<list.length;i++){%>
+            <tr class="text-center">
+                <td><%=list[i].title%></td>
+                <td><%=list[i].goods_sn%></td>
+                <td><%=list[i].shop_price%></td>
+                <td><%=list[i].click_count%></td>
+                <td>
+                    <% if(list[i].is_best==1) { %>
+                    <img src="/public/admin/images/yes.gif"
+                        onclick="app.changeStatus(this,'Goods','is_best','<%=list[i]._id%>','<%=csrf%>')" alt="生效"></a>
+                    <%} else { %>
+                    <img src="/public/admin/images/no.gif"
+                        onclick="app.changeStatus(this,'Goods','is_best','<%=list[i]._id%>','<%=csrf%>')" alt="未生效"></a>
+                    <% } %>
+                </td>
+                <td>
+                    <% if(list[i].is_new==1) { %>
+                    <img src="/public/admin/images/yes.gif"
+                        onclick="app.changeStatus(this,'Goods','is_new','<%=list[i]._id%>','<%=csrf%>')" alt="生效"></a>
+                    <%} else { %>
+                    <img src="/public/admin/images/no.gif"
+                        onclick="app.changeStatus(this,'Goods','is_new','<%=list[i]._id%>','<%=csrf%>')" alt="未生效"></a>
+                    <% } %>
+                </td>
+                <td>
+                    <% if(list[i].is_hot==1) { %>
+                    <img src="/public/admin/images/yes.gif"
+                        onclick="app.changeStatus(this,'Goods','is_hot','<%=list[i]._id%>','<%=csrf%>')" alt="生效"></a>
+                    <%} else { %>
+                    <img src="/public/admin/images/no.gif"
+                        onclick="app.changeStatus(this,'Goods','is_hot','<%=list[i]._id%>','<%=csrf%>')" alt="未生效"></a>
+                    <% } %>
+                </td>
+                <td>
+                    <span onclick="app.changeNum(this,'Goods','goods_number','<%=list[i]._id%>','<%=csrf%>')">
+                        <%=list[i].goods_number%>
+                    </span>
+                </td>
+                <td><%=helper.formartTime(list[i].add_time)%></td>
+                <td>
+                    <span onclick="app.changeNum(this,'Goods','sort','<%=list[i]._id%>','<%=csrf%>')">
+                        <%=list[i].sort%>
+                    </span>
+                </td>
+                <td>
+                    <% if(list[i].status==1) { %>
+                    <img src="/public/admin/images/yes.gif"
+                        onclick="app.changeStatus(this,'Goods','status','<%=list[i]._id%>','<%=csrf%>')" alt="生效"></a>
+                    <%} else { %>
+                    <img src="/public/admin/images/no.gif"
+                        onclick="app.changeStatus(this,'Goods','status','<%=list[i]._id%>','<%=csrf%>')" alt="未生效"></a>
+                    <% } %>
+                </td>
+                <td><a href="/admin/goods/edit?id=<%=list[i]._id%>">修改</a>
+                    　<a class="delete" href="/admin/delete?model=Goods&id=<%=list[i]._id%>">删除</a></td>
+            </tr>
+            <%}%>
         </tbody>
     </table>
 </div>
