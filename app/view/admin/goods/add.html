@@ -256,9 +256,9 @@
                     var str = "";
                     for (var i = 0; i < data.length; i++) {
                         if (data[i].attr_type == 1) {
-                            str += '<li class="line"><span>' + data[i].title + ': 　</span><input type="hidden" name="attr_id_list[]" value="' + data[i]._id + '" />  <input type="text" name="attr_value_list[]" placeholder="请输入' + data[i].title + '" /></li>'
+                            str += '<li class="line"><span>' + data[i].title + ': 　</span><input type="hidden" name="attr_id_list[]" value="' + data[i]._id + '" />  <input type="text" name="attr_value_list[]" placeholder="请输入' + data[i].title + '" /></li>';
                         } else if (data[i].attr_type == 2) {
-                            str += '<li class="line"><span>' + data[i].title + ': 　</span> <input type="hidden" name="attr_id_list[]" value="' + data[i]._id + '">  <textarea cols="50" rows="3" name="attr_value_list[]" placeholder="请输入' + data[i].title + '"></textarea></li>'
+                            str += '<li class="line"><span>' + data[i].title + ': 　</span> <input type="hidden" name="attr_id_list[]" value="' + data[i]._id + '">  <textarea cols="50" rows="3" name="attr_value_list[]" placeholder="请输入' + data[i].title + '"></textarea></li>';
                         } else {
                             var arr = data[i].attr_value.split('\n');
                             str += '<li class="line"><span>' + data[i].title + ': 　</span><input type="hidden" name="attr_id_list[]" value="' + data[i]._id + '">';

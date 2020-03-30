@@ -99,6 +99,7 @@
         <div class="table-responsive input-form">
             <form action="/admin/goods/doEdit" class="goods_content" method="post" id='myform' autocomplete="off">
                 <input type="hidden" name="_csrf" value="<%=csrf%>">
+                <input type="hidden" name="id" value="<%=result._id%>">
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active"><a href="#general" role="tab" data-toggle="tab">通用信息</a></li>
@@ -113,81 +114,108 @@
                     <div role="tabpanel" class="tab-pane active" id="general">
                         <ul class="form_input">
                             <li class="line"> <span> 商品标题:</span> <input type="text" id="title" name="title"
-                                    class="input" placeholder="请输入商品标题" /></li>
+                                    class="input" placeholder="请输入商品标题" value="<%=result.title%>" /></li>
                             <li class="line"> <span> 附属标题:</span> <input type="text" id="sub_title" name="sub_title"
-                                    class="input" placeholder="请输入附属标题" />
+                                    class="input" placeholder="请输入附属标题" value="<%=result.sub_title%>" />
                             </li>
                             <li class="line"> <span>商品版本:</span> <input type="text" id="goods_version"
-                                    name="goods_version" class="input" placeholder="请输入商品版本" /></li>
+                                    name="goods_version" class="input" placeholder="请输入商品版本"
+                                    value="<%=result.goods_version%>" /></li>
                             <li class="line"> <span> SN编号:</span> <input type="text" id="goods_sn" name="goods_sn"
-                                    placeholder="请输入SN编号" /></li>
+                                    placeholder="请输入SN编号" value="<%=result.goods_sn%>" /></li>
                             <li class="line"> <span> 库存:</span> <input type="number" id="goods_number"
-                                    name="goods_number" placeholder="请输入库存" /></li>
+                                    name="goods_number" placeholder="请输入库存" value="<%=result.goods_number%>" /></li>
                             </li>
                             <li class="line"> <span>所属分类:</span>
                                 <select name="cate_id" id="cate_id">
                                     <%for(let i=0;i<goodsCate.length;i++){%>
+                                    <%if(result.cate_id.toString()==goodsCate[i]._id.toString()){%>
+                                    <option value="<%=goodsCate[i]._id%>" selected><%=goodsCate[i].title%></option>
+                                    <%}else{%>
                                     <option value="<%=goodsCate[i]._id%>"><%=goodsCate[i].title%></option>
-                                    <%for(let j=0;j<goodsCate[i].child.length;j++){%>
+                                    <%}%>
+                                        <%for(let j=0;j<goodsCate[i].child.length;j++){%>
+                                    <%if(result.cate_id.toString()==goodsCate[i].child[j]._id.toString()){%>
+                                    <option value="<%=goodsCate[i].child[j]._id%>" selected>
+                                        ————<%=goodsCate[i].child[j].title%>
+                                    </option>
+                                    <%}else{%>
                                     <option value="<%=goodsCate[i].child[j]._id%>">————<%=goodsCate[i].child[j].title%>
                                     </option>
                                     <%}%>
+                                        <%}%>
                                     <%}%>
                                 </select>
                             </li>
                             <li class="line"> <span>商品价格:</span> <input type="text" id="shop_price" name="shop_price"
-                                    placeholder="请输入商品价格" /></li>
+                                    placeholder="请输入商品价格" value="<%=result.shop_price%>" /></li>
                             <li class="line"> <span>商品原价:</span> <input type="text" id="market_price"
-                                    name="market_price" placeholder="请输入商品原价" /></li>
-                            <li class="line"> <span>商品状态:</span>　<input type="checkbox" id="status" name="status">
+                                    name="market_price" placeholder="请输入商品原价" value="<%=result.market_price%>" /></li>
+                            <li class="line"> <span>商品状态:</span>　<input type="checkbox" id="status" name="status"
+                                    <%=result.status==1?"checked":""%>>
                                 <label for="status">选中为生效</label>
                             </li>
                             <li class="line"> <span> 排序:</span> <input type="number" id="sort" name="sort"
-                                    placeholder="请输入排序" value="0" /></li>
+                                    placeholder="请输入排序" value="<%=result.sort%>" /></li>
                             <li class="line"> <span>加入推荐:</span>　
-                                <input type="checkbox" name="is_best" id="is_best" /><label for="is_best">精品</label>
-                                <input type="checkbox" name="is_hot" id="is_hot" /> <label for="is_hot">热销</label>
-                                <input type="checkbox" name="is_new" id="is_new" /> <label for="is_new">新品</label>
+                                <input type="checkbox" name="is_best" id="is_best"
+                                    <%=result.is_best==1?"checked":""%> /><label for="is_best">精品</label>
+                                <input type="checkbox" name="is_hot" id="is_hot" <%=result.is_hot==1?"checked":""%> />
+                                <label for="is_hot">热销</label>
+                                <input type="checkbox" name="is_new" id="is_new" <%=result.is_new==1?"checked":""%> />
+                                <label for="is_new">新品</label>
                             </li>
                             <li class="line">
                                 <span> 商品图片:</span>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <img class="pic" src="<%=result.goods_img%>" alt="商品图片">
                                 <div id="goodsImgLib" class="photoList"></div>
 
                                 <div id="goodsImgList">
-                                    <input type="hidden" id="goods_img" name="goods_img" />
+                                    <input type="hidden" id="goods_img" name="goods_img"
+                                        value="<%=result.goods_img%>" />
                                 </div>
                             </li>
                         </ul>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="detail">
-                        <textarea name="goods_content" id="goods_content"></textarea>
+                        <textarea name="goods_content" id="goods_content"><%=result.goods_content%></textarea>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="mix">
                         <ul class="form_input">
                             <li class="line"> <span>商品颜色:</span>
                                 <%for(var i=0;i<goodsColor.length;i++){%>
                                 <input type="checkbox" name="goods_color[]" value="<%=goodsColor[i]._id%>"
-                                    id="color_<%=goodsColor[i]._id%>" /> <label
+                                    id="color_<%=goodsColor[i]._id%>"
+                                    <%=result.goods_color.indexOf(goodsColor[i]._id)!=-1?"checked":""%> /> <label
                                     for="color_<%=goodsColor[i]._id%>"><%=goodsColor[i].color_name%></label>
                                 <%}%>
                              </li>
                              <li class="line"> <span>关联商品:</span>
-                                    <input type="text" id="relation_goods" name="relation_goods" class="input" placeholder="请输入关联商品"/>  <i>可为空 填写关联商品的id 多个以逗号隔开 格式：23,24,39</i>
-                            </li>      
+                                    <input type="text" id="relation_goods" name="relation_goods" class="input" placeholder="请输入关联商品" value="<%=result.relation_goods%>"/>
+                                <i>可为空 填写关联商品的id 多个以逗号隔开 格式：23,24,39</i>
+                            </li>
                             <li class="line"> <span>关联赠品:</span>
-                                    <input type="text" id="goods_gift" name="goods_gift" class="input" placeholder="请输入关联赠品"/>  <i>可为空 格式：23-2,39-5 说明：例如23-2 中的23表示商品id,2表示商品数量</i>
-                            </li>    
+                                <input type="text" id="goods_gift" name="goods_gift" class="input" placeholder="请输入关联赠品"
+                                    value="<%=result.goods_gift%>" /> <i>可为空 格式：23-2,39-5 说明：例如23-2
+                                    中的23表示商品id,2表示商品数量</i>
+                            </li>
                             <li class="line"> <span>关联配件:</span>
-                                <input type="text" id="goods_fitting" name="goods_fitting" class="input" placeholder="请输入关联配件"/>  <i>可为空 格式：23-2,39-5 说明：例如23-2 中的23表示商品id,2表示商品数量</i>
-                            </li>    
+                                <input type="text" id="goods_fitting" name="goods_fitting" class="input"
+                                    placeholder="请输入关联配件" value="<%=result.goods_fitting%>" /> <i>可为空 格式：23-2,39-5
+                                    说明：例如23-2 中的23表示商品id,2表示商品数量</i>
+                            </li>
                             <li class="line"> <span>更多属性:</span>
-                                    <input type="text" id="goods_attr" name="goods_attr" class="input" placeholder="请输入更多属性"/>  <i> 可为空 格式:  颜色:红色,白色,黄色 | 尺寸:41,42,43</i>
+                                <input type="text" id="goods_attr" name="goods_attr" class="input" placeholder="请输入更多属性"
+                                    value="<%=result.goods_attrs%>" /> <i> 可为空 格式: 颜色:红色,白色,黄色 | 尺寸:41,42,43</i>
                             </li>
                             <li class="line"> <span>Seo关键词:</span>
-                                <input type="text" id="goods_keywords" name="goods_keywords" class="input" placeholder="请输入Seo关键词"/>  <i>可为空</i>
+                                <input type="text" id="goods_keywords" name="goods_keywords" class="input"
+                                    placeholder="请输入Seo关键词" value="<%=result.goods_keywords%>" /> <i>可为空</i>
                             </li>
                             <li class="line"> <span>Seo描述:</span>
-                                <textarea name="goods_desc" id="goods_desc" cols="100" rows="4" placeholder="请输入Seo描述"></textarea>  <i>可为空</i>
+                                <textarea name="goods_desc" id="goods_desc" cols="100" rows="4"
+                                    placeholder="请输入Seo描述"><%=result.goods_desc%></textarea> <i>可为空</i>
                             </li>
                         </ul>
                     </div>
@@ -195,20 +223,51 @@
                         <ul class="form_input">
                             <li class="line"> <span>商品类型:　</span>
                                 <select name="goods_type_id" id="goods_type_id">
-                                    <option value="0">--请选择商品类型--</option>
+                                    <option value="0" <%=result.goods_type_id.toString()=='0'?'selected':''%>>
+                                        --请选择商品类型--</option>
                                     <%for(var i=0;i<goodsType.length;i++){%>
-                                <option value="<%=goodsType[i]._id%>"><%=goodsType[i].title%></option>
-                                <%}%>
+                                    <option value="<%=goodsType[i]._id%>"
+                                        <%=result.goods_type_id.toString()==goodsType[i]._id.toString()?'selected':''%>>
+                                        <%=goodsType[i].title%></option>
+                                    <%}%>
                                 </select>
                                 <i>可不选 建议选择</i> 
                              </li>
                         </ul>
 
                         <ul class="form_input" id="goods_type_attribute">
+                            <%-goodsAttr%>
                         </ul>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="photo">
                         <ul>
+                            <li class="line">
+                                <ul id="goods_image_list" class="goods_image_list clear">
+                                    <%for(var i=0;i<goodsImage.length;i++){%>
+                                    <li>
+                                        <img class="pic" src="<%=goodsImage[i].img_url%>" />
+
+                                        <div class="color_list" align="center">
+                                            <select name="color_id" id="color_id">
+                                                <option value="0">关联颜色</option>
+
+                                                <option value="1">白色</option>
+
+                                                <option value="2">黑色</option>
+
+                                                <option value="3">黄色</option>
+                                            </select>
+                                        </div>
+                                        <div align="center">
+                                            <input type="checkbox" name="isDelGoodsImage[]"
+                                                id="isDelPhoto_<%=goodsImage[i]._id%>"
+                                                value="<%=goodsImage[i]._id%>"><label
+                                                for="isDelPhoto_<%=goodsImage[i]._id%>">选中删除</label>
+                                        </div>
+                                    </li>
+                                    <%}%>
+                                </ul>
+                            </li>
                             <li class="line">
                                 <div id="photoLib" class="photoLib"></div>
         
@@ -232,81 +291,90 @@
     </div>
 </div>
 
-<script>
-    //富文本编辑器
-    $(function () {
-        new FroalaEditor('textarea#goods_content', {
-            height: 300,    //给编辑器设置默认的高度
-            language: 'zh_cn',
-            imageUploadURL: '/admin/goods/goodsUploadImage',
-            videoUploadURL: '/admin/goods/goodsUploadVideo',
-            //根据不同的分辨率加载不同的配置
-            toolbarButtons: ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'embedly', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
-            toolbarButtonsMD: ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'embedly', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
-            toolbarButtonsSM: ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'embedly', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo']
-        });
+<div style="display:none;" id='goodsAttrStr'>
+    <%-goodsAttr%>
+                    </div>
 
-        //关联商品类型
-        $('#goods_type_id').change(function () {
-            var cate_id = $(this).val();
+                    <script>
+                        //富文本编辑器
+                        $(function () {
+                            new FroalaEditor('textarea#goods_content', {
+                                height: 300,    //给编辑器设置默认的高度
+                                language: 'zh_cn',
+                                imageUploadURL: '/admin/goods/goodsUploadImage',
+                                videoUploadURL: '/admin/goods/goodsUploadVideo',
+                                //根据不同的分辨率加载不同的配置
+                                toolbarButtons: ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'embedly', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
+                                toolbarButtonsMD: ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'embedly', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
+                                toolbarButtonsSM: ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'embedly', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo']
+                            });
 
-            if (cate_id != '0') {
-                $.get('/admin/goods/goodsTypeAttribute?cate_id=' + cate_id, function (response) {
-                    var data = response.result;
-                    var str = "";
-                    for (var i = 0; i < data.length; i++) {
-                        if (data[i].attr_type == 1) {
-                            str += '<li class="line"><span>' + data[i].title + ': 　</span><input type="hidden" name="attr_id_list[]" value="' + data[i]._id + '" />  <input type="text" name="attr_value_list[]" placeholder="请输入' + data[i].title + '" /></li>'
-                        } else if (data[i].attr_type == 2) {
-                            str += '<li class="line"><span>' + data[i].title + ': 　</span> <input type="hidden" name="attr_id_list[]" value="' + data[i]._id + '">  <textarea cols="50" rows="3" name="attr_value_list[]" placeholder="请输入' + data[i].title + '"></textarea></li>'
-                        } else {
-                            var arr = data[i].attr_value.split('\n');
-                            str += '<li class="line"><span>' + data[i].title + ': 　</span><input type="hidden" name="attr_id_list[]" value="' + data[i]._id + '">';
-                            str += '<select name="attr_value_list[]">';
-                            for (var j = 0; j < arr.length; j++) {
-                                str += '<option value="' + arr[j] + '">' + arr[j] + '</option>';
-                            }
-                            str += '</select>';
-                            str += '</li>';
-                        }
-                    }
-                    $('#goods_type_attribute').html(str);
-                });
-            } else {
-                $('#goods_type_attribute').html('');
-            }
-        });
+                            //关联商品类型
+                            $('#goods_type_id').change(function () {
+                                var cate_id = $(this).val();
 
-        //上传商品图片
-        $('#goodsImgLib').diyUpload({
-            url: '/admin/goods/goodsUploadImg',
-            fileSingleSizeLimit: 5 * 1024 * 1024, // 5 M  
-            fileNumLimit: 1,
-            success: function (response) {
-                $('#goods_img').val(response.link);
-            },
-            error: function (err) {
-                console.info(err);
-            }
-        });
+                                if (cate_id != '0') {
 
-        //批量上传图片
-        $('#photoLib').diyUpload({
-            url: '/admin/goods/goodsUploadPhoto',
-            fileSingleSizeLimit: 5 * 1024 * 1024, // 5 M 
-            success: function (response) {
-                // console.info( data );
-                var photoStr = '<input type="hidden" name="goods_image_list[]" value=' + response.link + ' />';
+                                    if (cate_id == '<%=result.goods_type_id.toString()%>') {
+                                        $('#goods_type_attribute').html($('#goodsAttrStr').html());
+                                    } else {
+                                        $.get('/admin/goods/goodsTypeAttribute?cate_id=' + cate_id, function (response) {
+                                            var data = response.result;
+                                            var str = "";
+                                            for (var i = 0; i < data.length; i++) {
+                                                if (data[i].attr_type == 1) {
+                                                    str += '<li class="line"><span>' + data[i].title + ': 　</span><input type="hidden" name="attr_id_list[]" value="' + data[i]._id + '" />  <input type="text" name="attr_value_list[]" placeholder="请输入' + data[i].title + '" /></li>';
+                                                } else if (data[i].attr_type == 2) {
+                                                    str += '<li class="line"><span>' + data[i].title + ': 　</span> <input type="hidden" name="attr_id_list[]" value="' + data[i]._id + '">  <textarea cols="50" rows="3" name="attr_value_list[]" placeholder="请输入' + data[i].title + '"></textarea></li>';
+                                                } else {
+                                                    var arr = data[i].attr_value.split('\n');
+                                                    str += '<li class="line"><span>' + data[i].title + ': 　</span><input type="hidden" name="attr_id_list[]" value="' + data[i]._id + '">';
+                                                    str += '<select name="attr_value_list[]">';
+                                                    for (var j = 0; j < arr.length; j++) {
+                                                        str += '<option value="' + arr[j] + '">' + arr[j] + '</option>';
+                                                    }
+                                                    str += '</select>';
+                                                    str += '</li>';
+                                                }
+                                            }
+                                            $('#goods_type_attribute').html(str);
+                                        });
+                                    }
+                                } else {
+                                    $('#goods_type_attribute').html('');
+                                }
+                            });
 
-                $('#photoList').append(photoStr);
-            },
-            error: function (err) {
-                console.info(err);
-            }
-        });
-    });
-</script>
+                            //上传商品图片
+                            $('#goodsImgLib').diyUpload({
+                                url: '/admin/goods/goodsUploadImg',
+                                fileSingleSizeLimit: 5 * 1024 * 1024, // 5 M  
+                                fileNumLimit: 1,
+                                success: function (response) {
+                                    $('#goods_img').val(response.link);
+                                },
+                                error: function (err) {
+                                    console.info(err);
+                                }
+                            });
 
-</body>
+                            //批量上传图片
+                            $('#photoLib').diyUpload({
+                                url: '/admin/goods/goodsUploadPhoto',
+                                fileSingleSizeLimit: 5 * 1024 * 1024, // 5 M 
+                                success: function (response) {
+                                    // console.info( data );
+                                    var photoStr = '<input type="hidden" name="goods_image_list[]" value=' + response.link + ' />';
 
-</html>
+                                    $('#photoList').append(photoStr);
+                                },
+                                error: function (err) {
+                                    console.info(err);
+                                }
+                            });
+                        });
+                    </script>
+
+                    </body>
+
+                    </html>
