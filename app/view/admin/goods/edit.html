@@ -245,36 +245,34 @@
                                 <ul id="goods_image_list" class="goods_image_list clear">
                                     <%for(var i=0;i<goodsImage.length;i++){%>
                                     <li>
-                                        <img class="pic" src="<%=goodsImage[i].img_url%>" />
+                                        <img class="pic"
+                                            src="<%=goodsImage[i].img_url%>_200x200<%=helper.getExtName(goodsImage[i].img_url?goodsImage[i].img_url:'')%>" />
 
                                         <div class="color_list" align="center">
-                                            <select name="color_id" id="color_id">
-                                                <option value="0">关联颜色</option>
-
-                                                <option value="1">白色</option>
-
-                                                <option value="2">黑色</option>
-
-                                                <option value="3">黄色</option>
+                                            <select class="color_id" goods_image_id="<%=goodsImage[i]._id%>">
+                                                <option value="0"
+                                                    <%=goodsImage[i].color_id.toString()=='0'?'selected':''%>>关联颜色
+                                                </option>
+                                                <%for(var j=0;j<goodsColorRelation.length;j++){%>
+                                                <option value="<%=goodsColorRelation[j]._id%>"
+                                                    <%=goodsImage[i].color_id.toString()==goodsColorRelation[j]._id.toString()?'selected':''%>>
+                                                    <%=goodsColorRelation[j].color_name%></option>
+                                                <%}%>
                                             </select>
                                         </div>
-                                        <div align="center">
-                                            <input type="checkbox" name="isDelGoodsImage[]"
-                                                id="isDelPhoto_<%=goodsImage[i]._id%>"
-                                                value="<%=goodsImage[i]._id%>"><label
-                                                for="isDelPhoto_<%=goodsImage[i]._id%>">选中删除</label>
+                                        <div class="goods_image_delete" align="center" goods_image_id="<%=goodsImage[i]._id%>">
                                         </div>
                                     </li>
                                     <%}%>
                                 </ul>
                             </li>
-                            <li class="line">
-                                <div id="photoLib" class="photoLib"></div>
-        
-                                <div id="photoList">
-                                </div>
-                            </li>
-                        </ul>
+                            <li class=" line">
+                                        <div id="photoLib" class="photoLib"></div>
+
+                                        <div id="photoList">
+                                        </div>
+                                    </li>
+                                </ul>
                     </div>
 
                     <ul>
@@ -370,6 +368,34 @@
                                 },
                                 error: function (err) {
                                     console.info(err);
+                                }
+                            });
+
+                            //商品相册关联颜色
+                            $('.color_id').change(function () {
+                                var colorId = $(this).val();
+                                var id = $(this).attr('goods_image_id');
+
+                                $.post('/admin/goods/changeGoodsImageColor', { _csrf: '<%=csrf%>', id, colorId }, function (data) {
+                                    if (!data.success) {
+                                        alert(data.message);
+                                    }
+                                });
+                            });
+
+                            //删除商品相册图片
+                            $('.goods_image_delete').click(function () {
+                                if (confirm('您确定要删除吗？')) {
+                                    var _that = this;
+                                    var id = $(this).attr('goods_image_id');
+
+                                    $.post('/admin/goods/goodsImageRemove', { _csrf: '<%=csrf%>', id }, function (data) {
+                                        if (!data.success) {
+                                            alert(data.message);
+                                        } else {
+                                            $(_that).parent().remove();
+                                        }
+                                    });
                                 }
                             });
                         });

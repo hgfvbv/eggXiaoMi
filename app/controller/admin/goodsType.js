@@ -109,6 +109,47 @@ class GoodsTypeController extends BaseController {
             await this.error(`/admin/goodsType/edit?id=${id}`, '编辑商品类型失败！');
         }
     }
+
+    async changeStatus() {
+        const { ctx, config } = this;
+        let params = ctx.request.body,
+            id = params.id ? params.id.trim() : '',
+            where = {};
+
+        if (id == '') {
+            ctx.body = { 'message': '对不起！服务器繁忙！要不稍后再试试？', 'success': false };
+            return;
+        }
+
+        where = {
+            _id: id
+        };
+console.log(id)
+        ctx.body = { 'message': '更新成功', 'success': true };
+        // let result = await ctx.model.Role.findOne(where);
+        // if (result) {
+        //     let uParams = result.status == 0 ? { status: 1 } : { status: 0 };
+
+        //     let role = await ctx.model.Role.updateOne(where, uParams);
+
+        //     if (role.nModified > 0) {
+        //         if (uParams.status == 0) {
+        //             let uResult = await ctx.model.Admin.updateMany({ role_id: id }, { role_id: config.rwait, status: 0 });
+        //             if (uResult.ok > 0) {
+        //                 ctx.body = { 'message': '更新成功', 'success': true };
+        //             } else {
+        //                 ctx.body = { 'message': '更新失败', 'success': false };
+        //             }
+        //         } else {
+        //             ctx.body = { 'message': '更新成功', 'success': true };
+        //         }
+        //     } else {
+        //         ctx.body = { 'message': '更新失败', 'success': false };
+        //     }
+        // } else {
+        //     ctx.body = { 'message': '更新失败，参数错误', 'success': false };
+        // }
+    }
 }
 
 module.exports = GoodsTypeController;

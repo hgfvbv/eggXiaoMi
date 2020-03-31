@@ -4,6 +4,7 @@ const svgCaptcha = require('svg-captcha'),
     md5 = require('md5'),
     Service = require('egg').Service,
     sd = require('silly-datetime'),
+    fs = require('fs'),
     path = require('path'),
     mkdirp = require('mz-modules/mkdirp'),
     _ = require('lodash'),
@@ -86,6 +87,40 @@ class ToolsService extends Service {
                     .write(`${filePath}_${item.width}x${item.height}${path.extname(filePath)}`); // save
             });
         });
+    }
+
+    async deleteFile(url, isJimpImg = false) {
+        const { config } = this;
+
+        let systemDir = config.uploadDir.substr(0, config.uploadDir.indexOf('/') + 1);
+
+        if (isJimpImg) {
+            let jimpImgSizes = config.jimpImgSizes;
+            for (let i = 0; i < jimpImgSizes.length + 1; i++) {
+                let fileName = '';
+                if (i == jimpImgSizes.length) {
+                    fileName = url;
+                } else {
+                    fileName = `${url}_${jimpImgSizes[i].width}x${jimpImgSizes[i].height}${path.extname(url)}`;
+                }
+
+                fs.unlink(`${systemDir}${fileName}`, function (error) {
+                    if (error) {
+                        console.log(error);
+                    } else {
+                        console.log('删除文件成功');
+                    }
+                });
+            }
+        } else {
+            fs.unlink(`${systemDir}${url}`, function (error) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log('删除文件成功');
+                }
+            });
+        }
     }
 }
 

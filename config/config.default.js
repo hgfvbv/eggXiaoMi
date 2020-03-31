@@ -33,7 +33,7 @@ module.exports = appInfo => {
   config.uploadDir = 'app/public/admin/upload';
 
   //增加商品时用于删除缩略图的大小配置
-  config.jimpImgSizes=[{ width: 64, height: 64 }, { width: 100, height: 100 }, { width: 200, height: 200 }, { width: 400, height: 400 }];
+  config.jimpImgSizes = [{ width: 64, height: 64 }, { width: 100, height: 100 }, { width: 200, height: 200 }, { width: 400, height: 400 }];
 
   config.loginFilter = [
     '/admin/login',
@@ -62,6 +62,9 @@ module.exports = appInfo => {
     encrypt: true,
     renew: true //  延长会话有效期       
   }
+
+  //全局分页每页数量 默认为10
+  config.pageSize = 10;
 
   exports.multipart = {
     whitelist: ['.png', '.jfif', '.jpg', '.jpeg', '.gif', '.ico', '.mp4', '.avi']

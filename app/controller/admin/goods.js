@@ -8,10 +8,12 @@ const BaseController = require('./base'),
 
 class GoodsController extends BaseController {
     async index() {
-        const { ctx } = this;
+        const { ctx, config } = this;
 
         let params = ctx.query,
             title = params.title ? params.title.trim() : '',
+            page = params.page ? params.page : 1,
+            pageSize = config.pageSize ? config.pageSize : 10,
             where = {};
 
         if (title && title != '') {
@@ -23,8 +25,10 @@ class GoodsController extends BaseController {
             };
         };
 
-        let list = await ctx.model.Goods.find(where).sort({ sort: 1 });
-        await ctx.render('admin/goods/index', { params, list });
+        let totalCount = await ctx.model.Goods.find(where).count();
+        let pageCount = Math.ceil(totalCount / pageSize);
+        let list = await ctx.model.Goods.find(where).skip((page - 1) * pageSize).limit(pageSize).sort({ sort: 1 });
+        await ctx.render('admin/goods/index', { params, list, page, pageCount });
     }
 
     //商品详情中的上传图片
@@ -172,6 +176,62 @@ class GoodsController extends BaseController {
         ctx.body = { link: files.file };
     }
 
+    async changeGoodsImageColor() {
+        const { ctx, app } = this;
+        let params = ctx.request.body,
+            id = params.id ? params.id.trim() : '',
+            color_id = params.colorId ? params.colorId.trim() : '',
+            where = {},
+            uParams = {};
+
+        if (id == '' || color_id == '') {
+            ctx.body = { 'message': '对不起！服务器繁忙！要不稍后再试试？', 'success': false };
+            return;
+        }
+
+        where = {
+            _id: id
+        };
+
+        uParams = {
+            color_id: color_id == '0' ? '0' : app.mongoose.Types.ObjectId(color_id)
+        };
+
+        let result = await ctx.model.GoodsImage.updateOne(where, uParams);
+        if (result.nModified > 0) {
+            ctx.body = { 'message': '更新成功', 'success': true };
+        } else {
+            ctx.body = { 'message': '更新失败', 'success': false };
+        }
+    }
+
+    async goodsImageRemove() {
+        const { ctx, config } = this;
+        let params = ctx.request.body,
+            jimpImgSizes = config.jimpImgSizes,
+            id = params.id ? params.id.trim() : '',
+            where = {};
+
+        if (id == '') {
+            ctx.body = { 'message': '对不起！服务器繁忙！要不稍后再试试？', 'success': false };
+            return;
+        }
+
+        where = {
+            _id: id
+        };
+
+        let goods_img = (await ctx.model.GoodsImage.findOne(where, { _id: 0, img_url: 1 })).img_url;
+        let result = await ctx.model.GoodsImage.deleteOne(where);
+
+        if (result.deletedCount > 0) {
+            await ctx.service.tools.deleteFile(goods_img, true);
+            ctx.body = { 'message': '更新成功', 'success': true };
+        } else {
+            ctx.body = { 'message': '更新失败', 'success': false };
+        }
+    }
+
     async add() {
         const { ctx } = this;
 
@@ -213,13 +273,12 @@ class GoodsController extends BaseController {
     }
 
     async doAdd() {
-        const { app, ctx, config } = this;
+        const { app, ctx } = this;
         //金钱和数字正则表达式
         let money = /(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/,
             num = /^\d+$/;
 
         let params = ctx.request.body,
-            jimpImgSizes = config.jimpImgSizes,
             title = params.title ? params.title.trim() : '',
             sub_title = params.sub_title ? params.sub_title.trim() : '',
             goods_version = params.goods_version ? params.goods_version.trim() : '',
@@ -233,49 +292,8 @@ class GoodsController extends BaseController {
 
         if (title == '' || sub_title == '' || goods_version == '' || goods_sn == '' || goods_img == '' || shop_price == '' || !money.test(shop_price) || market_price == '' || !money.test(market_price) || sort == '' || !num.test(sort) || goods_number == '' || !num.test(goods_number) || goods_content == '') {
 
-            console.log(params)
-
-            /*
-            {
-                _csrf: 'HeYIYG2A-M2-uIwRBERoL5C3d9nMSJQFCSb8',
-                title: '',
-                sub_title: '',
-                goods_version: '',
-                goods_sn: '',
-                goods_number: '',
-                cate_id: '5bbf058f9079450a903cb77b',
-                shop_price: '',
-                market_price: '',
-                sort: '0',
-                file: [ '', '' ],
-                goods_content: '',
-                relation_goods: '',
-                goods_gift: '',
-                goods_fitting: '',
-                goods_attr: '',
-                goods_keywords: '',
-                goods_desc: '',
-                goods_type_id: '0'
-            }
-            */
-
             if (goods_img != '') {
-                for (let i = 0; i < jimpImgSizes.length + 1; i++) {
-                    let fileName = '';
-                    if (i == jimpImgSizes.length) {
-                        fileName = goods_img;
-                    } else {
-                        fileName = `${goods_img}_${jimpImgSizes[i].width}x${jimpImgSizes[i].height}${path.extname(goods_img)}`;
-                    }
-
-                    fs.unlink(`${config.uploadDir.substr(0, this.config.uploadDir.indexOf('/') + 1)}${fileName}`, function (error) {
-                        if (error) {
-                            console.log(error);
-                            return false;
-                        }
-                        console.log('删除文件成功');
-                    });
-                }
+                await ctx.service.tools.deleteFile(goods_img, true);
             }
 
             await this.error('/admin/goods/add', '对不起！服务器繁忙！要不稍后再试试？');
@@ -335,30 +353,38 @@ class GoodsController extends BaseController {
             });
 
             if (goodsImageArray.length > 0) {
-                await ctx.model.GoodsImage.insertMany(goodsImageArray);
-            }
-
-            let goodsAttrArray = [];
-            if (params.attr_value_list) {
-                for (let i = 0; i < params.attr_id_list.length; i++) {
-                    const item = params.attr_id_list[i];
-
-                    let goodsTypeAttribute = await ctx.model.GoodsTypeAttribute.findOne({ _id: item }, { _id: 0, title: 1, attr_type: 1 });
-                    goodsAttrArray.push(new ctx.model.GoodsAttr({
-                        goods_id: goods._id,
-                        cate_id: goods.cate_id,
-                        attribute_id: item,
-                        attribute_type: goodsTypeAttribute.attr_type,
-                        attribute_title: goodsTypeAttribute.title,
-                        attribute_value: params.attr_value_list[i],
-                        status: 1,
-                        add_time: goods.add_time
-                    }));
+                try {
+                    await ctx.model.GoodsImage.insertMany(goodsImageArray);
+                } catch (err) {
+                    await this.error(`/admin/goods/add`, '增加商品失败！');
+                    return;
                 }
             }
 
+            let goodsAttrArray = [];
+            for (let i = 0; i < params.attr_id_list.length; i++) {
+                const item = params.attr_id_list[i];
+
+                let goodsTypeAttribute = await ctx.model.GoodsTypeAttribute.findOne({ _id: item }, { _id: 0, title: 1, attr_type: 1 });
+                goodsAttrArray.push(new ctx.model.GoodsAttr({
+                    goods_id: goods._id,
+                    cate_id: goods.cate_id,
+                    attribute_id: item,
+                    attribute_type: goodsTypeAttribute.attr_type,
+                    attribute_title: goodsTypeAttribute.title,
+                    attribute_value: params.attr_value_list[i],
+                    status: 1,
+                    add_time: goods.add_time
+                }));
+            }
+
             if (goodsAttrArray.length > 0) {
-                await ctx.model.GoodsAttr.insertMany(goodsAttrArray);
+                try {
+                    await ctx.model.GoodsAttr.insertMany(goodsAttrArray);
+                } catch (err) {
+                    await this.error(`/admin/goods/add`, '增加商品失败！');
+                    return;
+                }
             }
 
             await ctx.redirect('/admin/goods');
@@ -366,83 +392,6 @@ class GoodsController extends BaseController {
             console.log(err)
             await this.error('/admin/goods/add', '增加商品失败！');
         }
-
-        console.log(params)
-        console.log(goods)
-
-        /*
-            {
-                _csrf: 'nl3hxawh-AvX9eheb9CP4ovlqO5yfy0G3Q24',
-                title: '1',
-                sub_title: '2',
-                goods_version: '3',
-                goods_sn: '4',
-                goods_number: '5',
-                cate_id: '5be92dd19567312f28240bed',
-                shop_price: '6',
-                market_price: '7',
-                sort: '8',
-                file: [ '', '' ],
-                goods_img: '/public/admin/upload/goods/20200328/1585388278250.jpg',
-                goods_content: '<p>9</p>',
-                goods_color: [ '5bbb68dcfe498e2346af9e4a', '5bbb68effe498e2346af9e4b' ],
-                relation_goods: '10',
-                goods_gift: '11',
-                goods_fitting: '12',
-                goods_attr: '13',
-                goods_keywords: '14',
-                goods_desc: '15',
-                goods_type_id: '5baf319abee4cc26e47833de',
-                attr_id_list: [
-                    '5baf521a7fea212078c7a299',
-                    '5baf543d742ae71d744dce9d',
-                    '5bbb2882fe9fc817a4411816',
-                    '5bbeafc45e4b481d6cb2732e',
-                    '5bbeb2e9192f161bf806617d',
-                    '5bc0703626253f327017a01f',
-                    '5bc0703d26253f327017a020'
-                ],
-                attr_value_list: [ '16', '17', '是\r\n', '18', '19', '20', '21' ],
-                goods_image_list: [
-                    '/public/admin/upload/goodsContentPhoto/20200328/1585388313319.jpg',
-                    '/public/admin/upload/goodsContentPhoto/20200328/1585388313371.jpg'
-                ],
-                status: 0,
-                is_best: 0,
-                is_hot: 0,
-                is_new: 0
-            }
-
-            {
-                title: '1',
-                sub_title: '2',
-                goods_sn: '4',
-                click_count: 0,
-                goods_number: 5,
-                shop_price: 6,
-                market_price: 7,
-                relation_goods: '10',
-                goods_attrs: '13',
-                goods_version: '3',
-                goods_img: '/public/admin/upload/goods/20200328/1585388278250.jpg',
-                goods_gift: '11',
-                goods_fitting: '12',
-                goods_color: [ '5bbb68dcfe498e2346af9e4a', '5bbb68effe498e2346af9e4b' ],
-                goods_keywords: '14',
-                goods_desc: '15',
-                goods_content: '<p>9</p>',
-                sort: 8,
-                is_del: 0,
-                is_hot: 0,
-                is_best: 0,
-                is_new: 0,
-                status: 0,
-                _id: 5e7f1b1c76a21442dc557190,
-                cate_id: 5be92dd19567312f28240bed,
-                goods_type_id: 5baf319abee4cc26e47833de,
-                add_time: 1585388316283
-            }
-        */
     }
 
     async edit() {
@@ -496,9 +445,9 @@ class GoodsController extends BaseController {
         }
 
         let result = await ctx.model.Goods.findOne(where);
-        let goodsImage = await ctx.model.GoodsImage.find({ goods_id: result._id }, { img_url: 1 });
+        let goodsImage = await ctx.model.GoodsImage.find({ goods_id: result._id }, { img_url: 1, color_id: 1 });
         let goodsAttrStr = '',
-            goodsAttr = await ctx.model.GoodsAttr.find({ goods_id: result._id });
+            goodsAttr = await ctx.model.GoodsAttr.find({ goods_id: result._id, status: 1 });
 
         for (let i = 0; i < goodsAttr.length; i++) {
             if (goodsAttr[i].attribute_type == '1') {
@@ -524,58 +473,36 @@ class GoodsController extends BaseController {
             }
         }
 
-        await this.ctx.render('admin/goods/edit', { result, goodsImage, 'goodsAttr': goodsAttrStr, goodsCate: list, goodsColor, goodsType });
+        let goodsColorIdArray = [];
+        result.goods_color = result.goods_color ? result.goods_color : [];
+        //兼容旧数据
+        result.goods_color = new Array(result.goods_color);
+        for (let i = 0; i < result.goods_color.length; i++) {
+            goodsColorIdArray.push({ _id: result.goods_color[i] });
+        }
+        let goodsColorRelation = await ctx.model.GoodsColor.find({ status: 1, $or: goodsColorIdArray }, { status: 0, color_value: 0 });
+
+        await this.ctx.render('admin/goods/edit', {
+            result,
+            goodsImage,
+            'goodsAttr': goodsAttrStr,
+            goodsCate: list,
+            goodsColorRelation,
+            goodsColor,
+            goodsType
+        });
     }
 
     async doEdit() {
-        const { app, ctx, config } = this;
+        const { app, ctx } = this;
         //金钱和数字正则表达式
         let money = /(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/,
             num = /^\d+$/,
             where = {},
             uParams = {};
 
-        /*
-            {
-                _csrf: '2bmkfZpm-7obkp4wsW1Qi815wqupIR9ORxrQ',
-                id: '5e81a1ed062bc7008c20f34f',
-                title: '1',
-                sub_title: '2',
-                goods_version: '3',
-                goods_sn: '4',
-                goods_number: '5',
-                cate_id: '5be8fdfd9567312f28240be3',
-                shop_price: '6',
-                market_price: '7',
-                sort: '8',
-                file: [ '', '' ],
-                goods_img: '/public/admin/upload/goods/20200330/1585553846839.jpg',
-                goods_content: '<p>9<img src="/public/admin/upload/goodsContentImage/20200330/1585553857377.jpg" style="width: 300px;" class="fr-fic fr-dib"></p>',
-                goods_color: [ '5bc067d92e5f889dc864aa96', '5c00baf55c5f7907da223bd9' ],
-                relation_goods: '10',
-                goods_gift: '11',
-                goods_fitting: '12',
-                goods_attr: '13',
-                goods_keywords: '14',
-                goods_desc: '15',
-                goods_type_id: '5baf319abee4cc26e47833de',
-                attr_id_list: [
-                    '5baf521a7fea212078c7a299',
-                    '5baf543d742ae71d744dce9d',
-                    '5bbb2882fe9fc817a4411816',
-                    '5bbeafc45e4b481d6cb2732e',
-                    '5bbeb2e9192f161bf806617d',
-                    '5bc0703626253f327017a01f',
-                    '5bc0703d26253f327017a020'
-                ],
-                attr_value_list: [ '16', '17', '是\r\n', '18', '19', '20', '21' ],
-                color_id: [ '0', '0' ],
-                isDelGoodsImage: [ '5e81a1ed062bc7008c20f350', '5e81a1ed062bc7008c20f351' ]
-            }
-                */
         let params = ctx.request.body,
             id = params.id ? params.id.trim() : '',
-            jimpImgSizes = config.jimpImgSizes,
             title = params.title ? params.title.trim() : '',
             sub_title = params.sub_title ? params.sub_title.trim() : '',
             goods_version = params.goods_version ? params.goods_version.trim() : '',
@@ -594,25 +521,8 @@ class GoodsController extends BaseController {
 
         if (title == '' || sub_title == '' || goods_version == '' || goods_sn == '' || goods_img == '' || shop_price == '' || !money.test(shop_price) || market_price == '' || !money.test(market_price) || sort == '' || !num.test(sort) || goods_number == '' || !num.test(goods_number) || goods_content == '') {
 
-            console.log(params)
-
             if (goods_img != '') {
-                for (let i = 0; i < jimpImgSizes.length + 1; i++) {
-                    let fileName = '';
-                    if (i == jimpImgSizes.length) {
-                        fileName = goods_img;
-                    } else {
-                        fileName = `${goods_img}_${jimpImgSizes[i].width}x${jimpImgSizes[i].height}${path.extname(goods_img)}`;
-                    }
-
-                    fs.unlink(`${config.uploadDir.substr(0, this.config.uploadDir.indexOf('/') + 1)}${fileName}`, function (error) {
-                        if (error) {
-                            console.log(error);
-                            return false;
-                        }
-                        console.log('删除文件成功');
-                    });
-                }
+                await ctx.service.tools.deleteFile(goods_img, true);
             }
 
             await this.error('/admin/goods/add', '对不起！服务器繁忙！要不稍后再试试？');
@@ -628,8 +538,6 @@ class GoodsController extends BaseController {
         params.attr_id_list = params.attr_id_list ? params.attr_id_list : [];
         params.attr_value_list = params.attr_value_list ? params.attr_value_list : [];
         params.goods_image_list = params.goods_image_list ? params.goods_image_list : [];
-        params.isDelGoodsImage = params.isDelGoodsImage ? params.isDelGoodsImage : [];
-        params.color_id = params.color_id ? params.color_id : [];
 
         where = {
             _id: params.id
@@ -663,37 +571,45 @@ class GoodsController extends BaseController {
             goods_type_id: params.goods_type_id == '0' ? params.goods_type_id : app.mongoose.Types.ObjectId(params.goods_type_id)
         };
 
+        let goodsImg = (await ctx.model.Goods.findOne(where, { _id: 0, goods_img: 1 })).goods_img;
         let goods = await ctx.model.Goods.updateOne(where, uParams);
 
         if (goods.ok > 0) {
-            if (params.isDelGoodsImage.length > 0) {
-                await ctx.model.GoodsImage.deleteMany({ _id: params.isDelGoodsImage });
+            if (uParams.goods_img != goodsImg) {
+                await ctx.service.tools.deleteFile(goodsImg, true);
             }
 
             let goodsImageArray = [];
-            _.forEach(params.goods_image_list, async (item, i) => {
+            for (let i = 0; i < params.goods_image_list.length; i++) {
+                const item = params.goods_image_list[i];
                 goodsImageArray.push(new ctx.model.GoodsImage({
-                    goods_id: params._id,
+                    goods_id: params.id,
                     img_url: item,
                     color_id: '',
                     status: 1,
                     add_time: await ctx.service.tools.getTime()
                 }));
-            });
-
-            if (goodsImageArray.length > 0) {
-                await ctx.model.GoodsImage.insertMany(goodsImageArray);
             }
 
-            await ctx.model.GoodsAttr.deleteMany({ goods_id: params._id });
-            let goodsAttrArray = [];
-            if (params.attr_value_list) {
+            if (goodsImageArray.length > 0) {
+                try {
+                    await ctx.model.GoodsImage.insertMany(goodsImageArray);
+                } catch (err) {
+                    await this.error(`/admin/goods/edit?id=${params.id}`, '编辑商品失败！');
+                    return;
+                }
+            }
+
+            let res = await ctx.model.GoodsAttr.deleteMany({ goods_id: params.id });
+            if (res.ok > 0) {
+
+                let goodsAttrArray = [];
                 for (let i = 0; i < params.attr_id_list.length; i++) {
                     const item = params.attr_id_list[i];
 
                     let goodsTypeAttribute = await ctx.model.GoodsTypeAttribute.findOne({ _id: item }, { _id: 0, title: 1, attr_type: 1 });
                     goodsAttrArray.push(new ctx.model.GoodsAttr({
-                        goods_id: params._id,
+                        goods_id: params.id,
                         cate_id: params.cate_id,
                         attribute_id: item,
                         attribute_type: goodsTypeAttribute.attr_type,
@@ -703,66 +619,63 @@ class GoodsController extends BaseController {
                         add_time: await ctx.service.tools.getTime()
                     }));
                 }
-            }
 
-            if (goodsAttrArray.length > 0) {
-                await ctx.model.GoodsAttr.insertMany(goodsAttrArray);
+                if (goodsAttrArray.length > 0) {
+                    try {
+                        await ctx.model.GoodsAttr.insertMany(goodsAttrArray);
+                    } catch (err) {
+                        await this.error(`/admin/goods/edit?id=${params.id}`, '编辑商品失败！');
+                        return;
+                    }
+                }
+            } else {
+                await this.error(`/admin/goods/edit?id=${params.id}`, '编辑商品失败！');
+                return;
             }
 
             await ctx.redirect('/admin/goods');
         } else {
             await this.error(`/admin/goods/edit?id=${params.id}`, '编辑商品失败！');
         }
+    }
 
-        // try {
-        //     goods = await goods.save();
+    async delete() {
+        const { ctx } = this;
+        let params = ctx.query,
+            id = params.id ? params.id.trim() : '',
+            where = {};
 
-        //     let goodsImageArray = [];
-        //     _.forEach(params.goods_image_list, (item, i) => {
-        //         goodsImageArray.push(new ctx.model.GoodsImage({
-        //             goods_id: goods._id,
-        //             img_url: item,
-        //             color_id: '',
-        //             status: 1,
-        //             add_time: goods.add_time
-        //         }));
-        //     });
+        if (id == '') {
+            await this.error('/admin/goods', '对不起！服务器繁忙！要不稍后再试试？');
+            return;
+        }
 
-        //     if (goodsImageArray.length > 0) {
-        //         await ctx.model.GoodsImage.insertMany(goodsImageArray);
-        //     }
+        where = {
+            _id: id
+        };
 
-        //     let goodsAttrArray = [];
-        //     if (params.attr_value_list) {
-        //         for (let i = 0; i < params.attr_id_list.length; i++) {
-        //             const item = params.attr_id_list[i];
-
-        //             let goodsTypeAttribute = await ctx.model.GoodsTypeAttribute.findOne({ _id: item }, { _id: 0, title: 1, attr_type: 1 });
-        //             goodsAttrArray.push(new ctx.model.GoodsAttr({
-        //                 goods_id: goods._id,
-        //                 cate_id: goods.cate_id,
-        //                 attribute_id: item,
-        //                 attribute_type: goodsTypeAttribute.attr_type,
-        //                 attribute_title: goodsTypeAttribute.title,
-        //                 attribute_value: params.attr_value_list[i],
-        //                 status: 1,
-        //                 add_time: goods.add_time
-        //             }));
-        //         }
-        //     }
-
-        //     if (goodsAttrArray.length > 0) {
-        //         await ctx.model.GoodsAttr.insertMany(goodsAttrArray);
-        //     }
-
-        //     await ctx.redirect('/admin/goods');
-        // } catch (err) {
-        //     console.log(err)
-        //     await this.error('/admin/goods/add', '增加商品失败！');
-        // }
-
-        // console.log(params)
-        // console.log(goods)
+        let goods = await ctx.model.Goods.findOne(where, { goods_img: 1 });
+        let result = await ctx.model.Goods.deleteOne(where);
+        if (result.deletedCount > 0) {
+            await ctx.service.tools.deleteFile(goods.goods_img, true);
+            let goodsAttrsDel = await ctx.model.GoodsAttr.deleteMany({ goods_id: id });
+            if (goodsAttrsDel.ok > 0) {
+                let goodsImages = await ctx.model.GoodsImage.find({ goods_id: id }, { img_url: 1, _id: 0 });
+                let goodsImagesDel = await ctx.model.GoodsImage.deleteMany({ goods_id: id });
+                if (goodsImagesDel.ok > 0) {
+                    for (let i = 0; i < goodsImages.length; i++) {
+                        await ctx.service.tools.deleteFile(goodsImages[i].img_url, true);
+                    }
+                    await ctx.redirect(ctx.state.prevPage);
+                } else {
+                    await this.error(ctx.state.prevPage, '删除商品失败！');
+                }
+            } else {
+                await this.error(ctx.state.prevPage, '删除商品失败！');
+            }
+        } else {
+            await this.error(ctx.state.prevPage, '删除商品失败！');
+        }
     }
 }
 
