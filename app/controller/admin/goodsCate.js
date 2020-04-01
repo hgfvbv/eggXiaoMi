@@ -146,7 +146,7 @@ class GoodsCateController extends BaseController {
     }
 
     async doEdit() {
-        const { ctx, service } = this;
+        const { ctx, service, app } = this;
 
         let parts = ctx.multipart({ autoFields: true });
         let files = {},
@@ -217,21 +217,140 @@ class GoodsCateController extends BaseController {
 
         let uParams = {};
 
-        if (files == null) {
+        //判断空json的笨方法
+        if (JSON.stringify(files) == '{}') {
             uParams = params;
         } else {
             uParams = Object.assign(
                 files,
                 params
             );
+            let goodsCateImg = (await ctx.model.GoodsCate.findOne(where, { _id: 0, cate_img: 1 })).cate_img;
+            if (goodsCateImg) {
+                await service.tools.deleteFile(goodsCateImg, true);
+            }
         }
 
         let goodsCate = await ctx.model.GoodsCate.updateOne(where, uParams);
 
         if (goodsCate.ok > 0) {
+            try {
+                if (params.pid == '0') {
+                    await ctx.model.GoodsCate.updateMany({ pid: this.app.mongoose.Types.ObjectId(params.id), status: !uParams.status }, { status: uParams.status });
+                } else {
+                    let goodsCateStatusCount = await ctx.model.GoodsCate.find({ pid: app.mongoose.Types.ObjectId(params.pid), status: 1 }).count();
+                    if (!goodsCateStatusCount) {
+                        await ctx.model.GoodsCate.updateOne({ _id: params.pid }, { status: uParams.status });
+                    }
+                }
+            } catch (err) {
+                console.log(err);
+                await this.error(`/admin/goodsCate/edit?id=${params.id}`, '编辑商品分类失败！');
+            }
             await ctx.redirect('/admin/goodsCate');
         } else {
             await this.error(`/admin/goodsCate/edit?id=${params.id}`, '编辑商品分类失败！');
+        }
+    }
+
+    async changeStatus() {
+        const { ctx, app } = this;
+        let params = ctx.request.body,
+            id = params.id ? params.id.trim() : '',
+            where = {};
+
+        if (id == '') {
+            ctx.body = { 'message': '对不起！服务器繁忙！要不稍后再试试？', 'success': false };
+            return;
+        }
+
+        where = {
+            _id: id
+        };
+
+        let goodsCate = await ctx.model.GoodsCate.findOne(where, { _id: 0, pid: 1, status: 1 });
+        let pid = goodsCate.pid,
+            goodsCateStatus = goodsCate.status;
+
+        if (goodsCate == undefined) {
+            ctx.body = { 'message': '更新失败，参数错误', 'success': false };
+        } else {
+            let uParams = goodsCateStatus == 0 ? { status: 1 } : { status: 0 };
+            if (pid == '0') {
+                try {
+                    await ctx.model.GoodsCate.updateOne(where, uParams);
+                    await ctx.model.GoodsCate.updateMany({ pid: app.mongoose.Types.ObjectId(id), status: goodsCateStatus }, uParams);
+                    ctx.body = { 'message': '更新成功', 'success': true };
+                } catch (err) {
+                    console.log(err);
+                    ctx.body = { 'message': '更新失败', 'success': false };
+                }
+            } else {
+                try {
+                    await ctx.model.GoodsCate.updateOne(where, uParams);
+                    if (goodsCateStatus) {
+                        let goodsCateStatusCount = await ctx.model.GoodsCate.find({ pid: app.mongoose.Types.ObjectId(pid), status: 1 }).count();
+                        if (!goodsCateStatusCount) {
+                            await ctx.model.GoodsCate.updateOne({ _id: pid }, uParams);
+                        }
+                    } else {
+                        let goodsCateStatus = (await ctx.model.GoodsCate.findOne({ _id: pid }, { status: 1, _id: 0 })).status;
+                        if (!goodsCateStatus) {
+                            await ctx.model.GoodsCate.updateOne({ _id: pid }, uParams);
+                        }
+                    }
+                    ctx.body = { 'message': '更新成功', 'success': true };
+                } catch (err) {
+                    console.log(err);
+                    ctx.body = { 'message': '更新失败', 'success': false };
+                }
+            }
+        }
+    }
+
+    async delete() {
+        const { ctx, service, app } = this;
+        let params = ctx.query,
+            id = params.id ? params.id.trim() : '',
+            where = {};
+
+        if (id == '') {
+            await this.error('/admin/goodsCate', '对不起！服务器繁忙！要不稍后再试试？');
+            return;
+        }
+
+        where = {
+            _id: id
+        };
+        console.log(id)
+
+        let goodsCate = await ctx.model.GoodsCate.findOne(where, { _id: 0, pid: 1, cate_img: 1 });
+        let pid = goodsCate.pid,
+            cate_img = goodsCate.cate_img;
+
+        if (pid == '0') {
+            try {
+                await ctx.model.GoodsCate.deleteOne(where);
+                await service.tools.deleteFile(cate_img, true);
+                let goodsCateImgs = await ctx.model.GoodsCate.find({ pid: app.mongoose.Types.ObjectId(id) }, { _id: 0, cate_img: 1 });
+                await ctx.model.GoodsCate.deleteMany({ pid: app.mongoose.Types.ObjectId(id) });
+                for (let i = 0; i < goodsCateImgs.length; i++) {
+                    await service.tools.deleteFile(goodsCateImgs[i].cate_img, true);
+                }
+                await ctx.redirect(ctx.state.prevPage);
+            } catch (err) {
+                console.log(err);
+                await this.error(ctx.state.prevPage, '删除商品分类失败！');
+            }
+        } else {
+            try {
+                await ctx.model.GoodsCate.deleteOne(where);
+                await service.tools.deleteFile(cate_img, true);
+                await ctx.redirect(ctx.state.prevPage);
+            } catch (err) {
+                console.log(err);
+                await this.error(ctx.state.prevPage, '删除商品分类失败！');
+            }
         }
     }
 }

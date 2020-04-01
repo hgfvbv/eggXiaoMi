@@ -267,6 +267,8 @@ class GoodsController extends BaseController {
         let goodsColor = await ctx.model.GoodsColor.find({ status: 1 }, { color_name: 1 });
         let goodsType = await ctx.model.GoodsType.find({ status: 1 }, { title: 1 });
         for (let i = 0; i < list.length; i++) {
+            //移除失效的子模块
+            list[i].child = list[i].child.filter((e => { return e.status == 1 }));
             list[i].child = await ctx.service.tools.jsonSort(list[i].child, 'sort', false);
         }
         await this.ctx.render('admin/goods/add', { goodsCate: list, goodsColor, goodsType });
@@ -441,6 +443,8 @@ class GoodsController extends BaseController {
         let goodsColor = await ctx.model.GoodsColor.find({ status: 1 }, { color_name: 1 });
         let goodsType = await ctx.model.GoodsType.find({ status: 1 }, { title: 1 });
         for (let i = 0; i < list.length; i++) {
+            //移除失效的子模块
+            list[i].child = list[i].child.filter((e => { return e.status == 1 }));
             list[i].child = await ctx.service.tools.jsonSort(list[i].child, 'sort', false);
         }
 
@@ -480,7 +484,15 @@ class GoodsController extends BaseController {
         for (let i = 0; i < result.goods_color.length; i++) {
             goodsColorIdArray.push({ _id: result.goods_color[i] });
         }
-        let goodsColorRelation = await ctx.model.GoodsColor.find({ status: 1, $or: goodsColorIdArray }, { status: 0, color_value: 0 });
+
+        let goodsColorParams = {};
+        if (goodsColorIdArray.length > 0) {
+            goodsColorParams = { status: 1, $or: goodsColorIdArray };
+        } else {
+            goodsColorParams = { status: 1 };
+        }
+
+        let goodsColorRelation = await ctx.model.GoodsColor.find(goodsColorParams, { status: 0, color_value: 0 });
 
         await this.ctx.render('admin/goods/edit', {
             result,
@@ -505,6 +517,7 @@ class GoodsController extends BaseController {
             id = params.id ? params.id.trim() : '',
             title = params.title ? params.title.trim() : '',
             sub_title = params.sub_title ? params.sub_title.trim() : '',
+            cate_id = params.cate_id,
             goods_version = params.goods_version ? params.goods_version.trim() : '',
             goods_sn = params.goods_sn ? params.goods_sn.trim() : '',
             goods_number = params.goods_number ? params.goods_number.trim() : '',
@@ -519,13 +532,8 @@ class GoodsController extends BaseController {
             return;
         }
 
-        if (title == '' || sub_title == '' || goods_version == '' || goods_sn == '' || goods_img == '' || shop_price == '' || !money.test(shop_price) || market_price == '' || !money.test(market_price) || sort == '' || !num.test(sort) || goods_number == '' || !num.test(goods_number) || goods_content == '') {
-
-            if (goods_img != '') {
-                await ctx.service.tools.deleteFile(goods_img, true);
-            }
-
-            await this.error('/admin/goods/add', '对不起！服务器繁忙！要不稍后再试试？');
+        if (title == '' || sub_title == '' || goods_version == '' || cate_id == '0' || goods_sn == '' || goods_img == '' || shop_price == '' || !money.test(shop_price) || market_price == '' || !money.test(market_price) || sort == '' || !num.test(sort) || goods_number == '' || !num.test(goods_number) || goods_content == '') {
+            await this.error(`/admin/goods/edit?id=${params.id}`, '对不起！服务器繁忙！要不稍后再试试？');
             return;
         }
 
@@ -548,7 +556,7 @@ class GoodsController extends BaseController {
             sub_title,
             goods_version,
             goods_sn,
-            cate_id: params.cate_id,
+            cate_id,
             shop_price,
             market_price,
             click_count: 0,

@@ -62,7 +62,7 @@
                 </td>
                 <td class="text-center">
                     <a href="/admin/goodsCate/edit?id=<%=list[i]._id%>">修改</a>
-                    　<a class="delete" href="/admin/delete?model=GoodsCate&id=<%=list[i]._id%>">删除</a>
+                    　<a onclick="javascript:return confirm('将删除其所属子分类！\r\n您确定要删除吗？');" href="/admin/goodsCate/delete?id=<%=list[i]._id%>">删除</a>
                 </td>
             </tr>
 
@@ -81,15 +81,15 @@
                 <td class="text-center">
                     <% if(list[i].child[j].status==1) { %>
                     <img src="/public/admin/images/yes.gif" alt="生效"
-                        onclick="app.changeStatus(this,'GoodsCate','status','<%=list[i].child[j]._id%>','<%=csrf%>','<%=list[i].type%>')"></a>
+                        onclick="app.changeStatus(this,'GoodsCate','status','<%=list[i].child[j]._id%>','<%=csrf%>')"></a>
                     <%} else { %>
                     <img src="/public/admin/images/no.gif" alt="未生效"
-                        onclick="app.changeStatus(this,'GoodsCate','status','<%=list[i].child[j]._id%>','<%=csrf%>','<%=list[i].type%>')"></a>
+                        onclick="app.changeStatus(this,'GoodsCate','status','<%=list[i].child[j]._id%>','<%=csrf%>')"></a>
                     <% } %>
                 </td>
                 <td class="text-center">
                     <a href="/admin/goodsCate/edit?id=<%=list[i].child[j]._id%>">修改</a>
-                    　<a class="delete" href="/admin/delete?model=GoodsCate&id=<%=list[i].child[j]._id%>">删除</a>
+                    　<a class="delete" href="/admin/goodsCate/delete?id=<%=list[i].child[j]._id%>">删除</a>
                 </td>
             </tr>
             <%}%>

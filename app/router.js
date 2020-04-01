@@ -52,20 +52,25 @@ module.exports = app => {
   router.get('/admin/goodsType/add', controller.admin.goodsType.add);
   router.post('/admin/goodsType/doAdd', controller.admin.goodsType.doAdd);
   router.get('/admin/goodsType/edit', controller.admin.goodsType.edit);
-  router.post('/admin/goodsType/doEdit', controller.admin.goodsType.doEdit); 
+  router.post('/admin/goodsType/doEdit', controller.admin.goodsType.doEdit);
   router.post('/admin/goodsType/changeStatus', controller.admin.goodsType.changeStatus);
+  router.get('/admin/goodsType/delete', controller.admin.goodsType.delete);
 
   router.get('/admin/goodsTypeAttribute', controller.admin.goodsTypeAttributes.index);
   router.get('/admin/goodsTypeAttribute/add', controller.admin.goodsTypeAttributes.add);
   router.post('/admin/goodsTypeAttribute/doAdd', controller.admin.goodsTypeAttributes.doAdd);
   router.get('/admin/goodsTypeAttribute/edit', controller.admin.goodsTypeAttributes.edit);
   router.post('/admin/goodsTypeAttribute/doEdit', controller.admin.goodsTypeAttributes.doEdit);
+  router.post('/admin/goodsTypeAttribute/changeStatus', controller.admin.goodsTypeAttributes.changeStatus);
+  router.get('/admin/goodsTypeAttribute/delete', controller.admin.goodsTypeAttributes.delete);
 
   router.get('/admin/goodsCate', controller.admin.goodsCate.index);
   router.get('/admin/goodsCate/add', controller.admin.goodsCate.add);
   router.post('/admin/goodsCate/doAdd', controller.admin.goodsCate.doAdd);
   router.get('/admin/goodsCate/edit', controller.admin.goodsCate.edit);
   router.post('/admin/goodsCate/doEdit', controller.admin.goodsCate.doEdit);
+  router.post('/admin/goodsCate/changeStatus', controller.admin.goodsCate.changeStatus);
+  router.get('/admin/goodsCate/delete', controller.admin.goodsCate.delete);
 
   router.get('/admin/goods', controller.admin.goods.index);
   router.get('/admin/goods/add', controller.admin.goods.add);
@@ -79,7 +84,7 @@ module.exports = app => {
   router.post('/admin/goods/goodsUploadImg', controller.admin.goods.goodsUploadImg);
   router.post('/admin/goods/changeGoodsImageColor', controller.admin.goods.changeGoodsImageColor);
   router.post('/admin/goods/goodsImageRemove', controller.admin.goods.goodsImageRemove);
-  router.get('/admin/goods/delete', controller.admin.goods.delete); 
+  router.get('/admin/goods/delete', controller.admin.goods.delete);
 
   router.get('/admin/goodsColor', controller.admin.goodsColor.index);
   router.get('/admin/goodsColor/add', controller.admin.goodsColor.add);

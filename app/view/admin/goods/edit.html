@@ -25,6 +25,7 @@
                 params = {
                     title: $('#title').val().trim(),
                     sub_title: $('#sub_title').val().trim(),
+                    cate_id: $('#cate_id').val(),
                     goods_version: $('#goods_version').val().trim(),
                     goods_sn: $('#goods_sn').val().trim(),
                     goods_number: $('#goods_number').val().trim(),
@@ -41,6 +42,10 @@
             }
             if (params.sub_title == '') {
                 alert('请输入附属标题！');
+                return false;
+            }
+            if (params.cate_id == '0') {
+                alert('请选择所属分类！');
                 return false;
             }
             if (params.goods_version == '') {
@@ -128,6 +133,7 @@
                             </li>
                             <li class="line"> <span>所属分类:</span>
                                 <select name="cate_id" id="cate_id">
+                                    <option value="0">----请选择商品所属分类----</option>
                                     <%for(let i=0;i<goodsCate.length;i++){%>
                                     <%if(result.cate_id.toString()==goodsCate[i]._id.toString()){%>
                                     <option value="<%=goodsCate[i]._id%>" selected><%=goodsCate[i].title%></option>

@@ -161,9 +161,105 @@ class GoodsTypeAttributesController extends BaseController {
         let goodsTypeAttribute = await ctx.model.GoodsTypeAttribute.updateOne(where, uParams);
 
         if (goodsTypeAttribute.ok > 0) {
-            await ctx.redirect(`/admin/goodsTypeAttribute?id=${cate_id}`);
+            let goodsAttrParams = {
+                attribute_type: uParams.attr_type,
+                attribute_title: uParams.title,
+                status: uParams.status
+            };
+            if (attr_value != '') {
+                let attribute_value = uParams.attr_value.split('\n')[0];
+                goodsAttrParams = {
+                    attribute_type: uParams.attr_type,
+                    attribute_title: uParams.title,
+                    attribute_value,
+                    status: uParams.status
+                };
+            }
+            try {
+                await ctx.model.GoodsAttr.updateMany({ attribute_id: id }, goodsAttrParams);
+                if (!uParams.status) {
+                    let goodsTypeAttrStatusCount = await ctx.model.GoodsTypeAttribute.find({ cate_id: uParams.cate_id, status: 1 }).count();
+                    if (!goodsTypeAttrStatusCount) {
+                        await ctx.model.GoodsType.updateOne({ _id: uParams.cate_id }, { status: uParams.status });
+                    }
+                }
+                await ctx.redirect(`/admin/goodsTypeAttribute?id=${cate_id}`);
+            } catch (err) {
+                console.log(err);
+                await this.error(`/admin/goodsTypeAttribute/edit?id=${id}`, '编辑商品类型失败！');
+            }
         } else {
             await this.error(`/admin/goodsTypeAttribute/edit?id=${id}`, '编辑商品类型失败！');
+        }
+    }
+
+    async changeStatus() {
+        const { ctx } = this;
+        let params = ctx.request.body,
+            id = params.id ? params.id.trim() : '',
+            where = {};
+
+        if (id == '') {
+            ctx.body = { 'message': '对不起！服务器繁忙！要不稍后再试试？', 'success': false };
+            return;
+        }
+
+        where = {
+            _id: id
+        };
+
+        let goodsTypeAttr = await ctx.model.GoodsTypeAttribute.findOne(where, { status: 1, cate_id: 1 });
+        let goodsTypeAttrStatus = goodsTypeAttr.status,
+            goodsTypeAttrCateId = goodsTypeAttr.cate_id;
+        if (goodsTypeAttrStatus == undefined) {
+            ctx.body = { 'message': '更新失败，参数错误', 'success': false };
+        } else {
+            let uParams = goodsTypeAttrStatus == 0 ? { status: 1 } : { status: 0 };
+
+            try {
+                await ctx.model.GoodsTypeAttribute.updateOne(where, uParams);
+                if (goodsTypeAttrStatus) {
+                    let goodsTypeAttrStatusCount = await ctx.model.GoodsTypeAttribute.find({ cate_id: goodsTypeAttrCateId, status: 1 }).count();
+                    if (!goodsTypeAttrStatusCount) {
+                        await ctx.model.GoodsType.updateOne({ _id: goodsTypeAttrCateId }, uParams);
+                    }
+                } else {
+                    let goodsTypeStatus = (await ctx.model.GoodsType.findOne({ _id: goodsTypeAttrCateId }, { status: 1, _id: 0 })).status;
+                    if (!goodsTypeStatus) {
+                        await ctx.model.GoodsType.updateOne({ _id: goodsTypeAttrCateId }, uParams);
+                    }
+                }
+                await ctx.model.GoodsAttr.updateMany({ attribute_id: id, status: goodsTypeAttrStatus }, uParams);
+                ctx.body = { 'message': '更新成功', 'success': true };
+            } catch (err) {
+                console.log(err);
+                ctx.body = { 'message': '更新失败', 'success': false };
+            }
+        }
+    }
+
+    async delete() {
+        const { ctx } = this;
+        let params = ctx.query,
+            id = params.id ? params.id.trim() : '',
+            where = {};
+
+        if (id == '') {
+            await this.error('/admin/goodsType', '对不起！服务器繁忙！要不稍后再试试？');
+            return;
+        }
+
+        where = {
+            _id: id
+        };
+
+        try {
+            await ctx.model.GoodsTypeAttribute.deleteOne(where);
+            await ctx.model.GoodsAttr.deleteMany({ attribute_id: id });
+            await ctx.redirect(ctx.state.prevPage);
+        } catch (err) {
+            console.log(err);
+            await this.error(ctx.state.prevPage, '删除商品属性失败！');
         }
     }
 }

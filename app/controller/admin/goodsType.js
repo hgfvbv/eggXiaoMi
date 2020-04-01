@@ -73,7 +73,7 @@ class GoodsTypeController extends BaseController {
     }
 
     async doEdit() {
-        const { ctx } = this;
+        const { ctx, app } = this;
         let params = ctx.request.body,
             id = params.id ? params.id.trim() : '',
             title = params.title ? params.title.trim() : '',
@@ -104,6 +104,11 @@ class GoodsTypeController extends BaseController {
         let goodsType = await ctx.model.GoodsType.updateOne(where, uParams);
 
         if (goodsType.ok > 0) {
+            await ctx.model.GoodsTypeAttribute.updateMany({ cate_id: id, status: !uParams.status }, { status: uParams.status });
+            let goods = await ctx.model.Goods.find({ goods_type_id: app.mongoose.Types.ObjectId(id) }, { _id: 1 });
+            for (let i = 0; i < goods.length; i++) {
+                await ctx.model.GoodsAttr.updateMany({ goods_id: goods[i]._id, status: !uParams.status }, { status: uParams.status });
+            }
             await ctx.redirect('/admin/goodsType');
         } else {
             await this.error(`/admin/goodsType/edit?id=${id}`, '编辑商品类型失败！');
@@ -111,7 +116,7 @@ class GoodsTypeController extends BaseController {
     }
 
     async changeStatus() {
-        const { ctx, config } = this;
+        const { ctx, app } = this;
         let params = ctx.request.body,
             id = params.id ? params.id.trim() : '',
             where = {};
@@ -124,31 +129,56 @@ class GoodsTypeController extends BaseController {
         where = {
             _id: id
         };
-console.log(id)
-        ctx.body = { 'message': '更新成功', 'success': true };
-        // let result = await ctx.model.Role.findOne(where);
-        // if (result) {
-        //     let uParams = result.status == 0 ? { status: 1 } : { status: 0 };
 
-        //     let role = await ctx.model.Role.updateOne(where, uParams);
+        let goodsTypeStatus = (await ctx.model.GoodsType.findOne(where, { status: 1 })).status;
+        if (goodsTypeStatus == undefined) {
+            ctx.body = { 'message': '更新失败，参数错误', 'success': false };
+        } else {
+            let uParams = goodsTypeStatus == 0 ? { status: 1 } : { status: 0 };
 
-        //     if (role.nModified > 0) {
-        //         if (uParams.status == 0) {
-        //             let uResult = await ctx.model.Admin.updateMany({ role_id: id }, { role_id: config.rwait, status: 0 });
-        //             if (uResult.ok > 0) {
-        //                 ctx.body = { 'message': '更新成功', 'success': true };
-        //             } else {
-        //                 ctx.body = { 'message': '更新失败', 'success': false };
-        //             }
-        //         } else {
-        //             ctx.body = { 'message': '更新成功', 'success': true };
-        //         }
-        //     } else {
-        //         ctx.body = { 'message': '更新失败', 'success': false };
-        //     }
-        // } else {
-        //     ctx.body = { 'message': '更新失败，参数错误', 'success': false };
-        // }
+            try {
+                await ctx.model.GoodsType.updateOne(where, uParams);
+                await ctx.model.GoodsTypeAttribute.updateMany({ cate_id: id, status: goodsTypeStatus }, uParams);
+                let goods = await ctx.model.Goods.find({ goods_type_id: app.mongoose.Types.ObjectId(id) }, { _id: 1 });
+                for (let i = 0; i < goods.length; i++) {
+                    await ctx.model.GoodsAttr.updateMany({ goods_id: goods[i]._id, status: goodsTypeStatus }, uParams);
+                }
+                ctx.body = { 'message': '更新成功', 'success': true };
+            } catch (err) {
+                console.log(err);
+                ctx.body = { 'message': '更新失败', 'success': false };
+            }
+        }
+    }
+
+    async delete() {
+        const { ctx, app } = this;
+        let params = ctx.query,
+            id = params.id ? params.id.trim() : '',
+            where = {};
+
+        if (id == '') {
+            await this.error('/admin/goodsType', '对不起！服务器繁忙！要不稍后再试试？');
+            return;
+        }
+
+        where = {
+            _id: id
+        };
+
+        try {
+            await ctx.model.GoodsType.deleteOne(where);
+            await ctx.model.GoodsTypeAttribute.deleteMany({ cate_id: id });
+            let goods = await ctx.model.Goods.find({ goods_type_id: app.mongoose.Types.ObjectId(id) }, { _id: 1 });
+            await ctx.model.Goods.updateMany({ goods_type_id: app.mongoose.Types.ObjectId(id) }, { goods_type_id: '0' });
+            for (let i = 0; i < goods.length; i++) {
+                await ctx.model.GoodsAttr.deleteMany({ goods_id: goods[i]._id });
+            }
+            await ctx.redirect(ctx.state.prevPage);
+        } catch (err) {
+            console.log(err);
+            await this.error(ctx.state.prevPage, '删除商品类型失败！');
+        }
     }
 }
 

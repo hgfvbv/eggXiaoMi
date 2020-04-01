@@ -38,7 +38,7 @@
                     </li>
 
                     <li class="line"> <span>分类名称:</span> <input type="text" id="title" name="title" class="input"
-                            value="<%=result.title%>" />
+                            value="<%=result.title%>" placeholder="请输入分类名称" />
                     </li>
 
                     <li class="line"> <span>上级分类:</span>
@@ -53,25 +53,26 @@
                     </li>
 
                     <li class="line"> <span>筛选属性:</span> <input type="text" id="filter_attr" name="filter_attr" class="input" value="<%=result.filter_attr%>"
-                            /></li>
+                            placeholder="请输入筛选属性" /></li>
 
                     <li class="line"> <span>跳转地址:</span> <input type="text" id="link" name="link" class="input"
-                            value="<%=result.link%>" /></li>
+                            value="<%=result.link%>" placeholder="请输入跳转地址" /></li>
 
                     <li class="line"> <span>分类模板:</span> <input type="text" id="template" name="template" class="input"
-                            value="<%=result.template%>" /><span style='color:red;'>空表示默认模板</span></li>
+                            value="<%=result.template%>" placeholder="请输入分类模板" /><span style='color:red;'>空表示默认模板</span>
+                    </li>
 
                     <li class="line"> <span>Seo标题:</span> <input style='width: 603px;' type="text" id="sub_title"
-                            name="sub_title" class="input" value="<%=result.sub_title%>" /></li>
+                            name="sub_title" class="input" value="<%=result.sub_title%>" placeholder="请输入Seo标题" /></li>
 
                     <li class="line"> <span>Seo关键词: </span><input style='width: 589px;' type="text" id="keywords"
-                            name="keywords" class="input" value="<%=result.keywords%>" /></li>
+                            name="keywords" class="input" value="<%=result.keywords%>" placeholder="请输入Seo关键词" /></li>
 
                     <li class="line"> <span>Seo描述:</span> <textarea name="description" id="description" cols="81"
-                            rows="4"><%=result.description%></textarea></li>
+                            rows="4" placeholder="请输入Seo描述"><%=result.description%></textarea></li>
 
                     <li class="line"> <span>排&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;序:</span> <input type="number"
-                            id="sort" name="sort" value="<%=result.sort%>" /></li>
+                            id="sort" name="sort" value="<%=result.sort%>" placeholder="请输入排序" /></li>
 
                     <li> <span>分类图片:</span><input type="file" id="cate_img" name="cate_img" />
                         <br>
