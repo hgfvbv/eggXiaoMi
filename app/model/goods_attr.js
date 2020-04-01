@@ -20,6 +20,7 @@ module.exports = app => {
       type: String
     },
     status: { type: Number, default: 1 },
+    sort: { type: Number, default: 0 },
     add_time: {
       type: Number
     }

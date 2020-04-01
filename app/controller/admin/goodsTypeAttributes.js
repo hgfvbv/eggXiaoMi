@@ -164,7 +164,8 @@ class GoodsTypeAttributesController extends BaseController {
             let goodsAttrParams = {
                 attribute_type: uParams.attr_type,
                 attribute_title: uParams.title,
-                status: uParams.status
+                status: uParams.status,
+                sort: uParams.sort
             };
             if (attr_value != '') {
                 let attribute_value = uParams.attr_value.split('\n')[0];
@@ -172,7 +173,8 @@ class GoodsTypeAttributesController extends BaseController {
                     attribute_type: uParams.attr_type,
                     attribute_title: uParams.title,
                     attribute_value,
-                    status: uParams.status
+                    status: uParams.status,
+                    sort: uParams.sort
                 };
             }
             try {
@@ -235,6 +237,32 @@ class GoodsTypeAttributesController extends BaseController {
                 console.log(err);
                 ctx.body = { 'message': '更新失败', 'success': false };
             }
+        }
+    }
+
+    async changeSort() {
+        const { ctx } = this;
+        let params = ctx.request.body,
+            id = params.id ? params.id.trim() : '',
+            sort = params.num ? params.num.trim() : '',
+            where = {};
+
+        if (id == '' || sort == '' || !(/^\d+$/.test(sort))) {
+            ctx.body = { 'message': '对不起！服务器繁忙！要不稍后再试试？', 'success': false };
+            return;
+        }
+
+        where = {
+            _id: id
+        };
+
+        try {
+            await ctx.model.GoodsTypeAttribute.updateOne(where, { sort });
+            await ctx.model.GoodsAttr.updateMany({ attribute_id: id }, { sort });
+            ctx.body = { 'message': '更新成功', 'success': true };
+        } catch (err) {
+            console.log(err);
+            ctx.body = { 'message': '更新失败', 'success': false };
         }
     }
 

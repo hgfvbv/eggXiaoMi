@@ -47,22 +47,24 @@
                         alt="分类图片"></td>
                 <td class="text-center"><%=helper.formartTime(list[i].add_time)%></td>
                 <td class="text-center">
-                    <span onclick="app.changeNum(this,'GoodsCate','sort','<%=list[i]._id%>','<%=csrf%>')">
+                    <span
+                        onclick="app.changeNum(this,'/admin/goodsCate/changeNum','GoodsCate','sort','<%=list[i]._id%>','<%=csrf%>')">
                         <%=list[i].sort%>
                     </span>
                 </td>
                 <td class="text-center">
                     <% if(list[i].status==1) { %>
                     <img src="/public/admin/images/yes.gif" alt="生效"
-                        onclick="app.changeStatus(this,'GoodsCate','status','<%=list[i]._id%>','<%=csrf%>')"></a>
+                        onclick="app.changeStatus(this,'/admin/goodsCate/changeStatus','GoodsCate','status','<%=list[i]._id%>','<%=csrf%>')"></a>
                     <%} else { %>
                     <img src="/public/admin/images/no.gif" alt="未生效"
-                        onclick="app.changeStatus(this,'GoodsCate','status','<%=list[i]._id%>','<%=csrf%>')"></a>
+                        onclick="app.changeStatus(this,'/admin/goodsCate/changeStatus','GoodsCate','status','<%=list[i]._id%>','<%=csrf%>')"></a>
                     <% } %>
                 </td>
                 <td class="text-center">
                     <a href="/admin/goodsCate/edit?id=<%=list[i]._id%>">修改</a>
-                    　<a onclick="javascript:return confirm('将删除其所属子分类！\r\n您确定要删除吗？');" href="/admin/goodsCate/delete?id=<%=list[i]._id%>">删除</a>
+                    　<a onclick="javascript:return confirm('将删除其所属子分类！\r\n您确定要删除吗？');"
+                        href="/admin/goodsCate/delete?id=<%=list[i]._id%>">删除</a>
                 </td>
             </tr>
 
@@ -74,17 +76,18 @@
                         alt="分类图片"></td>
                 <td class="text-center"><%=helper.formartTime(list[i].child[j].add_time)%></td>
                 <td class="text-center">
-                    <span onclick="app.changeNum(this,'GoodsCate','sort','<%=list[i].child[j]._id%>','<%=csrf%>')">
+                    <span
+                        onclick="app.changeNum(this,'/admin/goodsCate/changeNum','GoodsCate','sort','<%=list[i].child[j]._id%>','<%=csrf%>')">
                         <%=list[i].child[j].sort%>
                     </span>
                 </td>
                 <td class="text-center">
                     <% if(list[i].child[j].status==1) { %>
                     <img src="/public/admin/images/yes.gif" alt="生效"
-                        onclick="app.changeStatus(this,'GoodsCate','status','<%=list[i].child[j]._id%>','<%=csrf%>')"></a>
+                        onclick="app.changeStatus(this,'/admin/goodsCate/changeStatus','GoodsCate','status','<%=list[i].child[j]._id%>','<%=csrf%>')"></a>
                     <%} else { %>
                     <img src="/public/admin/images/no.gif" alt="未生效"
-                        onclick="app.changeStatus(this,'GoodsCate','status','<%=list[i].child[j]._id%>','<%=csrf%>')"></a>
+                        onclick="app.changeStatus(this,'/admin/goodsCate/changeStatus','GoodsCate','status','<%=list[i].child[j]._id%>','<%=csrf%>')"></a>
                     <% } %>
                 </td>
                 <td class="text-center">

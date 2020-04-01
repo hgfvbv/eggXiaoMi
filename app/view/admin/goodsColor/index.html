@@ -43,15 +43,16 @@
                 <td>
                     <% if(list[i].status==1) { %>
                     <img src="/public/admin/images/yes.gif" alt="生效"
-                        onclick="app.changeStatus(this,'GoodsColor','status','<%=list[i]._id%>','<%=csrf%>')"></a>
+                        onclick="app.changeStatus(this,'/admin/goodsColor/changeStatus','GoodsColor','status','<%=list[i]._id%>','<%=csrf%>')"></a>
                     <%} else { %>
                     <img src="/public/admin/images/no.gif" alt="未生效"
-                        onclick="app.changeStatus(this,'GoodsColor','status','<%=list[i]._id%>','<%=csrf%>')"></a>
+                        onclick="app.changeStatus(this,'/admin/goodsColor/changeStatus','GoodsColor','status','<%=list[i]._id%>','<%=csrf%>')"></a>
                     <% } %>
                 </td>
                 <td>
                     　<a href="/admin/goodsColor/edit?id=<%=list[i]._id%>">修改</a>
-                    　<a class="delete" href="/admin/delete?model=GoodsColor&id=<%=list[i]._id%>">删除</a>
+                    　<a onclick="javascript:return confirm('将删除其关联的所有商品数据！\r\n您确定要删除吗？');"
+                        href="/admin/goodsColor/delete?id=<%=list[i]._id%>">删除</a>
                 </td>
             </tr>
             <%}%>

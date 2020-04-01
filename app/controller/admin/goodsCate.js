@@ -322,7 +322,6 @@ class GoodsCateController extends BaseController {
         where = {
             _id: id
         };
-        console.log(id)
 
         let goodsCate = await ctx.model.GoodsCate.findOne(where, { _id: 0, pid: 1, cate_img: 1 });
         let pid = goodsCate.pid,

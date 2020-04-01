@@ -104,7 +104,7 @@ class GoodsController extends BaseController {
             return;
         }
 
-        let list = await ctx.model.GoodsTypeAttribute.find({ cate_id, status: 1 }, { title: 1, attr_type: 1, attr_value: 1 });
+        let list = await ctx.model.GoodsTypeAttribute.find({ cate_id, status: 1 }, { title: 1, attr_type: 1, attr_value: 1 }).sort({ sort: 1 });
         ctx.body = { result: list };
     }
 
@@ -376,6 +376,7 @@ class GoodsController extends BaseController {
                     attribute_title: goodsTypeAttribute.title,
                     attribute_value: params.attr_value_list[i],
                     status: 1,
+                    sort: goodsTypeAttribute.sort,
                     add_time: goods.add_time
                 }));
             }
@@ -451,7 +452,7 @@ class GoodsController extends BaseController {
         let result = await ctx.model.Goods.findOne(where);
         let goodsImage = await ctx.model.GoodsImage.find({ goods_id: result._id }, { img_url: 1, color_id: 1 });
         let goodsAttrStr = '',
-            goodsAttr = await ctx.model.GoodsAttr.find({ goods_id: result._id, status: 1 });
+            goodsAttr = await ctx.model.GoodsAttr.find({ goods_id: result._id, status: 1 }).sort({ sort: 1 });
 
         for (let i = 0; i < goodsAttr.length; i++) {
             if (goodsAttr[i].attribute_type == '1') {
@@ -624,6 +625,7 @@ class GoodsController extends BaseController {
                         attribute_title: goodsTypeAttribute.title,
                         attribute_value: params.attr_value_list[i],
                         status: 1,
+                        sort: goodsTypeAttribute.sort,
                         add_time: await ctx.service.tools.getTime()
                     }));
                 }

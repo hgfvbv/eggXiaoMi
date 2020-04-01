@@ -54,21 +54,24 @@
                 <td><%=list[i].link%></td>
                 <td><%=helper.formartTime(list[i].add_time)%></td>
                 <td>
-                    <span onclick="app.changeNum(this,'Focus','sort','<%=list[i]._id%>','<%=csrf%>')">
+                    <span
+                        onclick="app.changeNum(this,'/admin/focus/changeNum','Focus','sort','<%=list[i]._id%>','<%=csrf%>')">
                         <%=list[i].sort%>
                     </span>
                 </td>
                 <td>
                     <% if(list[i].status==1) { %>
                     <img src="/public/admin/images/yes.gif"
-                        onclick="app.changeStatus(this,'Focus','status','<%=list[i]._id%>','<%=csrf%>')" alt="生效"></a>
+                        onclick="app.changeStatus(this,'/admin/focus/changeStatus','Focus','status','<%=list[i]._id%>','<%=csrf%>')"
+                        alt="生效"></a>
                     <%} else { %>
                     <img src="/public/admin/images/no.gif"
-                        onclick="app.changeStatus(this,'Focus','status','<%=list[i]._id%>','<%=csrf%>')" alt="未生效"></a>
+                        onclick="app.changeStatus(this,'/admin/focus/changeStatus','Focus','status','<%=list[i]._id%>','<%=csrf%>')"
+                        alt="未生效"></a>
                     <% } %>
                 </td>
                 <td><a href="/admin/focus/edit?id=<%=list[i]._id%>">修改</a> 　　<a class="delete"
-                        href="/admin/delete?model=Focus&id=<%=list[i]._id%>">删除</a></td>
+                        href="/admin/focus/delete?model=Focus&id=<%=list[i]._id%>">删除</a></td>
             </tr>
             <%}%>
         </tbody>

@@ -63,7 +63,8 @@
                     </td>
                     <td><%=list[i].attr_value%></td>
                 <td>
-                    <span onclick="app.changeNum(this,'GoodsTypeAttribute','sort','<%=list[i]._id%>','<%=csrf%>')">
+                    <span
+                        onclick="app.changeNum(this,'/admin/goodsTypeAttribute/changeNum', 'GoodsTypeAttribute','sort','<%=list[i]._id%>','<%=csrf%>')">
                         <%=list[i].sort%>
                     </span>
                 </td>
@@ -71,10 +72,10 @@
                 <td>
                     <% if(list[i].status==1) { %>
                     <img src="/public/admin/images/yes.gif" alt="生效"
-                        onclick="app.changeStatus(this,'GoodsTypeAttribute','status','<%=list[i]._id%>','<%=csrf%>')"></a>
+                        onclick="app.changeStatus(this,'/admin/goodsTypeAttribute/changeStatus','GoodsTypeAttribute','status','<%=list[i]._id%>','<%=csrf%>')"></a>
                     <%} else { %>
                     <img src="/public/admin/images/no.gif" alt="未生效"
-                        onclick="app.changeStatus(this,'GoodsTypeAttribute','status','<%=list[i]._id%>','<%=csrf%>')"></a>
+                        onclick="app.changeStatus(this,'/admin/goodsTypeAttribute/changeStatus','GoodsTypeAttribute','status','<%=list[i]._id%>','<%=csrf%>')"></a>
                     <% } %>
                 </td>
                 <td>

@@ -43,10 +43,10 @@
                 <td>
                     <% if(list[i].status==1) { %>
                     <img src="/public/admin/images/yes.gif" alt="生效"
-                        onclick="app.changeStatus(this,'Role','status','<%=list[i]._id%>','<%=csrf%>')"></a>
+                        onclick="app.changeStatus(this,'/admin/role/changeStatus','Role','status','<%=list[i]._id%>','<%=csrf%>')"></a>
                     <%} else { %>
                     <img src="/public/admin/images/no.gif" alt="未生效"
-                        onclick="app.changeStatus(this,'Role','status','<%=list[i]._id%>','<%=csrf%>')"></a>
+                        onclick="app.changeStatus(this,'/admin/role/changeStatus','Role','status','<%=list[i]._id%>','<%=csrf%>')"></a>
                     <% } %>
                 </td>
                 <td>

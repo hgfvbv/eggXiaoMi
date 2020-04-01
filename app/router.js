@@ -10,9 +10,9 @@ module.exports = app => {
   router.get('/admin', controller.admin.main.index);
   router.get('/admin/welcome', controller.admin.main.welcome);
   router.get('/admin/verify', controller.admin.base.verify);
-  router.get('/admin/delete', controller.admin.base.delete);
-  router.post('/admin/changeStatus', controller.admin.base.changeStatus);
-  router.post('/admin/changeNum', controller.admin.base.changeNum);
+  // router.get('/admin/delete', controller.admin.base.delete);
+  // router.post('/admin/changeStatus', controller.admin.base.changeStatus);
+  // router.post('/admin/changeNum', controller.admin.base.changeNum);
   router.get(['/admin/login', '/admin/HV'], controller.admin.login.index);
   router.get('/admin/loginOut', controller.admin.login.loginOut);
   router.get('/admin/exit', controller.admin.base.exit);
@@ -24,6 +24,7 @@ module.exports = app => {
   router.get('/admin/access/edit', controller.admin.access.edit);
   router.post('/admin/access/doEdit', controller.admin.access.doEdit);
   router.post('/admin/access/changeStatus', controller.admin.access.changeStatus);
+  router.post('/admin/access/changeNum', controller.admin.base.changeNum);
   router.get('/admin/access/delete', controller.admin.access.delete);
 
   router.get('/admin/manager', controller.admin.manager.index);
@@ -31,6 +32,8 @@ module.exports = app => {
   router.post('/admin/manager/doAdd', controller.admin.manager.doAdd);
   router.get('/admin/manager/edit', controller.admin.manager.edit);
   router.post('/admin/manager/doEdit', controller.admin.manager.doEdit);
+  router.get('/admin/manager/delete', controller.admin.base.delete);
+  router.post('/admin/manager/changeStatus', controller.admin.base.changeStatus);
 
   router.get('/admin/role', controller.admin.role.index);
   router.get('/admin/role/add', controller.admin.role.add);
@@ -47,6 +50,9 @@ module.exports = app => {
   router.post('/admin/focus/doAdd', controller.admin.focus.doAdd);
   router.get('/admin/focus/edit', controller.admin.focus.edit);
   router.post('/admin/focus/doEdit', controller.admin.focus.doEdit);
+  router.get('/admin/focus/delete', controller.admin.base.delete);
+  router.post('/admin/focus/changeStatus', controller.admin.base.changeStatus);
+  router.post('/admin/focus/changeNum', controller.admin.base.changeNum);
 
   router.get('/admin/goodsType', controller.admin.goodsType.index);
   router.get('/admin/goodsType/add', controller.admin.goodsType.add);
@@ -62,6 +68,7 @@ module.exports = app => {
   router.get('/admin/goodsTypeAttribute/edit', controller.admin.goodsTypeAttributes.edit);
   router.post('/admin/goodsTypeAttribute/doEdit', controller.admin.goodsTypeAttributes.doEdit);
   router.post('/admin/goodsTypeAttribute/changeStatus', controller.admin.goodsTypeAttributes.changeStatus);
+  router.post('/admin/goodsTypeAttribute/changeNum', controller.admin.goodsTypeAttributes.changeSort);
   router.get('/admin/goodsTypeAttribute/delete', controller.admin.goodsTypeAttributes.delete);
 
   router.get('/admin/goodsCate', controller.admin.goodsCate.index);
@@ -70,6 +77,7 @@ module.exports = app => {
   router.get('/admin/goodsCate/edit', controller.admin.goodsCate.edit);
   router.post('/admin/goodsCate/doEdit', controller.admin.goodsCate.doEdit);
   router.post('/admin/goodsCate/changeStatus', controller.admin.goodsCate.changeStatus);
+  router.post('/admin/goodsCate/changeNum', controller.admin.base.changeNum);
   router.get('/admin/goodsCate/delete', controller.admin.goodsCate.delete);
 
   router.get('/admin/goods', controller.admin.goods.index);
@@ -85,10 +93,14 @@ module.exports = app => {
   router.post('/admin/goods/changeGoodsImageColor', controller.admin.goods.changeGoodsImageColor);
   router.post('/admin/goods/goodsImageRemove', controller.admin.goods.goodsImageRemove);
   router.get('/admin/goods/delete', controller.admin.goods.delete);
+  router.post('/admin/goods/changeStatus', controller.admin.base.changeStatus);
+  router.post('/admin/goods/changeNum', controller.admin.base.changeNum);
 
   router.get('/admin/goodsColor', controller.admin.goodsColor.index);
   router.get('/admin/goodsColor/add', controller.admin.goodsColor.add);
   router.post('/admin/goodsColor/doAdd', controller.admin.goodsColor.doAdd);
   router.get('/admin/goodsColor/edit', controller.admin.goodsColor.edit);
   router.post('/admin/goodsColor/doEdit', controller.admin.goodsColor.doEdit);
+  router.get('/admin/goodsColor/delete', controller.admin.goodsColor.delete);
+  router.post('/admin/goodsColor/changeStatus', controller.admin.base.changeStatus);
 };

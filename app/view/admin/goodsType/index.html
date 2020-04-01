@@ -46,16 +46,17 @@
                 <td>
                     <% if(list[i].status==1) { %>
                     <img src="/public/admin/images/yes.gif" alt="生效"
-                        onclick="app.changeStatus(this,'GoodsType','status','<%=list[i]._id%>','<%=csrf%>')"></a>
+                        onclick="app.changeStatus(this,'/admin/goodsType/changeStatus','GoodsType','status','<%=list[i]._id%>','<%=csrf%>')"></a>
                     <%} else { %>
                     <img src="/public/admin/images/no.gif" alt="未生效"
-                        onclick="app.changeStatus(this,'GoodsType','status','<%=list[i]._id%>','<%=csrf%>')"></a>
+                        onclick="app.changeStatus(this,'/admin/goodsType/changeStatus','GoodsType','status','<%=list[i]._id%>','<%=csrf%>')"></a>
                     <% } %>
                 </td>
                 <td>
                     <a href="/admin/goodsTypeAttribute?id=<%=list[i]._id%>">属性列表</a>
                     　<a href="/admin/goodsType/edit?id=<%=list[i]._id%>">修改</a>
-                    　<a onclick="javascript:return confirm('将删除其所属子属性及其关联的所有商品数据！\r\n您确定要删除吗？');" href="/admin/goodsType/delete?id=<%=list[i]._id%>">删除</a>
+                    　<a onclick="javascript:return confirm('将删除其所属子属性及其关联的所有商品数据！\r\n您确定要删除吗？');"
+                        href="/admin/goodsType/delete?id=<%=list[i]._id%>">删除</a>
                 </td>
             </tr>
             <%}%>

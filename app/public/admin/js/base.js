@@ -46,114 +46,28 @@ var app = {
 			//$(this).siblings('ul').slideToggle();
 		});
 	},
-	changeStatus: function (el, model, attr, id, _csrf, type) {
-		switch (model) {
-			case 'Role':
-				$.post('/admin/role/changeStatus', { id, _csrf }, function (data) {
-					if (data.success) {
-						if (el.src.indexOf('yes') != -1) {
-							el.src = '/public/admin/images/no.gif';
-						} else {
-							el.src = '/public/admin/images/yes.gif';
-						}
+	changeStatus: function (el, url, model, attr, id, _csrf, type) {
+		$.post(url, { model, attr, id, _csrf, type }, function (data) {
+			if (data.success) {
+				if (model == 'GoodsCate') {
+					location.href = '/admin/goodsCate';
+				} else {
+					if (el.src.indexOf('yes') != -1) {
+						el.src = '/public/admin/images/no.gif';
 					} else {
-						if (data.message) {
-							alert(data.message);
-						} else {
-							alert('对不起！您无此权限！如有疑问可联系管理员！');
-						}
+						el.src = '/public/admin/images/yes.gif';
 					}
-				});
-				break;
-			case 'Access':
-				$.post('/admin/access/changeStatus', { id, type, _csrf }, function (data) {
-					if (data.success) {
-						if (el.src.indexOf('yes') != -1) {
-							el.src = '/public/admin/images/no.gif';
-						} else {
-							el.src = '/public/admin/images/yes.gif';
-						}
-					} else {
-						if (data.message) {
-							alert(data.message);
-						} else {
-							alert('对不起！您无此权限！如有疑问可联系管理员！');
-						}
-					}
-				});
-				break;
-			case 'GoodsType':
-				$.post('/admin/goodsType/changeStatus', { id, _csrf }, function (data) {
-					if (data.success) {
-						if (el.src.indexOf('yes') != -1) {
-							el.src = '/public/admin/images/no.gif';
-						} else {
-							el.src = '/public/admin/images/yes.gif';
-						}
-					} else {
-						if (data.message) {
-							alert(data.message);
-						} else {
-							alert('对不起！您无此权限！如有疑问可联系管理员！');
-						}
-					}
-				});
-				break;
-			case 'GoodsTypeAttribute':
-				$.post('/admin/goodsTypeAttribute/changeStatus', { id, _csrf }, function (data) {
-					if (data.success) {
-						if (el.src.indexOf('yes') != -1) {
-							el.src = '/public/admin/images/no.gif';
-						} else {
-							el.src = '/public/admin/images/yes.gif';
-						}
-					} else {
-						if (data.message) {
-							alert(data.message);
-						} else {
-							alert('对不起！您无此权限！如有疑问可联系管理员！');
-						}
-					}
-				});
-				break;
-			case 'GoodsCate':
-				$.post('/admin/goodsCate/changeStatus', { id, _csrf }, function (data) {
-					if (data.success) {
-						location.href='/admin/goodsCate';
-						// if (el.src.indexOf('yes') != -1) {
-						// 	el.src = '/public/admin/images/no.gif';
-						// } else {
-						// 	el.src = '/public/admin/images/yes.gif';
-						// }
-					} else {
-						if (data.message) {
-							alert(data.message);
-						} else {
-							alert('对不起！您无此权限！如有疑问可联系管理员！');
-						}
-					}
-				});
-				break;
-			default:
-				$.post('/admin/changeStatus', { model, attr, id, _csrf }, function (data) {
-					if (data.success) {
-						if (el.src.indexOf('yes') != -1) {
-							el.src = '/public/admin/images/no.gif';
-						} else {
-							el.src = '/public/admin/images/yes.gif';
-						}
-					} else {
-						if (data.message) {
-							alert(data.message);
-						} else {
-							alert('对不起！您无此权限！如有疑问可联系管理员！');
-						}
-					}
-				});
-				break;
-		}
+				}
+			} else {
+				if (data.message) {
+					alert(data.message);
+				} else {
+					alert('对不起！您无此权限！如有疑问可联系管理员！');
+				}
+			}
+		});
 	},
-	changeNum: function (el, model, attr, id, _csrf) {
+	changeNum: function (el, url, model, attr, id, _csrf) {
 		var oldNum = $(el).html().trim();
 
 		if (oldNum == '') {
@@ -181,7 +95,7 @@ var app = {
 				$(el).html(oldNum);
 				alert('请正确输入排序！');
 			} else {
-				$.post('/admin/changeNum', { model, attr, id, _csrf, num }, function (data) {
+				$.post(url, { model, attr, id, _csrf, num }, function (data) {
 					if (data.success) {
 						$(el).html(num);
 					} else {

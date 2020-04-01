@@ -108,6 +108,36 @@ class GoodsColorController extends BaseController {
             await this.error(`/admin/goodsColor/edit?id=${id}`, '编辑商品颜色失败！');
         }
     }
+
+    async delete() {
+        const { ctx, app } = this;
+        let params = ctx.query,
+            id = params.id ? params.id.trim() : '',
+            where = {};
+
+        if (id == '') {
+            await this.error('/admin/goodsCate', '对不起！服务器繁忙！要不稍后再试试？');
+            return;
+        }
+
+        where = {
+            _id: id
+        };
+
+        try {
+            await ctx.model.GoodsColor.deleteOne(where);
+            await ctx.model.GoodsImage.updateMany({ color_id: app.mongoose.Types.ObjectId(id) }, { color_id: '' });
+            let goods = await ctx.model.Goods.find({ $or: [{ goods_color: id }] }, { goods_color: 1 });
+            for (let i = 0; i < goods.length; i++) {
+                goods[i].goods_color = goods[i].goods_color.filter((e => { return e != id }));
+                await ctx.model.Goods.updateOne({ _id: goods[i]._id }, { goods_color: goods[i].goods_color });
+            }
+            await ctx.redirect(ctx.state.prevPage);
+        } catch (err) {
+            console.log(err);
+            await this.error(ctx.state.prevPage, '删除商品颜色失败！');
+        }
+    }
 }
 
 module.exports = GoodsColorController;

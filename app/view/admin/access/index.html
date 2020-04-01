@@ -53,7 +53,8 @@
                             <td class="text-center"><%=list[i].action_name%></td>
                 <td class="text-center"><%=list[i].url%></td>
                 <td class="text-center">
-                    <span onclick="app.changeNum(this,'Access','sort','<%=list[i]._id%>','<%=csrf%>')">
+                    <span
+                        onclick="app.changeNum(this,'/admin/access/changeNum','Access','sort','<%=list[i]._id%>','<%=csrf%>')">
                         <%=list[i].sort%>
                     </span>
                 </td>
@@ -62,10 +63,10 @@
                 <td class="text-center">
                     <% if(list[i].status==1) { %>
                     <img src="/public/admin/images/yes.gif" alt="生效"
-                        onclick="app.changeStatus(this,'Access','status','<%=list[i]._id%>','<%=csrf%>','<%=list[i].type%>')"></a>
+                        onclick="app.changeStatus(this,'/admin/access/changeStatus','Access','status','<%=list[i]._id%>','<%=csrf%>','<%=list[i].type%>')"></a>
                     <%} else { %>
                     <img src="/public/admin/images/no.gif" alt="未生效"
-                        onclick="app.changeStatus(this,'Access','status','<%=list[i]._id%>','<%=csrf%>','<%=list[i].type%>')"></a>
+                        onclick="app.changeStatus(this,'/admin/access/changeStatus','Access','status','<%=list[i]._id%>','<%=csrf%>','<%=list[i].type%>')"></a>
                     <% } %>
                 </td>
                 <td class="text-center">
@@ -93,7 +94,8 @@
                             <td class="text-center"><%=list[i].child[j].action_name%></td>
                 <td class="text-center"><%=list[i].child[j].url%></td>
                 <td class="text-center">
-                    <span onclick="app.changeNum(this,'Access','sort','<%=list[i].child[j]._id%>','<%=csrf%>')">
+                    <span
+                        onclick="app.changeNum(this,'/admin/access/changeNum','Access','sort','<%=list[i].child[j]._id%>','<%=csrf%>')">
                         <%=list[i].child[j].sort%>
                     </span>
                 </td>
@@ -102,10 +104,10 @@
                 <td class="text-center">
                     <% if(list[i].child[j].status==1) { %>
                     <img src="/public/admin/images/yes.gif" alt="生效"
-                        onclick="app.changeStatus(this,'Access','status','<%=list[i].child[j]._id%>','<%=csrf%>','<%=list[i].type%>')"></a>
+                        onclick="app.changeStatus(this,'/admin/access/changeStatus','Access','status','<%=list[i].child[j]._id%>','<%=csrf%>','<%=list[i].type%>')"></a>
                     <%} else { %>
                     <img src="/public/admin/images/no.gif" alt="未生效"
-                        onclick="app.changeStatus(this,'Access','status','<%=list[i].child[j]._id%>','<%=csrf%>','<%=list[i].type%>')"></a>
+                        onclick="app.changeStatus(this,'/admin/access/changeStatus','Access','status','<%=list[i].child[j]._id%>','<%=csrf%>','<%=list[i].type%>')"></a>
                     <% } %>
                 </td>
                 <td class="text-center">

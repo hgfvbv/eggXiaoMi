@@ -53,48 +53,58 @@
                 <td>
                     <% if(list[i].is_best==1) { %>
                     <img src="/public/admin/images/yes.gif"
-                        onclick="app.changeStatus(this,'Goods','is_best','<%=list[i]._id%>','<%=csrf%>')" alt="生效"></a>
+                        onclick="app.changeStatus(this,'/admin/goods/changeStatus','Goods','is_best','<%=list[i]._id%>','<%=csrf%>')"
+                        alt="生效"></a>
                     <%} else { %>
                     <img src="/public/admin/images/no.gif"
-                        onclick="app.changeStatus(this,'Goods','is_best','<%=list[i]._id%>','<%=csrf%>')" alt="未生效"></a>
+                        onclick="app.changeStatus(this,'/admin/goods/changeStatus','Goods','is_best','<%=list[i]._id%>','<%=csrf%>')"
+                        alt="未生效"></a>
                     <% } %>
                 </td>
                 <td>
                     <% if(list[i].is_new==1) { %>
                     <img src="/public/admin/images/yes.gif"
-                        onclick="app.changeStatus(this,'Goods','is_new','<%=list[i]._id%>','<%=csrf%>')" alt="生效"></a>
+                        onclick="app.changeStatus(this,'/admin/goods/changeStatus','Goods','is_new','<%=list[i]._id%>','<%=csrf%>')"
+                        alt="生效"></a>
                     <%} else { %>
                     <img src="/public/admin/images/no.gif"
-                        onclick="app.changeStatus(this,'Goods','is_new','<%=list[i]._id%>','<%=csrf%>')" alt="未生效"></a>
+                        onclick="app.changeStatus(this,'/admin/goods/changeStatus','Goods','is_new','<%=list[i]._id%>','<%=csrf%>')"
+                        alt="未生效"></a>
                     <% } %>
                 </td>
                 <td>
                     <% if(list[i].is_hot==1) { %>
                     <img src="/public/admin/images/yes.gif"
-                        onclick="app.changeStatus(this,'Goods','is_hot','<%=list[i]._id%>','<%=csrf%>')" alt="生效"></a>
+                        onclick="app.changeStatus(this,'/admin/goods/changeStatus','Goods','is_hot','<%=list[i]._id%>','<%=csrf%>')"
+                        alt="生效"></a>
                     <%} else { %>
                     <img src="/public/admin/images/no.gif"
-                        onclick="app.changeStatus(this,'Goods','is_hot','<%=list[i]._id%>','<%=csrf%>')" alt="未生效"></a>
+                        onclick="app.changeStatus(this,'/admin/goods/changeStatus','Goods','is_hot','<%=list[i]._id%>','<%=csrf%>')"
+                        alt="未生效"></a>
                     <% } %>
                 </td>
                 <td>
-                    <span onclick="app.changeNum(this,'Goods','goods_number','<%=list[i]._id%>','<%=csrf%>')">
+                    <span
+                        onclick="app.changeNum(this,'/admin/goods/changeNum','Goods','goods_number','<%=list[i]._id%>','<%=csrf%>')">
                         <%=list[i].goods_number%>
                     </span>
                 </td>
                 <td><%=helper.formartTime(list[i].add_time)%></td>
                 <td>
-                    <span onclick="app.changeNum(this,'Goods','sort','<%=list[i]._id%>','<%=csrf%>')">
+                    <span
+                        onclick="app.changeNum(this,'/admin/goods/changeNum','Goods','sort','<%=list[i]._id%>','<%=csrf%>')">
                         <%=list[i].sort%>
                     </span>
                 </td>
                 <td>
                     <% if(list[i].status==1) { %>
                     <img src="/public/admin/images/yes.gif"
-                        onclick="app.changeStatus(this,'Goods','status','<%=list[i]._id%>','<%=csrf%>')" alt="生效"></a>
+                        onclick="app.changeStatus(this,'/admin/goods/changeStatus','Goods','status','<%=list[i]._id%>','<%=csrf%>')"
+                        alt="生效"></a>
                     <%} else { %>
                     <img src="/public/admin/images/no.gif"
-                        onclick="app.changeStatus(this,'Goods','status','<%=list[i]._id%>','<%=csrf%>')" alt="未生效"></a>
+                        onclick="app.changeStatus(this,'/admin/goods/changeStatus','Goods','status','<%=list[i]._id%>','<%=csrf%>')"
+                        alt="未生效"></a>
                     <% } %>
                 </td>
                 <td><a href="/admin/goods/edit?id=<%=list[i]._id%>">修改</a>
@@ -112,7 +122,7 @@
     $('#page').jqPaginator({
         totalPages: <%=pageCount%>,
         visiblePages: 10,
-        currentPage: <%=page%>,
+        currentPage: <%=page %>,
         onPageChange: function (num, type) {
             console.log('当前第' + num + '页', type);
             var title = $('#title').val();
@@ -120,7 +130,7 @@
                 location.href = "/admin/goods?page=" + num + "&title=" + title;
             }
         }
-    });
+            });
 
 </script>
 </body>
