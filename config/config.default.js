@@ -65,6 +65,8 @@ module.exports = appInfo => {
 
   //全局分页每页数量 默认为10
   config.pageSize = 10;
+  //权限分页每页数量 默认为2
+  config.accessPageSize = 2;
 
   exports.multipart = {
     whitelist: ['.png', '.jfif', '.jpg', '.jpeg', '.gif', '.ico', '.mp4', '.avi']

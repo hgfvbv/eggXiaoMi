@@ -8,12 +8,22 @@ class AccessController extends BaseController {
 
         let params = ctx.query,
             module_name = params.module_name ? params.module_name.trim() : '',
+            page = params.page ? params.page : 1,
+            pageSize = config.accessPageSize ? config.accessPageSize : 2,
             where = '';
 
         if (module_name && module_name != '') {
             //模糊查询
             where = module_name;
         };
+
+        let totalCount = await ctx.model.Access.find({
+            $and: [
+                { module_name: { $regex: where } },
+                { module_id: '0' }
+            ]
+        }).count();
+        let pageCount = Math.ceil(totalCount / pageSize);
 
         let list = await ctx.model.Access.aggregate([
             {
@@ -36,12 +46,18 @@ class AccessController extends BaseController {
                 $sort: {
                     sort: 1
                 }
+            },
+            {
+                $skip: ((page - 1) * pageSize)
+            },
+            {
+                $limit: pageSize
             }
         ]);
         for (let i = 0; i < list.length; i++) {
             list[i].child = await ctx.service.tools.jsonSort(list[i].child, 'sort', false);
         }
-        await this.ctx.render('/admin/access/index', { params, list, await: config.await });
+        await this.ctx.render('/admin/access/index', { params, list, await: config.await, page, pageCount });
     }
 
     async add() {
@@ -104,13 +120,14 @@ class AccessController extends BaseController {
         const { ctx, config } = this;
         let params = ctx.query,
             id = params.id ? params.id.trim() : '',
+            page=params.page?params.page:1,
             where = {};
 
         if (id == '') {
             await this.error('/admin/access', '对不起！服务器繁忙！要不稍后再试试？');
             return;
         }
-
+console.log(page)
         where = {
             _id: id
         };
