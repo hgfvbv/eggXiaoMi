@@ -1,0 +1,90 @@
+<%- include ../public/page_header.html %>
+<script>
+    $(function () {
+        $('#myform').submit(function () {
+            var num = /^\d+$/,
+                params = {
+                    title: $('#title').val().trim(),
+                    relation: $('#relation').val().trim(),
+                    link: $('#link').val().trim(),
+                    sort: $('#sort').val().trim()
+                };
+
+            if (params.title == '') {
+                alert('请输入导航名称！');
+                return false;
+            }
+            if (params.link == '') {
+                alert('请输入导航连接地址！');
+                return false;
+            }
+            if (params.sort == '') {
+                alert('请输入排序！');
+                return false;
+            } else if (!num.test(params.sort)) {
+                alert('请正确输入排序！');
+                return false;
+            }
+        });
+    });
+</script>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        修改导航
+    </div>
+    <div class="panel-body">
+        <div class="table-responsive input-form">
+            <form action="/admin/nav/doEdit" class="form_input" method="post" id='myform' autocomplete="off">
+                <input type="hidden" name="_csrf" value="<%=csrf%>">
+                <input type="hidden" name="id" value="<%=result._id%>">
+                <input type="hidden" name="prevPage" value="<%=prevPage%>">
+                <ul>
+                    <li class="line">
+                        <span> 生&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;效: </span><input type="checkbox" id="status"
+                            name="status" <%=result.status==1?"checked":""%> />
+                    </li>
+
+                    <li class="line"> <span>导航名称:</span> <input type="text" id="title" name="title" class="input"
+                            placeholder="请输入导航名称" value="<%=result.title%>" />
+                    </li>
+
+                    <li class="line"> <span>导航位置:</span>
+                        <select name="position" id="position">
+                            <option value="1" <%=result.position==1?'selected':''%>>顶部</option>
+                            <option value="2" <%=result.position==2?'selected':''%>>中间</option>
+                            <option value="3" <%=result.position==3?'selected':''%>>底部</option>
+                        </select>
+                    </li>
+
+                    <li class="line"> <span>关联商品:</span> <input type="text" id="relation" name="relation" class="input"
+                            placeholder="请输入关联商品" value="<%=result.relation%>" /></li>
+
+                    <li class="line"> <span>导航连接地址:</span> <input type="text" id="link" name="link" class="input"
+                            placeholder="请输入导航连接地址" value="<%=result.link%>" /></li>
+
+                    <li class="line"> <span>新窗口打开:</span>
+                        <select name="is_opennew" id="is_opennew">
+                            <option value="1" <%=result.is_opennew==1?'selected':''%>>否</option>
+                            <option value="2" <%=result.is_opennew==2?'selected':''%>>是</option>
+                        </select>
+                    </li>
+
+                    <li class="line"> <span>排&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;序:</span> <input type="number"
+                            id="sort" name="sort" placeholder="请输入排序" value="<%=result.sort%>" /></li>
+
+                    <li>
+                        <br />
+                        <button type="submit" class="btn btn-primary">提交</button>
+                        <button type="button" class="btn btn-default"
+                            onclick="javascript:location.href='<%=ctx.state.prevPage%>';">返回</button>
+                    </li>
+                </ul>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>

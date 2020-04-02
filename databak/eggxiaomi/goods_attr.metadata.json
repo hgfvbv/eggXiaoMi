@@ -1,1 +1,1 @@
-{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"eggxiaomi.goods_attr"}],"uuid":"1b36ab4f0a5f45369036bf61e37bda1a"}
+{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"eggxiaomi.goods_attr"}],"uuid":"282e7439a427454cb03596674fe28667"}

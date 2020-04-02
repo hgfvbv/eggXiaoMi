@@ -105,6 +105,7 @@
             <form action="/admin/goods/doEdit" class="goods_content" method="post" id='myform' autocomplete="off">
                 <input type="hidden" name="_csrf" value="<%=csrf%>">
                 <input type="hidden" name="id" value="<%=result._id%>">
+                <input type="hidden" name="prevPage" value="<%=prevPage%>">
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active"><a href="#general" role="tab" data-toggle="tab">通用信息</a></li>

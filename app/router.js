@@ -103,4 +103,13 @@ module.exports = app => {
   router.post('/admin/goodsColor/doEdit', controller.admin.goodsColor.doEdit);
   router.get('/admin/goodsColor/delete', controller.admin.goodsColor.delete);
   router.post('/admin/goodsColor/changeStatus', controller.admin.base.changeStatus);
+
+  router.get('/admin/nav', controller.admin.nav.index);
+  router.get('/admin/nav/add', controller.admin.nav.add);
+  router.post('/admin/nav/doAdd', controller.admin.nav.doAdd);
+  router.get('/admin/nav/edit', controller.admin.nav.edit);
+  router.post('/admin/nav/doEdit', controller.admin.nav.doEdit);
+  router.get('/admin/nav/delete', controller.admin.base.delete);
+  router.post('/admin/nav/changeStatus', controller.admin.base.changeStatus);
+  router.post('/admin/nav/changeNum', controller.admin.base.changeNum);
 };

@@ -502,7 +502,8 @@ class GoodsController extends BaseController {
             goodsCate: list,
             goodsColorRelation,
             goodsColor,
-            goodsType
+            goodsType,
+            prevPage: ctx.state.prevPage
         });
     }
 
@@ -526,10 +527,11 @@ class GoodsController extends BaseController {
             market_price = params.market_price ? params.market_price.trim() : '',
             sort = params.sort ? params.sort.trim() : '',
             goods_img = params.goods_img ? params.goods_img : '',
+            prevPage = params.prevPage ? params.prevPage : '/admin/goods',
             goods_content = params.goods_content ? params.goods_content.trim() : '';
 
         if (id == '') {
-            await this.error('/admin/goods', '对不起！服务器繁忙！要不稍后再试试？');
+            await this.error(prevPage, '对不起！服务器繁忙！要不稍后再试试？');
             return;
         }
 
@@ -643,7 +645,7 @@ class GoodsController extends BaseController {
                 return;
             }
 
-            await ctx.redirect('/admin/goods');
+            await ctx.redirect(prevPage);
         } else {
             await this.error(`/admin/goods/edit?id=${params.id}`, '编辑商品失败！');
         }
@@ -656,7 +658,7 @@ class GoodsController extends BaseController {
             where = {};
 
         if (id == '') {
-            await this.error('/admin/goods', '对不起！服务器繁忙！要不稍后再试试？');
+            await this.error(ctx.state.prevPage, '对不起！服务器繁忙！要不稍后再试试？');
             return;
         }
 

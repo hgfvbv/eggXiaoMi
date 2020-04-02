@@ -120,21 +120,20 @@ class AccessController extends BaseController {
         const { ctx, config } = this;
         let params = ctx.query,
             id = params.id ? params.id.trim() : '',
-            page=params.page?params.page:1,
             where = {};
 
         if (id == '') {
             await this.error('/admin/access', '对不起！服务器繁忙！要不稍后再试试？');
             return;
         }
-console.log(page)
+
         where = {
             _id: id
         };
 
         let result = await ctx.model.Access.find(where);
         let list = await this.ctx.model.Access.find({ module_id: '0', status: 1 }, { _id: 1, module_name: 1 }).sort({ sort: 1 });
-        await this.ctx.render('/admin/access/edit', { result: result[0], list, await: config.await });
+        await this.ctx.render('/admin/access/edit', { result: result[0], list, await: config.await, prevPage: ctx.state.prevPage });
     }
 
     async doEdit() {
@@ -148,11 +147,12 @@ console.log(page)
             module_id = params.module_id ? params.module_id.trim() : '',
             sort = params.sort ? params.sort.trim() : '',
             description = params.description ? params.description.trim() : '',
+            prevPage = params.prevPage ? params.prevPage : '/admin/access',
             where = {},
             uParams = {};
 
         if (id == '') {
-            await this.error('/admin/access', '对不起！服务器繁忙！要不稍后再试试？');
+            await this.error(prevPage, '对不起！服务器繁忙！要不稍后再试试？');
             return;
         }
 
@@ -210,7 +210,7 @@ console.log(page)
                             }
                         }
                         if (isSuccess) {
-                            await ctx.redirect('/admin/access');
+                            await ctx.redirect(prevPage);
                         } else {
                             await this.error(`/admin/access/edit?id=${id}`, '编辑权限失败！');
                         }
@@ -224,12 +224,12 @@ console.log(page)
                 if (uParams.status == 0) {
                     let dResult = await ctx.model.RoleAccess.deleteMany({ access_id: id, role_id: { $nin: [config.isuper] } });
                     if (dResult.ok > 0) {
-                        await ctx.redirect('/admin/access');
+                        await ctx.redirect(prevPage);
                     } else {
                         await this.error(`/admin/access/edit?id=${id}`, '编辑权限失败！');
                     }
                 } else {
-                    await ctx.redirect('/admin/access');
+                    await ctx.redirect(prevPage);
                 }
             }
         } else {
@@ -314,7 +314,7 @@ console.log(page)
             where = {};
 
         if (id == '' || id == config.await) {
-            await this.error('/admin/access', '对不起！服务器繁忙！要不稍后再试试？');
+            await this.error(ctx.state.prevPage, '对不起！服务器繁忙！要不稍后再试试？');
             return;
         }
 
@@ -343,7 +343,7 @@ console.log(page)
                         //删除子模块
                         let dResult = await ctx.model.Access.deleteMany({ module_id: app.mongoose.Types.ObjectId(id) });
                         if (dResult.ok > 0) {
-                            await ctx.redirect('/admin/access');
+                            await ctx.redirect(ctx.state.prevPage);
                         } else {
                             await this.error(`/admin/access/edit?id=${id}`, '删除模块失败！');
                         }
@@ -357,7 +357,7 @@ console.log(page)
                 //删除被删模块所在中间表的数据
                 let roleAccessResult = await ctx.model.RoleAccess.deleteMany({ access_id: id, role_id: { $nin: [config.isuper] } });
                 if (roleAccessResult.ok > 0) {
-                    await ctx.redirect('/admin/access');
+                    await ctx.redirect(ctx.state.prevPage);
                 } else {
                     await this.error(ctx.state.prevPage, '删除模块失败！');
                 }
