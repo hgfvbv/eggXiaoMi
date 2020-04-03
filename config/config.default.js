@@ -64,7 +64,7 @@ module.exports = appInfo => {
   }
 
   //全局分页每页数量 默认为10
-  config.pageSize = 10;
+  config.pageSize = 7;
   //权限分页每页数量 默认为2
   config.accessPageSize = 2;
 

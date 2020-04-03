@@ -1,4 +1,5 @@
 <%- include ../public/page_header.html %>
+<script src="/public/admin/js/jqPaginator.js"></script>
 
 <div class="panel panel-default">
     <div class="panel-heading">
@@ -67,7 +68,25 @@
             <%}%>
         </tbody>
     </table>
+    <div align="center">
+        <div id="page" class="pagination"></div>
+    </div>
 </div>
+<script>
+    $('#page').jqPaginator({
+        totalPages: <%=pageCount%>,
+        visiblePages: 10,
+        currentPage: <%=page %>,
+        onPageChange: function (num, type) {
+            console.log('当前第' + num + '页', type);
+            var username = $('#username').val();
+            if (type == 'change') {
+                location.href = "/admin/manager?page=" + num + "&username=" + username;
+            }
+        }
+            });
 
+</script>
 </body>
+
 </html>

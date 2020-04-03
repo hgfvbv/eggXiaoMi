@@ -8,6 +8,8 @@ class RoleController extends BaseController {
 
         let params = ctx.query,
             title = params.title ? params.title.trim() : '',
+            page = params.page ? params.page : 1,
+            pageSize = config.pageSize ? config.pageSize : 10,
             where = {};
 
         if (title && title != '') {
@@ -19,8 +21,11 @@ class RoleController extends BaseController {
             };
         };
 
-        let list = await ctx.model.Role.find(where);
-        await ctx.render('admin/role/index', { params, list, rwait: config.rwait, isuper: config.isuper });
+        let totalCount = await ctx.model.Role.find(where).count();
+        let pageCount = Math.ceil(totalCount / pageSize);
+
+        let list = await ctx.model.Role.find(where).skip((page - 1) * pageSize).limit(pageSize);
+        await ctx.render('admin/role/index', { params, list, rwait: config.rwait, isuper: config.isuper, page, pageCount });
     }
 
     async add() {

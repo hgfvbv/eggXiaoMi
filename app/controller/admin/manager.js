@@ -4,16 +4,25 @@ const BaseController = require('./base');
 
 class ManagerController extends BaseController {
     async index() {
-        const { ctx } = this;
+        const { ctx, config } = this;
 
         let params = ctx.query,
             username = params.username ? params.username.trim() : '',
+            page = params.page ? params.page : 1,
+            pageSize = config.pageSize ? config.pageSize : 10,
             where = '';
 
         if (username && username != '') {
             //模糊查询
             where = username;
         };
+
+        let totalCount = await ctx.model.Admin.find({
+            $or: [
+                { username: { $regex: where } }
+            ]
+        }).count();
+        let pageCount = Math.ceil(totalCount / pageSize);
 
         let list = await ctx.model.Admin.aggregate([
             {
@@ -30,10 +39,16 @@ class ManagerController extends BaseController {
                         { username: { $regex: where } }
                     ]
                 }
+            },
+            {
+                $skip: ((page - 1) * pageSize)
+            },
+            {
+                $limit: pageSize
             }
         ]);
 
-        await this.ctx.render('/admin/manager/index', { params, list });
+        await this.ctx.render('/admin/manager/index', { params, list, page, pageCount });
     }
 
     async add() {
@@ -105,7 +120,7 @@ class ManagerController extends BaseController {
         let list = await ctx.model.Role.find({ 'status': 1 }, { '_id': 1, 'title': 1 }),
             result = await ctx.model.Admin.find(where);
 
-        await this.ctx.render('/admin/manager/edit', { list, result: result[0], rwait: config.rwait, isuper: config.isuper });
+        await this.ctx.render('/admin/manager/edit', { list, result: result[0], rwait: config.rwait, isuper: config.isuper, prevPage: ctx.state.prevPage ? ctx.state.prevPage : '/admin/manager' });
     }
 
     async doEdit() {
@@ -119,11 +134,12 @@ class ManagerController extends BaseController {
             status = params.status ? 1 : 0,
             is_super = params.is_super ? 1 : 0,
             role_id = params.role_id,
+            prevPage = (params.prevPage && !params.prevPage.indexOf('/admin/manager/doEdit')) ? params.prevPage : '/admin/manager',
             where = {},
             uParams = {};
 
         if (id == '') {
-            await this.error('/admin/manager', '对不起！服务器繁忙！要不稍后再试试？');
+            await this.error(prevPage, '对不起！服务器繁忙！要不稍后再试试？');
             return;
         }
 
@@ -169,7 +185,7 @@ class ManagerController extends BaseController {
         let admin = await ctx.model.Admin.updateOne(where, uParams);
 
         if (admin.nModified > 0) {
-            await ctx.redirect('/admin/manager');
+            await ctx.redirect(prevPage);
         } else {
             await this.error(`/admin/manager/edit?id=${id}`, '编辑管理员失败！');
         }
