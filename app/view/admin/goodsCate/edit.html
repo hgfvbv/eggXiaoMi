@@ -30,7 +30,7 @@
         <div class="table-responsive input-form">
             <form action="/admin/goodsCate/doEdit?_csrf=<%=csrf%>" method="post" id='myform' autocomplete="off"
                 enctype="multipart/form-data">
-                <ul>
+                <ul class="form_input">
                     <input type="hidden" name="id" value="<%=result._id%>">
                     <li class="line">
                         <span> 生&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;效: </span><input type="checkbox" id="status"
@@ -76,7 +76,8 @@
 
                     <li> <span>分类图片:</span><input type="file" id="cate_img" name="cate_img" />
                         <br>
-                        <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <img class="pic" src="<%=result.cate_img%>" alt="分类图片">
                     </li>
 

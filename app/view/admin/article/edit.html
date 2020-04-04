@@ -1,0 +1,170 @@
+<%- include ../public/page_header.html %>
+
+<!-- 富文本编辑器 -->
+<link href="/public/admin/wysiwyg-editor/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+<!-- Include Editor style. -->
+<link href="/public/admin/wysiwyg-editor/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
+<link href="/public/admin/wysiwyg-editor/css/froala_style.min.css" rel="stylesheet" type="text/css" />
+<!-- 引入jquery -->
+<!-- Include Editor JS files. -->
+<script type="text/javascript" src="/public/admin/wysiwyg-editor/js/froala_editor.pkgd.min.js"></script>
+<script type="text/javascript" src="/public/admin/wysiwyg-editor/js/zh_cn.js"></script>
+
+<!-- 批量上传图片插件 -->
+<link rel="stylesheet" type="text/css" href="/public/admin/webuploader/css/webuploader.css">
+<link rel="stylesheet" type="text/css" href="/public/admin/webuploader/css/diyUpload.css">
+<script type="text/javascript" src="/public/admin/webuploader/js/webuploader.html5only.min.js"></script>
+<script type="text/javascript" src="/public/admin/webuploader/js/diyUpload.js"></script>
+
+<script>
+    $(function () {
+        $('#myform').submit(function () {
+            var num = /^\d+$/,
+                params = {
+                    title: $('#title').val().trim(),
+                    cate_id: $('#cate_id').val(),
+                    link: $('#link').val().trim(),
+                    sort: $('#sort').val().trim(),
+                    content: $('#content').val().trim()
+                };
+
+            if (params.title == '') {
+                alert('请输入文章标题！');
+                return false;
+            }
+            if (params.cate_id == '0') {
+                alert('请选择所属分类！');
+                return false;
+            }
+            if (params.link == '') {
+                alert('请输入跳转地址！');
+                return false;
+            }
+            if (params.sort == '') {
+                alert('请输入排序！');
+                return false;
+            } else if (!num.test(params.sort)) {
+                alert('请正确输入排序！');
+                return false;
+            }
+            if (params.content == '') {
+                alert('请输入文章内容！');
+                return false;
+            }
+        });
+    });
+</script>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        修改文章
+    </div>
+    <div class="panel-body">
+        <div class="table-responsive input-form">
+            <form action="/admin/article/doEdit" class="goods_content" method="post" id='myform' autocomplete="off">
+                <input type="hidden" name="_csrf" value="<%=csrf%>">
+                <input type="hidden" name="id" value="<%=result._id%>">
+                <input type="hidden" name="prevPage" value="<%=prevPage%>">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#general" role="tab" data-toggle="tab">基本信息</a></li>
+                    <li role="presentation"><a href="#detail" role="tab" data-toggle="tab">文章内容</a></li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="general">
+                        <ul class="form_input">
+                            <li class="line"> <span> 文章标题:</span> <input type="text" id="title" name="title"
+                                    class="input" placeholder="请输入文章标题" value="<%=result.title%>" /></li>
+                            <li class="line"> <span>所属分类:</span>
+                                <select name="cate_id" id="cate_id">
+                                    <option value="0">----请选择所属分类----</option>
+                                    <%for(let i=0;i<articleCate.length;i++){%>
+                                    <option value="<%=articleCate[i]._id%>"
+                                        <%=result.cate_id.toString()==articleCate[i]._id.toString()?"selected":""%>>
+                                        <%=articleCate[i].title%></option>
+                                    <%for(let j=0;j<articleCate[i].child.length;j++){%>
+                                    <option value="<%=articleCate[i].child[j]._id%>"
+                                        <%=result.cate_id.toString()==articleCate[i].child[j]._id.toString()?"selected":""%>>
+                                        ————<%=articleCate[i].child[j].title%>
+                                    </option>
+                                    <%}%>
+                                    <%}%>
+                                </select>
+                            </li>
+                            <li class="line"> <span>跳转地址:</span> <input type="text" id="link" name="link"
+                                    placeholder="请输入跳转地址" value="<%=result.link%>" /></li>
+                            <li class="line"> <span>Seo关键词:</span> <input type="text" id="keywords" name="keywords"
+                                    placeholder="请输入Seo关键词" value="<%=result.keywords%>" /></li>
+                            <li class="line"> <span>Seo描述:</span> <input type="text" id="description" name="description"
+                                    placeholder="请输入Seo描述" value="<%=result.description%>" /></li>
+                            <li class="line"> <span>状态:</span>　<input type="checkbox" id="status" name="status"
+                                    <%=result.status==1?"checked":""%>>
+                                <label for="status">选中为生效</label>
+                            </li>
+                            <li class="line"> <span> 排序:</span> <input type="number" id="sort" name="sort"
+                                    placeholder="请输入排序" value="<%=result.sort%>" /></li>
+                            <li class="line">
+                                <span> 封面图片:</span>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <img class="pic" src="<%=result.article_img%>" alt="封面图片">
+                                <div id="articleImgLib" class="photoList"></div>
+
+                                <div id="articleImgList">
+                                    <input type="hidden" id="article_img" name="article_img"
+                                        value="<%=result.article_img%>" />
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="detail">
+                        <textarea name="content" id="content"><%=result.content%></textarea>
+                    </div>
+
+                    <ul>
+                        <li>
+                            <br />
+                            <button type="submit" class="btn btn-primary">提交</button>
+                            <button type="button" class="btn btn-default"
+                                onclick="javascript:location.href='/admin/article';">返回</button>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    //富文本编辑器
+    $(function () {
+        new FroalaEditor('textarea#content', {
+            height: 300,    //给编辑器设置默认的高度
+            language: 'zh_cn',
+            imageUploadURL: '/admin/article/articleUploadImage',
+            videoUploadURL: '/admin/article/articleUploadVideo',
+            //根据不同的分辨率加载不同的配置
+            toolbarButtons: ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'embedly', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
+            toolbarButtonsMD: ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'embedly', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
+            toolbarButtonsSM: ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'embedly', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo']
+        });
+
+        //上传文章图片
+        $('#articleImgLib').diyUpload({
+            url: '/admin/article/articleUploadImg',
+            fileSingleSizeLimit: 5 * 1024 * 1024, // 5 M  
+            fileNumLimit: 1,
+            success: function (response) {
+                $('#article_img').val(response.link);
+            },
+            error: function (err) {
+                console.info(err);
+            }
+        });
+    });
+</script>
+
+</body>
+
+</html>

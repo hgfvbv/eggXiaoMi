@@ -49,14 +49,20 @@ var app = {
 	changeStatus: function (el, url, model, attr, id, _csrf, type) {
 		$.post(url, { model, attr, id, _csrf, type }, function (data) {
 			if (data.success) {
-				if (model == 'GoodsCate') {
-					location.href = '/admin/goodsCate';
-				} else {
-					if (el.src.indexOf('yes') != -1) {
-						el.src = '/public/admin/images/no.gif';
-					} else {
-						el.src = '/public/admin/images/yes.gif';
-					}
+				switch (model) {
+					case 'GoodsCate':
+						location.href = '/admin/goodsCate';
+						break;
+					case 'ArticleCate':
+						location.href = '/admin/articleCate';
+						break;
+					default:
+						if (el.src.indexOf('yes') != -1) {
+							el.src = '/public/admin/images/no.gif';
+						} else {
+							el.src = '/public/admin/images/yes.gif';
+						}
+						break;
 				}
 			} else {
 				if (data.message) {

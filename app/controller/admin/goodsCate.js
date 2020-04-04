@@ -121,7 +121,7 @@ class GoodsCateController extends BaseController {
             await goodsCate.save();
             await ctx.redirect('/admin/goodsCate');
         } catch (err) {
-            await this.error('/admin/goodsCate/add', '增加商品分类图失败！');
+            await this.error('/admin/goodsCate/add', '增加商品分类失败！');
         }
     }
 
@@ -132,7 +132,7 @@ class GoodsCateController extends BaseController {
             where = {};
 
         if (id == '') {
-            await this.error('/admin/goodsType', '对不起！服务器繁忙！要不稍后再试试？');
+            await this.error('/admin/goodsCate', '对不起！服务器繁忙！要不稍后再试试？');
             return;
         }
 

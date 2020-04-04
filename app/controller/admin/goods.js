@@ -2,7 +2,6 @@
 
 const BaseController = require('./base'),
     fs = require('fs'),
-    path = require('path'),
     pump = require('mz-modules/pump'),
     _ = require('lodash');
 
@@ -527,7 +526,7 @@ class GoodsController extends BaseController {
             market_price = params.market_price ? params.market_price.trim() : '',
             sort = params.sort ? params.sort.trim() : '',
             goods_img = params.goods_img ? params.goods_img : '',
-            prevPage = params.prevPage ? params.prevPage : '/admin/goods',
+            prevPage = (params.prevPage && !params.prevPage.indexOf('/admin/goods/doEdit')) ? params.prevPage : '/admin/goods',
             goods_content = params.goods_content ? params.goods_content.trim() : '';
 
         if (id == '') {

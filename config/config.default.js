@@ -67,6 +67,8 @@ module.exports = appInfo => {
   config.pageSize = 7;
   //权限分页每页数量 默认为2
   config.accessPageSize = 2;
+  //权限分页每页数量 默认为2
+  config.articleCatePageSize = 2;
 
   exports.multipart = {
     whitelist: ['.png', '.jfif', '.jpg', '.jpeg', '.gif', '.ico', '.mp4', '.avi']
@@ -82,7 +84,7 @@ module.exports = appInfo => {
     csrf: {
       // 判断是否需要 ignore 的方法，请求上下文 context 作为第一个参数
       ignore: ctx => {
-        if (ctx.request.url == '/admin/goods/goodsUploadImage' || ctx.request.url == '/admin/goods/goodsUploadPhoto' || ctx.request.url == '/admin/goods/goodsUploadVideo' || ctx.request.url == '/admin/goods/goodsUploadImg') {
+        if (ctx.request.url == '/admin/goods/goodsUploadImage' || ctx.request.url == '/admin/goods/goodsUploadPhoto' || ctx.request.url == '/admin/goods/goodsUploadVideo' || ctx.request.url == '/admin/goods/goodsUploadImg' || ctx.request.url == '/admin/articleCate/articleCateUploadImg' || ctx.request.url == '/admin/article/articleUploadImage' || ctx.request.url == '/admin/article/articleUploadVideo' || ctx.request.url == '/admin/article/articleUploadImg') {
           return true;
         }
         return false;

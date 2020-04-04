@@ -1,0 +1,130 @@
+<%- include ../public/page_header.html %>
+
+<!-- 批量上传图片插件 -->
+<link rel="stylesheet" type="text/css" href="/public/admin/webuploader/css/webuploader.css">
+<link rel="stylesheet" type="text/css" href="/public/admin/webuploader/css/diyUpload.css">
+<script type="text/javascript" src="/public/admin/webuploader/js/webuploader.html5only.min.js"></script>
+<script type="text/javascript" src="/public/admin/webuploader/js/diyUpload.js"></script>
+<script>
+    $(function () {
+        $('#myform').submit(function () {
+            var params = {
+                title: $('#title').val().trim(),
+                link: $('#link').val(),
+                pid: $('#pid').val(),
+                sort: $('#sort').val().trim()
+            };
+
+            if (params.title == '') {
+                alert('请输入分类名称！');
+                return false;
+            }
+            if (params.link == '') {
+                alert('请输入跳转地址！');
+                return false;
+            }
+            if (params.pid == '-1') {
+                alert('请选择所属分类！');
+                return false;
+            }
+            if (params.sort == '') {
+                alert('请输入排序！');
+                return false;
+            } else if (!(/^\d+$/.test(params.sort))) {
+                alert('请正确输入排序！');
+                return false;
+            }
+        });
+    });
+</script>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        修改文章分类
+    </div>
+    <div class="panel-body">
+        <div class="table-responsive input-form">
+            <form action="/admin/articleCate/doEdit" class="articleCate_content" method="post" id='myform'
+                autocomplete="off">
+                <input type="hidden" name="_csrf" value="<%=csrf%>">
+                <input type="hidden" name="id" value="<%=result._id%>">
+                <input type="hidden" name="prevPage" value="<%=prevPage%>">
+                <ul class="form_input">
+                    <li class="line">
+                        <span> 生&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;效: </span><input type="checkbox" id="status"
+                            name="status" <%=result.status==1?"checked":""%> />
+                    </li>
+
+                    <li class="line"> <span>分类名称:</span> <input type="text" id="title" name="title" class="input"
+                            placeholder="请输入分类名称" value="<%=result.title%>" />
+                    </li>
+
+                    <li class="line"> <span>上级分类:</span>
+                        <select name="pid" id="pid">
+                            <option value="-1">----请选择所属分类----</option>
+                            <option value="0" <%=result.pid.toString()=='0'?"selected":""%>>顶级分类</option>
+                            <%for(var i=0;i<articleCate.length;i++){%>
+                            <option value="<%=articleCate[i]._id%>"
+                                <%=result.pid.toString()==articleCate[i]._id.toString()?"selected":""%>>
+                                <%=articleCate[i].title%></option>
+                            <%}%>
+                        </select>
+                    </li>
+
+                    <li class="line"> <span>跳转地址:</span> <input type="text" id="link" name="link" class="input" placeholder="请输入跳转地址" value="<%=result.link%>"
+                            /></li>
+
+                    <li class="line"> <span>Seo标题:</span> <input style='width: 603px;' type="text" id="sub_title"
+                            name="sub_title" class="input" placeholder="请输入Seo标题" value="<%=result.sub_title%>" /></li>
+
+                    <li class="line"> <span>Seo关键词: </span><input style='width: 589px;' type="text" id="keywords"
+                            name="keywords" class="input" placeholder="请输入Seo关键词" value="<%=result.keywords%>" /></li>
+
+                    <li class="line"> <span>Seo描述:</span> <textarea name="description" id="description" cols="81"
+                            rows="4" placeholder="请输入Seo描述"><%=result.description%></textarea></li>
+
+                    <li class="line"> <span>排&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;序:</span> <input type="number"
+                            id="sort" name="sort" value="<%=result.sort%>" placeholder="请输入排序" /></li>
+
+                    <li class="line">
+                        <span> 文章图片:</span>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <img class="pic" src="<%=result.cate_img%>" alt="文章图片">
+                        <div id="articleCateImgLib" class="photoList"></div>
+
+                        <div id="articleCateList">
+                            <input type="hidden" id="cate_img" name="cate_img" value="<%=result.cate_img%>" />
+                        </div>
+                    </li>
+
+                    <li>
+                        <br />
+                        <button type="submit" class="btn btn-primary">提交</button>
+                        <button type="button" class="btn btn-default"
+                            onclick="javascript:location.href='<%=prevPage%>';">返回</button>
+                    </li>
+                </ul>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    //富文本编辑器
+    $(function () {
+        //上传分类图片
+        $('#articleCateImgLib').diyUpload({
+            url: '/admin/articleCate/articleCateUploadImg',
+            fileSingleSizeLimit: 5 * 1024 * 1024, // 5 M  
+            fileNumLimit: 1,
+            success: function (response) {
+                $('#cate_img').val(response.link);
+            },
+            error: function (err) {
+                console.info(err);
+            }
+        });
+    });
+</script>
+</body>
+
+</html>

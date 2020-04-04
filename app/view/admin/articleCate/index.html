@@ -1,0 +1,128 @@
+<%- include ../public/page_header.html %>
+<script src="/public/admin/js/jqPaginator.js"></script>
+
+<div class="panel panel-default">
+
+    <div class="panel-heading">
+        搜索文章分类
+    </div>
+    <div class="panel-body">
+        <form action="/admin/articleCate" method="GET" role="form" class="form-inline" autocomplete="off">
+            <div class="form-group">
+                <label for="name">文章分类名称</label>
+                <input type="text" class="form-control" name="title" id="title" placeholder="请输入文章分类名称"
+                    value="<%=params.title%>">
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-default">开始搜索</button>
+            </div>
+
+            <div class="form-group" style="float:right;">
+                <a href="/admin/articleCate/add" class="btn btn-primary">增加文章分类</a>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- 列表展示 -->
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <thead>
+            <tr class="th">
+                <th class="text-center">分类名称</th>
+                <th class="text-center">分类图片</th>
+                <th class="text-center">跳转地址</th>
+                <th class="text-center">增加时间</th>
+                <th class="text-center">排序</th>
+                <th class="text-center">状态</th>
+
+                <th class="text-center">操作</th>
+            </tr>
+        </thead>
+        <tbody style="background-color:#FFFFFF">
+
+            <%for(let i=0;i<list.length;i++){%>
+            <tr>
+                <td><%=list[i].title%></td>
+                <td class="text-center"><img class="pic"
+                        src="<%=list[i].cate_img%>_64x64<%=helper.getExtName(list[i].cate_img?list[i].cate_img:'')%>"
+                        alt="分类图片"></td>
+                <td class="text-center"><%=list[i].link%></td>
+                <td class="text-center"><%=helper.formartTime(list[i].add_time)%></td>
+                <td class="text-center">
+                    <span
+                        onclick="app.changeNum(this,'/admin/articleCate/changeNum','ArticleCate','sort','<%=list[i]._id%>','<%=csrf%>')">
+                        <%=list[i].sort%>
+                    </span>
+                </td>
+                <td class="text-center">
+                    <% if(list[i].status==1) { %>
+                    <img src="/public/admin/images/yes.gif" alt="生效"
+                        onclick="app.changeStatus(this,'/admin/articleCate/changeStatus','ArticleCate','status','<%=list[i]._id%>','<%=csrf%>')"></a>
+                    <%} else { %>
+                    <img src="/public/admin/images/no.gif" alt="未生效"
+                        onclick="app.changeStatus(this,'/admin/articleCate/changeStatus','ArticleCate','status','<%=list[i]._id%>','<%=csrf%>')"></a>
+                    <% } %>
+                </td>
+                <td class="text-center">
+                    <a href="/admin/articleCate/edit?id=<%=list[i]._id%>">修改</a>
+                    　<a onclick="javascript:return confirm('将删除其所属子分类！\r\n您确定要删除吗？');"
+                        href="/admin/articleCate/delete?id=<%=list[i]._id%>">删除</a>
+                </td>
+            </tr>
+
+            <%for(let j=0;j<list[i].child.length;j++){%>
+            <tr>
+                <td>——————————<%=list[i].child[j].title%></td>
+                <td class="text-center"><img class="pic"
+                        src="<%=list[i].child[j].cate_img%>_64x64<%=helper.getExtName(list[i].child[j].cate_img?list[i].child[j].cate_img:'')%>"
+                        alt="分类图片"></td>
+                <td class="text-center"><%=list[i].child[j].link%></td>
+                <td class="text-center"><%=helper.formartTime(list[i].child[j].add_time)%></td>
+                <td class="text-center">
+                    <span
+                        onclick="app.changeNum(this,'/admin/articleCate/changeNum','ArticleCate','sort','<%=list[i].child[j]._id%>','<%=csrf%>')">
+                        <%=list[i].child[j].sort%>
+                    </span>
+                </td>
+                <td class="text-center">
+                    <% if(list[i].child[j].status==1) { %>
+                    <img src="/public/admin/images/yes.gif" alt="生效"
+                        onclick="app.changeStatus(this,'/admin/articleCate/changeStatus','ArticleCate','status','<%=list[i].child[j]._id%>','<%=csrf%>')"></a>
+                    <%} else { %>
+                    <img src="/public/admin/images/no.gif" alt="未生效"
+                        onclick="app.changeStatus(this,'/admin/articleCate/changeStatus','ArticleCate','status','<%=list[i].child[j]._id%>','<%=csrf%>')"></a>
+                    <% } %>
+                </td>
+                <td class="text-center">
+                    <a href="/admin/articleCate/edit?id=<%=list[i].child[j]._id%>">修改</a>
+                    　<a class="delete" href="/admin/articleCate/delete?id=<%=list[i].child[j]._id%>">删除</a>
+                </td>
+            </tr>
+            <%}%>
+            <%}%>
+        </tbody>
+    </table>
+    <div align="center">
+        <div id="page" class="pagination"></div>
+    </div>
+</div>
+<script>
+
+    $('#page').jqPaginator({
+        totalPages: <%=pageCount%>,
+        visiblePages: 10,
+        currentPage: <%=page%>,
+        onPageChange: function (num, type) {
+            console.log('当前第' + num + '页', type);
+            var title = $('#title').val();
+            if (type == 'change') {
+                location.href = "/admin/articleCate?page=" + num + "&title=" + title;
+            }
+        }
+            });
+
+</script>
+</body>
+
+</html>

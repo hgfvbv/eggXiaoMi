@@ -1,15 +1,25 @@
 <%- include ../public/page_header.html %>
+
+<!-- 批量上传图片插件 -->
+<link rel="stylesheet" type="text/css" href="/public/admin/webuploader/css/webuploader.css">
+<link rel="stylesheet" type="text/css" href="/public/admin/webuploader/css/diyUpload.css">
+<script type="text/javascript" src="/public/admin/webuploader/js/webuploader.html5only.min.js"></script>
+<script type="text/javascript" src="/public/admin/webuploader/js/diyUpload.js"></script>
 <script>
     $(function () {
         $('#myform').submit(function () {
             var params = {
                 title: $('#title').val().trim(),
-                sort: $('#sort').val().trim(),
-                cate_img: $('#cate_img').val().trim()
+                link: $('#link').val(),
+                sort: $('#sort').val().trim()
             };
 
             if (params.title == '') {
                 alert('请输入分类名称！');
+                return false;
+            }
+            if (params.link == '') {
+                alert('请输入跳转地址！');
                 return false;
             }
             if (params.sort == '') {
@@ -19,22 +29,19 @@
                 alert('请正确输入排序！');
                 return false;
             }
-            if (params.cate_img == '') {
-                alert('请选择分类图片！');
-                return false;
-            }
         });
     });
 </script>
 
 <div class="panel panel-default">
     <div class="panel-heading">
-        增加商品分类
+        增加文章分类
     </div>
     <div class="panel-body">
         <div class="table-responsive input-form">
-            <form action="/admin/goodsCate/doAdd?_csrf=<%=csrf%>" method="post" id='myform' autocomplete="off"
-                enctype="multipart/form-data">
+            <form action="/admin/articleCate/doAdd" class="articleCate_content" method="post" id='myform'
+                autocomplete="off">
+                <input type="hidden" name="_csrf" value="<%=csrf%>">
                 <ul class="form_input">
                     <li class="line">
                         <span> 生&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;效: </span><input type="checkbox" id="status"
@@ -48,18 +55,14 @@
                     <li class="line"> <span>上级分类:</span>
                         <select name="pid" id="pid">
                             <option value="0">顶级分类</option>
-                            <%for(var i=0;i<goodsCate.length;i++){%>
-                            <option value="<%=goodsCate[i]._id%>">
-                                <%=goodsCate[i].title%></option>
+                            <%for(var i=0;i<articleCate.length;i++){%>
+                            <option value="<%=articleCate[i]._id%>">
+                                <%=articleCate[i].title%></option>
                             <%}%>
                         </select>
                     </li>
 
-                    <li class="line"> <span>筛选属性:</span> <input type="text" id="filter_attr" name="filter_attr" class="input" placeholder="请输入筛选属性" /></li>
-
                     <li class="line"> <span>跳转地址:</span> <input type="text" id="link" name="link" class="input" placeholder="请输入跳转地址" /></li>
-
-                    <li class="line"> <span>分类模板:</span> <input type="text" id="template" name="template" class="input" placeholder="请输入分类模板" /><span style='color:red;'>空表示默认模板</span></li>
 
                     <li class="line"> <span>Seo标题:</span> <input style='width: 603px;' type="text" id="sub_title" name="sub_title" class="input" placeholder="请输入Seo标题" /></li>
 
@@ -71,19 +74,43 @@
                     <li class="line"> <span>排&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;序:</span> <input type="number"
                         id="sort" name="sort" value='0' placeholder="请输入排序" /></li>
 
-                    <li> <span>分类图片:</span><input type="file" id="cate_img" name="cate_img" /></li>
+                    <li class="line">
+                        <span> 文章图片:</span>
+                        <div id="articleCateImgLib" class="photoList"></div>
+
+                        <div id="articleCateList">
+                            <input type="hidden" id="cate_img" name="cate_img" />
+                        </div>
+                    </li>
 
                     <li>
                         <br />
                         <button type="submit" class="btn btn-primary">提交</button>
                         <button type="button" class="btn btn-default"
-                            onclick="javascript:location.href='/admin/goodsCate';">返回</button>
+                            onclick="javascript:location.href='/admin/articleCate';">返回</button>
                     </li>
                 </ul>
             </form>
         </div>
     </div>
 </div>
+<script>
+    //富文本编辑器
+    $(function () {
+        //上传分类图片
+        $('#articleCateImgLib').diyUpload({
+            url: '/admin/articleCate/articleCateUploadImg',
+            fileSingleSizeLimit: 5 * 1024 * 1024, // 5 M  
+            fileNumLimit: 1,
+            success: function (response) {
+                $('#cate_img').val(response.link);
+            },
+            error: function (err) {
+                console.info(err);
+            }
+        });
+    });
+</script>
 </body>
 
 </html>

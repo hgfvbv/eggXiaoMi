@@ -112,4 +112,26 @@ module.exports = app => {
   router.get('/admin/nav/delete', controller.admin.base.delete);
   router.post('/admin/nav/changeStatus', controller.admin.base.changeStatus);
   router.post('/admin/nav/changeNum', controller.admin.base.changeNum);
+
+  router.get('/admin/articleCate', controller.admin.articleCate.index);
+  router.get('/admin/articleCate/add', controller.admin.articleCate.add);
+  router.post('/admin/articleCate/doAdd', controller.admin.articleCate.doAdd);
+  router.get('/admin/articleCate/edit', controller.admin.articleCate.edit);
+  router.post('/admin/articleCate/doEdit', controller.admin.articleCate.doEdit);
+  router.post('/admin/articleCate/changeStatus', controller.admin.articleCate.changeStatus);
+  router.post('/admin/articleCate/articleCateUploadImg', controller.admin.articleCate.articleCateUploadImg);
+  router.post('/admin/articleCate/changeNum', controller.admin.base.changeNum);
+  router.get('/admin/articleCate/delete', controller.admin.articleCate.delete);
+
+  router.get('/admin/article', controller.admin.article.index);
+  router.get('/admin/article/add', controller.admin.article.add);
+  router.post('/admin/article/doAdd', controller.admin.article.doAdd);
+  router.get('/admin/article/edit', controller.admin.article.edit);
+  router.post('/admin/article/doEdit', controller.admin.article.doEdit);
+  router.post('/admin/article/articleUploadImage', controller.admin.article.articleUploadImage);
+  router.post('/admin/article/articleUploadVideo', controller.admin.article.articleUploadVideo);
+  router.post('/admin/article/articleUploadImg', controller.admin.article.articleUploadImg);
+  router.get('/admin/article/delete', controller.admin.article.delete);
+  router.post('/admin/article/changeStatus', controller.admin.base.changeStatus);
+  router.post('/admin/article/changeNum', controller.admin.base.changeNum);
 };
