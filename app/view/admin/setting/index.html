@@ -1,0 +1,164 @@
+<%- include ../public/page_header.html %>
+
+<!-- 批量上传图片插件 -->
+<link rel="stylesheet" type="text/css" href="/public/admin/webuploader/css/webuploader.css">
+<link rel="stylesheet" type="text/css" href="/public/admin/webuploader/css/diyUpload.css">
+<script type="text/javascript" src="/public/admin/webuploader/js/webuploader.html5only.min.js"></script>
+<script type="text/javascript" src="/public/admin/webuploader/js/diyUpload.js"></script>
+<script>
+    $(function () {
+        $('#myform').submit(function () {
+            var params = {
+                site_tel: $('#site_tel').val().trim()
+            };
+
+            if (params.site_tel != '') {
+                if (!/^1[3456789]\d{9}$/.test(params.site_tel)) {
+                    alert('请正确输入联系电话！');
+                    return false;
+                }
+            }
+        });
+    });
+</script>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        系统设置
+    </div>
+    <div class="panel-body">
+        <div class="table-responsive input-form">
+            <form action="/admin/setting/doEdit" class="articleCate_content" method="post" id='myform'
+                autocomplete="off">
+                <input type="hidden" name="_csrf" value="<%=csrf%>">
+                <input type="hidden" name="id" value="<%=result._id%>">
+                <ul class="form_input">
+                    <li class="line"> <span>网站标题:</span> <input type="text" class="input" id="site_title"
+                            name="site_title" value="<%=result.site_title%>" placeholder="请输入网站标题" /></li>
+
+                    <li class="line">
+                        <span> 网站ico:</span>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <img class="pic" src="<%=result.site_ico%>" alt="网站ico">
+                        <div id="site_icoImg" class="photoList"></div>
+
+                        <div id="site_icoList">
+                            <input type="hidden" id="site_ico" name="site_ico" value="<%=result.site_ico%>" />
+                        </div>
+                    </li>
+
+                    <li class="line">
+                        <span> 网站logo:</span>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <img class="pic" src="<%=result.site_logo%>" alt="网站logo">
+                        <div id="site_logoImg" class="photoList"></div>
+
+                        <div id="site_logoList">
+                            <input type="hidden" id="site_logo" name="site_logo" value="<%=result.site_logo%>" />
+                        </div>
+                    </li>
+
+                    <li class="line"> <span>网站关键词:</span> <input type="text" class="input" id="site_keywords"
+                            name="site_keywords" value="<%=result.site_keywords%>" placeholder="请输入网站关键词" /></li>
+
+                    <li class="line"> <span>网站描述:</span> <textarea id="site_description" name="site_description"
+                            style="width:600px;" placeholder="请输入网站描述"><%=result.site_description%></textarea></li>
+
+                    <li class="line"> <span>地址:</span> <input type="text" class="input" id="site_address"
+                            name="site_address" value="<%=result.site_address%>" placeholder="请输入地址" /></li>
+
+                    <li class="line"> <span>备案信息:</span> <input type="text" class="input" id="site_icp" name="site_icp"
+                            value="<%=result.site_icp%>" placeholder="请输入备案信息" /></li>
+                    <li class="line"> <span>联网备案号:</span> <input type="text" class="input" id="site_policeIcp"
+                            name="site_policeIcp" value="<%=result.site_policeIcp%>" placeholder="请输入联网备案号" /></li>
+                    <li class="line"> <span>QQ:</span> <input type="text" class="input" id="site_qq" name="site_qq"
+                            value="<%=result.site_qq%>" placeholder="请输入QQ" /></li>
+                    <li class="line"> <span>联系电话:</span> <input type="text" class="input" id="site_tel" name="site_tel"
+                            value="<%=result.site_tel%>" placeholder="请输入联系电话" /></li>
+
+                    <li class="line">
+                        <span> 商品默认图片:</span>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <img class="pic" src="<%=result.no_picture%>" alt="商品默认图片">
+                        <div id="no_pictureImg" class="photoList"></div>
+
+                        <div id="no_pictureList">
+                            <input type="hidden" id="no_picture" name="no_picture" value="<%=result.no_picture%>" />
+                        </div>
+                    </li>
+
+                    <li class="line"> <span>搜索关键词:</span> <input type="text" class="input" id="search_keywords"
+                            name="search_keywords" value="<%=result.search_keywords%>" placeholder="请输入搜索关键词" /></li>
+
+                    <li class="line"> <span>统计代码:</span> <input type="text" class="input" id="tongji_code"
+                            name="tongji_code" value="<%=result.tongji_code%>" placeholder="请输入统计代码" /></li>
+
+                    <li class="line">
+                        <span> 是否关闭商城: </span>&nbsp;&nbsp;<input type="radio" id="site_status1" name="site_status"
+                            <%=result.site_status==1?"checked":""%> value=1 /><label for="site_status1">是</label>
+                        &nbsp;&nbsp;
+                        <input type="radio" id="site_status0" name="site_status" <%=result.site_status==0?"checked":""%>
+                            value=0 /><label for="site_status0">否</label>
+                    </li>
+
+                    <li class="line"> <span>更新日期:</span> <input type="text" class="input" id="edit_time"
+                            name="edit_time" value="<%=helper.formartTime(result.edit_time)%>" placeholder="请输入更新日期"
+                            readonly />
+                    </li>
+
+                    <li>
+                        <br />
+                        <button type="submit" class="btn btn-primary">提交</button>
+                        <button type="button" class="btn btn-default"
+                            onclick="javascript:location.href='/admin/welcome';">返回</button>
+                    </li>
+                </ul>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        //上传网站ico
+        $('#site_icoImg').diyUpload({
+            url: '/admin/setting/siteIcoUploadImg',
+            fileSingleSizeLimit: 5 * 1024 * 1024, // 5 M  
+            fileNumLimit: 1,
+            success: function (response) {
+                $('#site_ico').val(response.link);
+            },
+            error: function (err) {
+                console.info(err);
+            }
+        });
+
+        //上传网站logo
+        $('#site_logoImg').diyUpload({
+            url: '/admin/setting/siteLogoUploadImg',
+            fileSingleSizeLimit: 5 * 1024 * 1024, // 5 M  
+            fileNumLimit: 1,
+            success: function (response) {
+                $('#site_logo').val(response.link);
+            },
+            error: function (err) {
+                console.info(err);
+            }
+        });
+
+        //上传商品默认图片
+        $('#no_pictureImg').diyUpload({
+            url: '/admin/setting/noPictureUploadImg',
+            fileSingleSizeLimit: 5 * 1024 * 1024, // 5 M  
+            fileNumLimit: 1,
+            success: function (response) {
+                $('#no_picture').val(response.link);
+            },
+            error: function (err) {
+                console.info(err);
+            }
+        });
+    });
+</script>
+</body>
+
+</html>

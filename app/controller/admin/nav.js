@@ -35,7 +35,7 @@ class NavController extends BaseController {
         const { ctx } = this;
         let params = ctx.request.body,
             title = params.title ? params.title.trim() : '',
-            relation = params.relation ? params.relation.trim() : '',
+            relation = params.relation ? params.relation.trim().replace('，', ',') : '',
             link = params.link ? params.link.trim() : '',
             sort = params.sort ? params.sort.trim() : '',
             status = params.status ? 1 : 0;
@@ -91,7 +91,7 @@ class NavController extends BaseController {
         let params = ctx.request.body,
             id = params.id ? params.id.trim() : '',
             title = params.title ? params.title.trim() : '',
-            relation = params.relation ? params.relation.trim() : '',
+            relation = params.relation ? params.relation.trim().replace('，', ',') : '',
             link = params.link ? params.link.trim() : '',
             sort = params.sort ? params.sort.trim() : '',
             status = params.status ? 1 : 0,

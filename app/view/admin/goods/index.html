@@ -28,6 +28,7 @@
     <table class="table table-bordered">
         <thead>
             <tr class="th">
+                <th class="text-center">商品编号</th>
                 <th class="text-center">商品名称</th>
                 <th class="text-center">货号</th>
                 <th class="text-center">价格</th>
@@ -46,6 +47,7 @@
         <tbody style="background-color:#FFFFFF">
             <%for(let i=0;i<list.length;i++){%>
             <tr class="text-center">
+                <td><%=list[i]._id%></td>
                 <td><%=list[i].title%></td>
                 <td><%=list[i].goods_sn%></td>
                 <td><%=list[i].shop_price%></td>

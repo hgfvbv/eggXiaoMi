@@ -153,7 +153,6 @@ class ArticleCateController extends BaseController {
         const { ctx } = this;
         let params = ctx.query,
             id = params.id ? params.id.trim() : '',
-            uParams = {},
             where = {};
 
         if (id == '') {

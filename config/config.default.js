@@ -30,6 +30,7 @@ module.exports = appInfo => {
   config.awaitTxt = '待定';  //权限管理待定
   config.await = '5e50e212368c3a24b0c12605';
 
+  config.icoDir = 'app/public/favicon.ico';
   config.uploadDir = 'app/public/admin/upload';
 
   //增加商品时用于删除缩略图的大小配置
@@ -71,12 +72,8 @@ module.exports = appInfo => {
   config.articleCatePageSize = 2;
 
   exports.multipart = {
-    whitelist: ['.png', '.jfif', '.jpg', '.jpeg', '.gif', '.ico', '.mp4', '.avi']
-  };
-
-  //配置表单数量
-  exports.multipart = {
-    fields: '50'
+    whitelist: ['.png', '.jfif', '.jpg', '.jpeg', '.bmp', '.psd', '.gif', '.mp4', '.avi'],
+    fields: '50'  //配置表单数量
   };
 
   //针对指定的地址关闭csrf
@@ -84,7 +81,7 @@ module.exports = appInfo => {
     csrf: {
       // 判断是否需要 ignore 的方法，请求上下文 context 作为第一个参数
       ignore: ctx => {
-        if (ctx.request.url == '/admin/goods/goodsUploadImage' || ctx.request.url == '/admin/goods/goodsUploadPhoto' || ctx.request.url == '/admin/goods/goodsUploadVideo' || ctx.request.url == '/admin/goods/goodsUploadImg' || ctx.request.url == '/admin/articleCate/articleCateUploadImg' || ctx.request.url == '/admin/article/articleUploadImage' || ctx.request.url == '/admin/article/articleUploadVideo' || ctx.request.url == '/admin/article/articleUploadImg') {
+        if (ctx.request.url == '/admin/goods/goodsUploadImage' || ctx.request.url == '/admin/goods/goodsUploadPhoto' || ctx.request.url == '/admin/goods/goodsUploadVideo' || ctx.request.url == '/admin/goods/goodsUploadImg' || ctx.request.url == '/admin/articleCate/articleCateUploadImg' || ctx.request.url == '/admin/article/articleUploadImage' || ctx.request.url == '/admin/article/articleUploadVideo' || ctx.request.url == '/admin/article/articleUploadImg' || ctx.request.url == '/admin/setting/siteIcoUploadImg' || ctx.request.url == '/admin/setting/siteLogoUploadImg' || ctx.request.url == '/admin/setting/noPictureUploadImg') {
           return true;
         }
         return false;
@@ -104,7 +101,7 @@ module.exports = appInfo => {
   config.view = {
     mapping: {
       '.html': 'ejs',
-      '.nj': 'nunjucks'
+      '.htm': 'nunjucks'
     }
   };
 
