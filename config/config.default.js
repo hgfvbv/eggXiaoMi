@@ -34,7 +34,7 @@ module.exports = appInfo => {
   config.uploadDir = 'app/public/admin/upload';
 
   //增加商品时用于删除缩略图的大小配置
-  config.jimpImgSizes = [{ width: 64, height: 64 }, { width: 100, height: 100 }, { width: 200, height: 200 }, { width: 400, height: 400 }];
+  config.jimpImgSizes = [{ width: 64, height: 64 }, { width: 100, height: 100 }, { width: 180, height: 180 }, { width: 400, height: 400 }];
 
   config.loginFilter = [
     '/admin/login',

@@ -3,25 +3,15 @@
     <div class="top center">
         <div class="left fl">
             <ul>
-                <li><a href="http://www.mi.com/" target="_blank">小米商城</a></li>
+                {% for item in navTop %}
+                <li><a href="{{item.link}}" {% if item.is_opennew==2%}target="_blank" {% endif %}>{{item.title}}</a>
+                </li>
+                {% if loop.index!=loop.length %}
                 <li>|</li>
-                <li><a href="">MIUI</a></li>
-                <li>|</li>
-                <li><a href="">米聊</a></li>
-                <li>|</li>
-                <li><a href="">游戏</a></li>
-                <li>|</li>
-                <li><a href="">多看阅读</a></li>
-                <li>|</li>
-                <li><a href="">云服务</a></li>
-                <li>|</li>
-                <li><a href="">金融</a></li>
-                <li>|</li>
-                <li><a href="">小米商城移动版</a></li>
-                <li>|</li>
-                <li><a href="">问题反馈</a></li>
-                <li>|</li>
-                <li><a href="">Select Region</a></li>
+                {% endif %}
+                {% else %}
+                <li><a href="http://www.hgfvbv.xyz" target="_blank">小米商城</a></li>
+                {% endfor %}
                 <div class="clear"></div>
             </ul>
         </div>
@@ -53,82 +43,24 @@
     </a>
     <div class="nav fl">
         <ul class="clearfix" id="nav_list">
+            {% for item in navMiddle%}
             <li>
-                <a href="#" target="_blank">小米手机</a>
+                <a href="#" target="_blank">{{item.title}}</a>
 
+                {% if item.subGoods.length>0 %}
                 <ol class="children-list clearfix">
-
+                    {% for item1 in item.subGoods%}
                     <li>
                         <a href="#">
-                            <img src="/public/default/image/pinpai2.png" />
-                            <p>100元</p>
+                            <img src="{{item1.goods_img}}_180x180{{helper.getExtName(item1.goods_img)}}" />
+                            <p>{{item1.shop_price}}元</p>
                         </a>
                     </li>
-                    <li>
-                        <a href="#">
-                            <img src="/public/default/image/pinpai1.png" />
-                            <p>100元</p>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <img src="/public/default/image/pinpai3.png">
-                            <p>100元</p>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <img src="/public/default/image/pinpai4.png">
-                            <p>100元</p>
-                        </a>
-                    </li>
-
+                    {% endfor %}
                 </ol>
-
+                {% endif %}
             </li>
-            <li>
-
-                <a href="">红米</a>
-
-                <ol class="children-list clearfix">
-
-                    <li>
-                        <a href="#">
-                            <img src="/public/default/image/pinpai2.png" />
-                            <p>红米100元</p>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <img src="/public/default/image/pinpai1.png" />
-                            <p>红米100元</p>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <img src="/public/default/image/pinpai3.png">
-                            <p>红米100元</p>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <img src="/public/default/image/pinpai4.png">
-                            <p>红米100元</p>
-                        </a>
-                    </li>
-
-                </ol>
-
-
-
-            </li>
-            <li><a href="">平板·笔记本</a></li>
-            <li><a href="">电视</a></li>
-            <li><a href="">盒子·影音</a></li>
-            <li><a href="">路由器</a></li>
-            <li><a href="">智能硬件</a></li>
-            <li><a href="">服务</a></li>
-            <li><a href="">社区</a></li>
+            {% endfor %}
         </ul>
     </div>
     <div class="search fr">

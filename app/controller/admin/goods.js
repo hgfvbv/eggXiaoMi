@@ -109,9 +109,10 @@ class GoodsController extends BaseController {
 
     //上传相册的图片
     async goodsUploadPhoto() {
-        const { ctx, service } = this;
+        const { ctx, service, config } = this;
         let parts = ctx.multipart({ autoFields: true });
         let files = {},
+            jimpSizes = config.jimpImgSizes,
             params,
             stream;
 
@@ -132,7 +133,7 @@ class GoodsController extends BaseController {
                 await pump(stream, writeStream);
 
                 //生成缩略图
-                service.tools.jimpImg(dir.uploadDir, 100, [{ width: 64, height: 64 }, { width: 100, height: 100 }, { width: 200, height: 200 }, { width: 400, height: 400 }]);
+                service.tools.jimpImg(dir.uploadDir, 100, jimpSizes);
 
                 files = Object.assign({ [fieldname]: dir.saveDir });
             }
@@ -143,9 +144,10 @@ class GoodsController extends BaseController {
 
     //上传商品图片
     async goodsUploadImg() {
-        const { ctx, service } = this;
+        const { ctx, service, config } = this;
         let parts = ctx.multipart({ autoFields: true });
         let files = {},
+            jimpSizes = config.jimpImgSizes,
             params,
             stream;
 
@@ -164,9 +166,9 @@ class GoodsController extends BaseController {
                     writeStream = fs.createWriteStream(dir.uploadDir);
 
                 await pump(stream, writeStream);
-
+console.log(jimpSizes)
                 //生成缩略图
-                service.tools.jimpImg(dir.uploadDir, 100, [{ width: 64, height: 64 }, { width: 100, height: 100 }, { width: 200, height: 200 }, { width: 400, height: 400 }]);
+                service.tools.jimpImg(dir.uploadDir, 100, jimpSizes);
 
                 files = Object.assign({ [fieldname]: dir.saveDir });
             }
@@ -207,7 +209,6 @@ class GoodsController extends BaseController {
     async goodsImageRemove() {
         const { ctx, config } = this;
         let params = ctx.request.body,
-            jimpImgSizes = config.jimpImgSizes,
             id = params.id ? params.id.trim() : '',
             where = {};
 

@@ -53,10 +53,11 @@ class GoodsCateController extends BaseController {
     }
 
     async doAdd() {
-        const { ctx, service } = this;
+        const { ctx, service, config } = this;
         let parts = ctx.multipart({ autoFields: true });
         let files = {},
-            params,
+            jimpSizes = config.jimpImgSizes
+        params,
             stream;
 
         while ((stream = await parts()) != null) {
@@ -107,7 +108,7 @@ class GoodsCateController extends BaseController {
                 });
 
                 //生成缩略图
-                service.tools.jimpImg(dir.uploadDir, 100, [{ width: 64, height: 64 }, { width: 100, height: 100 }, { width: 200, height: 200 }, { width: 400, height: 400 }]);
+                service.tools.jimpImg(dir.uploadDir, 100, jimpSizes);
             }
         }
 
@@ -146,12 +147,13 @@ class GoodsCateController extends BaseController {
     }
 
     async doEdit() {
-        const { ctx, service, app } = this;
+        const { ctx, service, app, config } = this;
 
         let parts = ctx.multipart({ autoFields: true });
         let files = {},
             where = {},
-            params,
+            jimpSizes = config.jimpImgSizes
+        params,
             stream;
 
         while ((stream = await parts()) != null) {
@@ -207,7 +209,7 @@ class GoodsCateController extends BaseController {
                 });
 
                 //生成缩略图
-                service.tools.jimpImg(dir.uploadDir, 100, [{ width: 64, height: 64 }, { width: 100, height: 100 }, { width: 200, height: 200 }, { width: 400, height: 400 }]);
+                service.tools.jimpImg(dir.uploadDir, 100, jimpSizes);
             }
         }
 

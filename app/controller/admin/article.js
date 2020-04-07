@@ -117,10 +117,11 @@ class ArticleController extends BaseController {
 
     //上传封面图片
     async articleUploadImg() {
-        const { ctx, service } = this;
+        const { ctx, service, config } = this;
         let parts = ctx.multipart({ autoFields: true });
         let files = {},
             params,
+            jimpSizes = config.jimpImgSizes,
             stream;
 
         while ((stream = await parts()) != null) {
@@ -140,7 +141,7 @@ class ArticleController extends BaseController {
                 await pump(stream, writeStream);
 
                 //生成缩略图
-                service.tools.jimpImg(dir.uploadDir, 100, [{ width: 64, height: 64 }, { width: 100, height: 100 }, { width: 200, height: 200 }, { width: 400, height: 400 }]);
+                service.tools.jimpImg(dir.uploadDir, 100, jimpSizes);
 
                 files = Object.assign({ [fieldname]: dir.saveDir });
             }
