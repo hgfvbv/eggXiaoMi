@@ -45,14 +45,15 @@
         <ul class="clearfix" id="nav_list">
             {% for item in navMiddle%}
             <li>
-                <a href="#" target="_blank">{{item.title}}</a>
+                <a href="{{item.link}}" {% if item.is_opennew==2%}target="_blank" {% endif %}>{{item.title}}</a>
 
                 {% if item.subGoods.length>0 %}
                 <ol class="children-list clearfix">
                     {% for item1 in item.subGoods%}
                     <li>
                         <a href="#">
-                            <img src="{{item1.goods_img}}_180x180{{helper.getExtName(item1.goods_img)}}" />
+                            <img
+                                src="{{item1.goods_img}}_180x180{{helper.getExtName(item1.goods_img if item1.goods_img else '')}}" />
                             <p>{{item1.shop_price}}元</p>
                         </a>
                     </li>
@@ -60,6 +61,8 @@
                 </ol>
                 {% endif %}
             </li>
+            {% else %}
+            <li><a href="http://www.hgfvbv.xyz" target="_blank">小米商城</a></li>
             {% endfor %}
         </ul>
     </div>

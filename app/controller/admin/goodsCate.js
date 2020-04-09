@@ -56,8 +56,8 @@ class GoodsCateController extends BaseController {
         const { ctx, service, config } = this;
         let parts = ctx.multipart({ autoFields: true });
         let files = {},
-            jimpSizes = config.jimpImgSizes
-        params,
+            jimpSizes = config.jimpImgSizes,
+            params,
             stream;
 
         while ((stream = await parts()) != null) {
@@ -152,8 +152,8 @@ class GoodsCateController extends BaseController {
         let parts = ctx.multipart({ autoFields: true });
         let files = {},
             where = {},
-            jimpSizes = config.jimpImgSizes
-        params,
+            jimpSizes = config.jimpImgSizes,
+            params,
             stream;
 
         while ((stream = await parts()) != null) {

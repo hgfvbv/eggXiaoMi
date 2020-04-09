@@ -16,7 +16,7 @@ class IndexController extends Controller {
             if (navMiddle[i].relation) {
                 try {
                     let goodsIds = [];
-                    let relationArray = navMiddle[i].relation.split(',');
+                    let relationArray = navMiddle[i].relation.replace('，', ',').split(',');
                     relationArray.forEach(id => {
                         goodsIds.push({ _id: app.mongoose.Types.ObjectId(id) });
                     });
@@ -32,10 +32,57 @@ class IndexController extends Controller {
             }
         }
 
+        let goodsCate = await ctx.model.GoodsCate.aggregate([
+            {
+                $lookup: {
+                    from: 'goods_cate',
+                    localField: '_id',
+                    foreignField: 'pid',
+                    as: 'child'
+                }
+            },
+            {
+                $match: {
+                    $and: [
+                        { status: 1 },
+                        { pid: '0' }
+                    ]
+                }
+            },
+            {
+                $sort: {
+                    sort: 1
+                }
+            },
+            {
+                $project: {
+                    title: 1,
+                    link: 1,
+                    cate_img: 1,
+                    keywords: 1,
+                    child: 1
+                }
+            }
+        ]);
+        for (let i = 0; i < goodsCate.length; i++) {
+            goodsCate[i].child = await ctx.service.tools.jsonSort(goodsCate[i].child, 'sort', false);
+            goodsCate[i].child = goodsCate[i].child.slice(0, 8);
+        }
+
+        let focus = await ctx.model.Focus.find({ type: 1, status: 1 }, { link: 1, _id: 0, focus_img: 1, title: 1 }).sort({ sort: 1 });
+
+        let phoneGoods = await ctx.service.goods.get_category_recommend_goods('5bbf058f9079450a903cb77b', 'best', 8);
+
+        let tvGoods = await ctx.service.goods.get_category_recommend_goods('5bbf05ac9079450a903cb77c', 'best', 8);
+
         await ctx.render('/default/index.htm', {
             navTop,
             navFooter,
-            navMiddle
+            navMiddle,
+            goodsCate,
+            focus,
+            phoneGoods,
+            tvGoods
         });
     }
 }
