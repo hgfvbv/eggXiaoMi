@@ -1,0 +1,74 @@
+<!-- start banner_x -->
+<div class="banner_x center">
+    <a href="/" target="_blank">
+        <div class="logo fl"></div>
+    </a>
+    <div class="nav fl">
+        <ul class="clearfix" id="nav_list">
+            <li class="link-category">
+                <a href="#">全部商品分类</a>
+                <div class="banner_y center">
+                    <div class="nav">
+                        <ul>
+                            {% for item in goodsCate %}
+                            <li>
+                                <a href="{{item.link}}">{{item.title}}</a>
+                                <div class="pop">
+                                    <ol class="cate_list clear">
+                                        {% for item1 in item.child %}
+                                        <li>
+                                            <div class="xuangou_left">
+                                                <a href="{{item1.link}}" target="_blank">
+                                                    <div class="img fl">
+                                                        <img src="{{item1.cate_img}}_180x180{{helper.getExtName(item1.cate_img if item1.cate_img else '')}}"
+                                                            alt="{{item1.keywords}}" /></div>
+                                                    <span class="fl">{{item1.title}}</span>
+                                                </a>
+                                            </div>
+                                        </li>
+                                        {% endfor %}
+                                    </ol>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </li>
+            {% for item in navMiddle%}
+            <li>
+                <a href="{{item.link}}" {% if item.is_opennew==2%}target="_blank" {% endif %}>{{item.title}}</a>
+
+                {% if item.subGoods.length>0 %}
+                <ol class="children-list clearfix">
+                    {% for item1 in item.subGoods%}
+                    <li>
+                        <a href="#">
+                            <img
+                                src="{{item1.goods_img}}_180x180{{helper.getExtName(item1.goods_img if item1.goods_img else '')}}" />
+                            <p>{{item1.shop_price}}元</p>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ol>
+                {% endif %}
+            </li>
+            {% else %}
+            <li><a href="http://www.hgfvbv.xyz" target="_blank">小米商城</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="search fr">
+        <form action="" method="post">
+            <div class="text fl">
+                <input type="text" class="shuru" placeholder="小米6&nbsp;小米MIX现货">
+            </div>
+            <div class="submit fl">
+                <input type="submit" class="sousuo" value="搜索" />
+            </div>
+            <div class="clear"></div>
+        </form>
+        <div class="clear"></div>
+    </div>
+</div>
+<!-- end banner_x -->

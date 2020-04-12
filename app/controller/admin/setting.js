@@ -24,7 +24,7 @@ class SettingController extends BaseController {
                 //这里必须加ruturn，否则会死循环
                 return;
             } else {
-                console.log(dir)
+                //console.log(dir)
                 let fieldname = stream.fieldname,
                     writeStream = fs.createWriteStream(dir);
 
