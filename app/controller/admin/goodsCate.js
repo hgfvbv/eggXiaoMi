@@ -40,6 +40,7 @@ class GoodsCateController extends BaseController {
             }
         ]);
         for (let i = 0; i < list.length; i++) {
+            list[i].child = list[i].child.filter((e => { return e.status == 1 }));
             list[i].child = await ctx.service.tools.jsonSort(list[i].child, 'sort', false);
         }
         await this.ctx.render('/admin/goodsCate/index', { params, list });

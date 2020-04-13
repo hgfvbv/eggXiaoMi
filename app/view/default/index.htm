@@ -56,18 +56,31 @@
 			<ul>
 				{% for item in goodsCate %}
 				<li>
+					{% if item.link %}
 					<a href="{{item.link}}">{{item.title}}</a>
+					{% else %}
+					<a href="/plist?cid={{item._id}}">{{item.title}}</a>
+					{% endif %}
 					<div class="pop">
 						<ol class="cate_list clear">
 							{% for item1 in item.child %}
 							<li>
 								<div class="xuangou_left">
+									{% if item1.link %}
 									<a href="{{item1.link}}" target="_blank">
 										<div class="img fl">
 											<img src="{{item1.cate_img}}_180x180{{helper.getExtName(item1.cate_img if item1.cate_img else '')}}"
 												alt="{{item1.keywords}}" /></div>
 										<span class="fl">{{item1.title}}</span>
 									</a>
+									{% else %}
+									<a href="/plist?cid={{item1._id}}" target="_blank">
+										<div class="img fl">
+											<img src="{{item1.cate_img}}_180x180{{helper.getExtName(item1.cate_img if item1.cate_img else '')}}"
+												alt="{{item1.keywords}}" /></div>
+										<span class="fl">{{item1.title}}</span>
+									</a>
+									{% endif %}
 								</div>
 							</li>
 							{% endfor %}
