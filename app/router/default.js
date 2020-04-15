@@ -13,6 +13,7 @@ module.exports = app => {
     router.get('/cart', initMiddleware, controller.default.flow.cart);
     router.get('/plist', initMiddleware, controller.default.product.list);
     router.get('/pinfo', initMiddleware, controller.default.product.info);
+    router.get('/getImagelist',initMiddleware, controller.default.product.getImagelist);
 
     //用户中心
 

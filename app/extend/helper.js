@@ -1,5 +1,6 @@
 const sd = require('silly-datetime'),
-    path = require('path');
+    path = require('path'),
+    showdown = require('showdown');
 
 module.exports = {
     formartTime(val) {
@@ -8,5 +9,10 @@ module.exports = {
 
     getExtName(val) {
         return path.extname(val);
+    },
+
+    formartAttr(val) {
+        let converter = new showdown.Converter();
+        return converter.makeHtml(val);
     }
 }

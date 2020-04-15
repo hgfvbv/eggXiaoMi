@@ -80,7 +80,6 @@ module.exports = (options, app) => {
                 goodsCate[i].child = await ctx.service.tools.jsonSort(goodsCate[i].child, 'sort', false);
                 goodsCate[i].child = goodsCate[i].child.slice(0, 8);
             }
-            console.log(goodsCate)
             await service.cache.set('index_goodsCate', goodsCate);
         }
 

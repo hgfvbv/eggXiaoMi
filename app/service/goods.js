@@ -37,12 +37,40 @@ class GoodsService extends Service {
                     params = Object.assign(params, { "is_new": 1 });
                     break;
             };
-            
+
             let goods = await ctx.model.Goods.find(params, 'title shop_price goods_img sub_title').sort({ sort: 1 }).limit(limit);
             return goods;
         } catch (e) {
             console.log(e);
             return [];
+        }
+    }
+
+    strToArray(val, isArray = false) {
+        const { app } = this;
+        let array = [];
+        try {
+            if (isArray) {
+                if (val) {
+                    for (let i = 0; i < val.length; i++) {
+                        array.push({ _id: app.mongoose.Types.ObjectId(val[i]) });
+                    }
+                } else {
+                    array = [{ '1': -1 }];
+                }
+            } else {
+                if (val && val != '') {
+                    let ids = val.replace(/，/g, ',').split(',');
+                    for (let i = 0; i < ids.length; i++) {
+                        array.push({ _id: app.mongoose.Types.ObjectId(ids[i]) });
+                    }
+                } else {
+                    array = [{ '1': -1 }];
+                }
+            }
+            return array;
+        } catch (e) {
+            return [{ '1': -1 }];
         }
     }
 }
