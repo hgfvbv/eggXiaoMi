@@ -1,5 +1,15 @@
 {%- include "./public/page_header.htm" %}
 
+<script>
+	$(function () {
+		$('#addCart').click(function () {
+			var goodsId = $('#color_list .active').attr('goods_id'),
+				colorId = $('#color_list .active').attr('goods_color');
+			location.href = '/addCart?goodsId=' + goodsId + '&colorId=' + colorId;
+		});
+	});
+</script>
+
 <body>
 	{%- include "./public/page_aside.htm" %}
 	{%- include "./public/page_mNav.htm" %}
@@ -54,7 +64,8 @@
 			<div class="ft20 ml20 mt20 clear">选择颜色</div>
 			<div class="xzbb ml20 mt10 clearfix" id="color_list">
 				{% for item in goodsColors %}
-				<div class="banben fl" goods_id="{{oneGoods._id}}" goods_color="{{item._id}}">
+				<div class="banben fl {% if loop.index==1 %}active {% endif %}" goods_id="{{oneGoods._id}}"
+					goods_color="{{item._id}}">
 					<a>
 						<span class="yuandian" style="background:{{item.color_value}}"></span>
 						<span class="yanse">{{item.color_name}}</span>
@@ -73,7 +84,7 @@
 				<div class="bot mt20 ft20 ftbc">总计：{{oneGoods.shop_price}}元</div>
 			</div>
 			<div class="xiadan ml20 mt20">
-				<input class="jrgwc" type="button" name="jrgwc" value="加入购物车" />
+				<input class="jrgwc" id="addCart" name="addCart" type="button" name="jrgwc" value="加入购物车" />
 			</div>
 		</div>
 		<div class="clear"></div>

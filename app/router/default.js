@@ -10,7 +10,6 @@ module.exports = app => {
     let initMiddleware = app.middleware.init({}, app);
     
     router.get('/', initMiddleware, controller.default.index.index);
-    router.get('/cart', initMiddleware, controller.default.flow.cart);
     router.get('/plist', initMiddleware, controller.default.product.list);
     router.get('/pinfo', initMiddleware, controller.default.product.info);
     router.get('/getImagelist',initMiddleware, controller.default.product.getImagelist);
@@ -22,4 +21,13 @@ module.exports = app => {
     router.get('/user', initMiddleware, controller.default.user.welcome);
     router.get('/user/order', initMiddleware, controller.default.user.order);
 
+    //购物车
+    router.get('/addCart', initMiddleware, controller.default.cart.addCart);
+    router.get('/addCartSuccess', initMiddleware, controller.default.cart.addCartSuccess);
+    router.get('/cart', initMiddleware, controller.default.cart.cart);
+    router.get('/changeAllCart', initMiddleware, controller.default.cart.changeAllCart);
+    router.get('/changeOneCart', initMiddleware, controller.default.cart.changeOneCart);
+    router.get('/decCart', initMiddleware, controller.default.cart.decCart);
+    router.get('/incCart', initMiddleware, controller.default.cart.incCart);
+    router.get('/removeCart', initMiddleware, controller.default.cart.removeCart);
 };

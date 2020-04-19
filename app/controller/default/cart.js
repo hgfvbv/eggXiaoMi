@@ -1,0 +1,300 @@
+'use strict';
+
+const BaseController = require('./base');
+
+class CartController extends BaseController {
+    async cart() {
+        const { ctx, service } = this;
+
+        let cartList = service.cookies.get('cartList'),
+            allPrice = 0,
+            checkedCount = 0;
+
+        for (let i = 0; i < cartList.length; i++) {
+            const element = cartList[i];
+            if (element.checked) {
+                checkedCount++;
+                allPrice += element.num * element.price;
+            }
+        }
+
+        await ctx.render('/default/cart.htm', {
+            cartList,
+            allPrice: allPrice.toFixed(2),
+            checkedCount,
+            cartCount: cartList.length
+        });
+    }
+
+    async addCart() {
+        const { ctx, service } = this;
+        let params = ctx.query,
+            goodsId = params.goodsId ? params.goodsId : '',
+            colorId = params.colorId ? params.colorId : '';
+
+        if (goodsId == '' || colorId == '') {
+            await this.error('/', '哎呀！网页开小差了！要不稍后再试试？');
+            return;
+        }
+
+        let goods = await ctx.model.Goods.findOne({ _id: goodsId, status: 1 }, '_id title shop_price goods_version goods_img goods_gift'),
+            goodsColor = await ctx.model.GoodsColor.findOne({ _id: colorId, status: 1 }, 'color_name');
+
+        if (!goods || !goodsColor) {
+            await this.error('/', '哎呀！网页开小差了！要不稍后再试试？');
+            return;
+        }
+
+        let goodsGiftIds = service.goods.strToArray(goods.goods_gift),
+            goodsGift = await ctx.model.Goods.find({ $or: goodsGiftIds, status: 1 }, '_id title shop_price goods_version goods_img goods_gift').sort({ sort: 1 });
+
+        let currentData = {
+            _id: goods._id,
+            title: goods.title,
+            price: goods.shop_price,
+            goods_version: goods.goods_version,
+            num: 1,
+            color: goodsColor.color_name,
+            goods_img: goods.goods_img,
+            goods_gift: goodsGift,  /*赠品*/
+            checked: true           /*默认选中*/
+        };
+
+        let cartList = service.cookies.get('cartList');
+        if (cartList && cartList.length > 0) {
+            if (service.cart.cartHasData(cartList, currentData)) {
+                for (let i = 0; i < cartList.length; i++) {
+                    const element = cartList[i];
+                    if (element._id == currentData._id && element.color == currentData.color) {
+                        cartList[i].price = goods.shop_price;
+                        cartList[i].num++;
+                    }
+                }
+                service.cookies.set('cartList', cartList);
+            } else {
+                let tempArr = cartList;
+                tempArr.push(currentData);
+                service.cookies.set('cartList', tempArr);
+            }
+        } else {
+            let tempArr = [currentData];
+            service.cookies.set('cartList', tempArr);
+        }
+
+        await ctx.redirect(`/addCartSuccess?goodsId=${goodsId}&colorId=${colorId}`);
+    }
+
+    async addCartSuccess() {
+        const { ctx } = this;
+        let params = ctx.query,
+            goodsId = params.goodsId ? params.goodsId : '',
+            colorId = params.colorId ? params.colorId : '';
+
+        if (goodsId == '' || colorId == '') {
+            await this.error('/', '哎呀！网页开小差了！要不稍后再试试？');
+            return;
+        }
+
+        let goods = await ctx.model.Goods.findOne({ _id: goodsId, status: 1 }, 'title goods_version'),
+            goodsColor = await ctx.model.GoodsColor.findOne({ _id: colorId, status: 1 }, 'color_name');
+
+        if (!goods || !goodsColor) {
+            await this.error('/', '哎呀！网页开小差了！要不稍后再试试？');
+            return;
+        }
+
+        let title = `${goods.title}  ${goods.goods_version}  ${goodsColor.color_name}`;
+        await ctx.render('default/add_cart_success.htm', { title, goodsId })
+    }
+
+    async changeAllCart() {
+        const { ctx, service } = this;
+        let params = ctx.query,
+            type = params.type ? params.type : '';
+
+        if (type == '') {
+            return ctx.body = { success: false, allPrice: 0, msg: '哎呀！页面开小差了！要不，稍后再试试？' };
+        }
+
+        let cartList = service.cookies.get('cartList'),
+            allPrice = 0,
+            checkedCount = 0;
+
+        if (!cartList || cartList.length == 0) {
+            return ctx.body = { success: false, allPrice: 0, msg: '哎呀！页面开小差了！要不，稍后再试试？' };
+        }
+
+        for (let i = 0; i < cartList.length; i++) {
+            const element = cartList[i];
+            cartList[i].checked = type == 1 ? true : false;
+            if (cartList[i].checked) {
+                checkedCount++;
+                allPrice += element.num * element.price;
+            }
+        }
+
+        service.cookies.set('cartList', cartList);
+        return ctx.body = {
+            success: true,
+            allPrice: allPrice.toFixed(2),
+            checkedCount,
+            cartCount: cartList.length
+        };
+    }
+
+    async changeOneCart() {
+        const { ctx, service } = this;
+        let params = ctx.query,
+            goodsId = params.goodsId ? params.goodsId : '',
+            color = params.color ? params.color : '';
+
+        if (goodsId == '' || color == '') {
+            return ctx.body = { success: false, allPrice: 0, msg: '哎呀！页面开小差了！要不，稍后再试试？' };
+        }
+
+        let goods = await ctx.model.Goods.find({ _id: goodsId, status: 1 }, '_id');
+        let cartList = service.cookies.get('cartList'),
+            allPrice = 0,
+            checkedCount = 0;
+
+        if (!cartList || cartList.length == 0 || !goods) {
+            return ctx.body = { success: false, allPrice: 0, msg: '哎呀！页面开小差了！要不，稍后再试试？' };
+        }
+
+        for (let i = 0; i < cartList.length; i++) {
+            const element = cartList[i];
+            if (element._id == goodsId && element.color == color) {
+                cartList[i].checked = !cartList[i].checked;
+            }
+            if (cartList[i].checked) {
+                checkedCount++;
+                allPrice += element.num * element.price;
+            }
+        }
+
+        service.cookies.set('cartList', cartList);
+        return ctx.body = {
+            success: true,
+            allPrice: allPrice.toFixed(2),
+            checkedCount,
+            cartCount: cartList.length
+        };
+    }
+
+    async decCart() {
+        const { ctx, service } = this;
+        let params = ctx.query,
+            goodsId = params.goodsId ? params.goodsId : '',
+            color = params.color ? params.color : '';
+
+        if (goodsId == '' || color == '') {
+            return ctx.body = { success: false, allPrice: 0, msg: '哎呀！页面开小差了！要不，稍后再试试？' };
+        }
+
+        let goods = await ctx.model.Goods.find({ _id: goodsId, status: 1 }, '_id');
+        let cartList = service.cookies.get('cartList'),
+            allPrice = 0,
+            num = 0,
+            totalPrice = 0;
+
+        if (!cartList || cartList.length == 0 || !goods) {
+            return ctx.body = { success: false, allPrice: 0, msg: '哎呀！页面开小差了！要不，稍后再试试？' };
+        }
+
+        for (let i = 0; i < cartList.length; i++) {
+            const element = cartList[i];
+            if (element._id == goodsId && element.color == color) {
+                if (element.num > 1) {
+                    cartList[i].num--;
+                    num = cartList[i].num;
+                    totalPrice = num * element.price;
+                } else {
+                    num = element.num;
+                    totalPrice = num * element.price;
+                }
+            }
+            if (cartList[i].checked) {
+                allPrice += cartList[i].num * element.price;
+            }
+        }
+
+        service.cookies.set('cartList', cartList);
+        return ctx.body = {
+            success: true,
+            allPrice: allPrice.toFixed(2),
+            num,
+            totalPrice: totalPrice.toFixed(2)
+        };
+    }
+
+    async incCart() {
+        const { ctx, service } = this;
+        let params = ctx.query,
+            goodsId = params.goodsId ? params.goodsId : '',
+            color = params.color ? params.color : '';
+
+        if (goodsId == '' || color == '') {
+            return ctx.body = { success: false, allPrice: 0, msg: '哎呀！页面开小差了！要不，稍后再试试？' };
+        }
+
+        let goods = await ctx.model.Goods.find({ _id: goodsId, status: 1 }, '_id');
+        let cartList = service.cookies.get('cartList'),
+            allPrice = 0,
+            num = 0,
+            totalPrice = 0;
+
+        if (!cartList || cartList.length == 0 || !goods) {
+            return ctx.body = { success: false, allPrice: 0, msg: '哎呀！页面开小差了！要不，稍后再试试？' };
+        }
+
+        for (let i = 0; i < cartList.length; i++) {
+            const element = cartList[i];
+            if (element._id == goodsId && element.color == color) {
+                cartList[i].num++;
+                num = cartList[i].num;
+                totalPrice = num * element.price;
+            }
+            if (cartList[i].checked) {
+                allPrice += cartList[i].num * element.price;
+            }
+        }
+
+        service.cookies.set('cartList', cartList);
+        return ctx.body = {
+            success: true,
+            allPrice: allPrice.toFixed(2),
+            num,
+            totalPrice: totalPrice.toFixed(2)
+        };
+    }
+
+    async removeCart() {
+        const { ctx, service } = this;
+        let params = ctx.query,
+            goodsId = params.goodsId ? params.goodsId : '',
+            color = params.color ? params.color : '';
+
+        if (goodsId == '' || color == '') {
+            return ctx.redirect('/cart');
+        }
+
+        let goods = await ctx.model.Goods.find({ _id: goodsId, status: 1 }, '_id');
+        let cartList = service.cookies.get('cartList');
+
+        if (!cartList || cartList.length == 0 || !goods) {
+            return ctx.redirect('/cart');
+        }
+
+        for (let i = 0; i < cartList.length; i++) {
+            const element = cartList[i];
+            if (element._id == goodsId && element.color == color) {
+                cartList.splice(i, 1);
+            }
+        }
+
+        service.cookies.set('cartList', cartList);
+        return ctx.redirect('/cart');
+    }
+}
+
+module.exports = CartController;

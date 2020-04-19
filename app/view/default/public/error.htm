@@ -3,8 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>操作失败</title>
-    <meta http-equiv="refresh" content="3;url=<%=redirectUrl%>">
+    <title>出现问题了</title>
+    <meta http-equiv="refresh" content="3;url={{redirectUrl}}">
     <link rel="shortcut icon" href="/public/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="/public/admin/bootstrap/css/bootstrap.css">
     <link rel="stylesheet" href="/public/admin/css/basic.css">
@@ -17,12 +17,12 @@
 
         <div class="alert alert-danger">
 
-            <h2><%=msg%></h2>
-
+            <h2>{{msg}}</h2>
+            
             <br />
 
-            <p>页面将在 3 秒后 <a href='<%=redirectUrl%>'>跳转</a>。</p>
-
+            <p>页面将在 3 秒后 <a href='{{redirectUrl}}'>返回首页</a>。</p>
+            
 
         </div>
 
