@@ -2,7 +2,6 @@ module.exports = app => {
     const mongoose = app.mongoose,
         Schema = mongoose.Schema;
 
-    let d = new Date();
     const AdminSchema = new Schema({
         username: { type: String },
         password: { type: String },
@@ -11,8 +10,7 @@ module.exports = app => {
         status: { type: Number, default: 1 },
         role_id: { type: Schema.Types.ObjectId },
         add_time: {
-            type: Number,
-            default: d.getTime()
+            type: Number
         },
         is_super: { type: Number }
     });

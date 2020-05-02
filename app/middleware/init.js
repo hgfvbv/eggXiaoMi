@@ -1,7 +1,10 @@
 module.exports = (options, app) => {
     return async (ctx, next) => {
         const { service } = ctx;
-        
+
+        ctx.state.csrf = ctx.csrf;   //全局变量
+        ctx.state.userInfo = service.cookies.get('userInfo');
+
         let navTop = await service.cache.get('index_navTop');
         if (!navTop || navTop == '') {
             navTop = await ctx.model.Nav.find({ 'status': 1, 'position': 1 }, { title: 1, _id: 0, link: 1, is_opennew: 1, status: 1 }).sort({ sort: 1 });

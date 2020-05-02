@@ -13,14 +13,29 @@
         <div class="wxts fl ml20">温馨提示：产品是否购买成功，以最终下单为准哦，请尽快结算</div>
         <div class="dlzc fr">
             <ul>
+                {% if userInfo %}
+                <li class="userinfo">
+                    <a href="#">{{userInfo.phone}}</a>
+                    <i class="i"></i>
+                    <ol>
+                        <li><a href="#">个人中心</a></li>
+                        <li><a href="#">喜欢</a></li>
+                        <li><a href="/pass/loginOut">退出登录</a></li>
+                    </ol>
+                </li>
+                <li>|</li>
+                <li><a href="#" target="_blank">我的订单</a></li>
+                {% else %}
                 <li><a href="/login" target="_blank">登录</a></li>
                 <li>|</li>
-                <li><a href="/register" target="_blank">注册</a></li>
+                <li><a href="/register/registerStep1" target="_blank">注册</a></li>
+                {% endif %}
             </ul>
         </div>
         <div class="clear"></div>
     </div>
     <div class="xiantiao"></div>
+    {% if cartList and cartList.length>0 %}
     <div class="gwcxqbj">
         <div class="gwcxd center">
             <table class="table">
@@ -41,8 +56,8 @@
                 {% for item in cartList %}
                 <tr class="cart_list">
                     <td>
-                        <input type="checkbox" goodsId="{{item._id}}" color="{{item.color}}"
-                            {% if item.checked %}checked{% endif %} />
+                        <input type="checkbox" goodsId="{{ item.goodsId if isData else item._id }}"
+                            color="{{item.color}}" {% if item.checked %}checked{% endif %} />
                     </td>
 
                     <td>
@@ -60,11 +75,11 @@
 
                     <td>
                         <div class="cart_number">
-                            <div class="input_left decCart" goodsId="{{item._id}}" color="{{item.color}}">-</div>
+                            <div class="input_left decCart" goodsId="{{ item.goodsId if isData else item._id }}" color="{{item.color}}">-</div>
                             <div class="input_center">
                                 <input id="num" name="num" readonly="readonly" type="text" value="{{item.num}}" />
                             </div>
-                            <div class="input_right incCart" goodsId="{{item._id}}" color="{{item.color}}">+</div>
+                            <div class="input_right incCart" goodsId="{{ item.goodsId if isData else item._id }}" color="{{item.color}}">+</div>
                         </div>
                     </td>
 
@@ -73,7 +88,7 @@
                     </td>
                     <td>
                         <span><a class="delete"
-                                href="/removeCart?goodsId={{item._id}}&color={{item.color}}">删除</a></span>
+                                href="/removeCart?goodsId={{ item.goodsId if isData else item._id }}&color={{item.color}}">删除</a></span>
                     </td>
                 </tr>
                 {% endfor %}
@@ -91,16 +106,33 @@
             </div>
             <div class="jiesuan fr">
                 <div class="jiesuanjiage fl">合计（不含运费）：<span id="allPrice">{{allPrice}}元</span></div>
-                <div class="jsanniu fr"><input class="jsan" type="submit" name="jiesuan" value="去结算" /></div>
+                <div class="jsanniu fr"><input class="jsan" type="submit" id='jiesuan' name="jiesuan" value="去结算" />
+                </div>
                 <div class="clear"></div>
             </div>
             <div class="clear"></div>
         </div>
     </div>
-
+    {% else %}
+    <p style="color:red;text-align:center; padding:100px;font-weight: bold;font-size: x-large;">哎呀！什么都没有啊！快去 <a href='/'
+            style='color:blue;'>逛逛</a> 吧！</p>
+    {% endif %}
     <!-- footer -->
     {%- include "./public/footer.htm" %}
 
 </body>
+<script>
+    $(function () {
+        $("#jiesuan").click(function () {
+            var allPrice = parseFloat($("#allPrice").html());
+
+            if (allPrice <= 0) {
+                alert('购物车没有选中要结算的商品哦！');
+            } else {
+                location.href = "/buy/checkout";
+            }
+        });
+    });
+</script>
 
 </html>

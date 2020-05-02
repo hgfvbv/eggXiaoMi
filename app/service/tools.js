@@ -11,7 +11,7 @@ const svgCaptcha = require('svg-captcha'),
     Jimp = require('jimp');
 
 class ToolsService extends Service {
-    async captcha(isMath, params = { size: 4, fontSize: 50, width: 100, height: 32, noise: 1, background: '#cc9966', color: false, mathOperator: '', mathMin: 1, mathMax: 9 }) {
+    async captcha(isMath, params = { size: 4, fontSize: 50, width: 100, height: 32, noise: 1, background: '#cc9966', color: false, mathOperator: '', mathMin: 1, mathMax: 9 }, isBack = true) {
 
         if (params.color) {
             delete params.background;
@@ -29,7 +29,11 @@ class ToolsService extends Service {
             captcha = svgCaptcha.create(params);
         }
 
-        this.ctx.session.code = captcha.text;
+        if (isBack) {
+            this.ctx.session.code = captcha.text;
+        } else {
+            this.ctx.session.identify_code = captcha.text;   //前台验证码
+        }
         return captcha;
     }
 
@@ -40,6 +44,11 @@ class ToolsService extends Service {
     async getTime() {
         let date = new Date();
         return date.getTime();
+    }
+
+    async getDay() {
+        let day = sd.format(new Date(), 'YYYYMMDD');
+        return day;
     }
 
     /*
@@ -121,6 +130,15 @@ class ToolsService extends Service {
                 }
             });
         }
+    }
+
+    //短信随机码
+    async getRandomNum(count = 4) {
+        var random_str = '';
+        for (var i = 0; i < count; i++) {
+            random_str += Math.floor(Math.random() * 10);
+        }
+        return random_str;
     }
 }
 

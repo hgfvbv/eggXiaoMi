@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>用户注册</title>
+    <link rel="stylesheet" href="/public/default/css/login.css" />
+    <link rel="shortcut icon" href="/public/favicon.ico" type="image/x-icon">
+
+    <script src="/public/default/js/jquery-1.10.1.js"></script>
+</head>
+
+<body class="register_page">
+
+    <div class="regist">
+        <div class="regist_center">
+
+            <div class="logo">
+                <img src="/public/default/image/favicon.png" alt="商城">
+            </div>
+            <div class="regist_top">
+                <h2>注册商城账户</h2>
+            </div>
+            <div class="regist_main center">
+
+                <p>验证码已通过短信发送至{{phoneStr}}，请输入完成验证。手机绑定是为保障用户的信息真实性和帐号安全性</p>
+
+                <br>
+                <br>
+
+                <div class="yzm">
+
+
+                    <input type="hidden" id="identify_code" name="identify_code" value="{{identify_code}}" />
+                    <input type="hidden" id="phone" name="phone" value="{{phone}}" />
+                    <input type="hidden" id="sign" name="sign" value="{{sign}}" />
+                    <input type="text" id="phone_code" name="phone_code" placeholder="请输入验证码" />
+
+                    <button id="sendCode">重新发送</button>
+                </div>
+
+                <div class="regist_submit">
+                    <input class="submit" id="nextStep" type="button" name="submit" value="下一步">
+
+                    <br>
+
+                    <input class="return" id="returnButton" type="button" name="return" value="返回">
+                </div>
+
+            </div>
+
+
+            <script>
+
+                $(function () {
+                    var timer = 11;
+                    function Countdown() {
+                        if (timer > 1) {
+                            timer -= 1;
+                            $("#sendCode").attr('disabled', true);
+                            $("#sendCode").html('重新发送(' + timer + ')');
+                            setTimeout(function () {
+                                Countdown();
+                            }, 1000);
+                        } else {
+                            $("#sendCode").attr('disabled', false);
+                            $("#sendCode").css('cursor', 'pointer');
+                            $("#sendCode").html('重新发送');
+                        }
+                    }
+
+                    Countdown();
+
+                    //重新发送验证码
+                    $("#sendCode").click(function () {
+                        var phone = $('#phone').val().trim();
+                        var identify_code = $('#identify_code').val().trim();
+                        if (phone === '' || identify_code === '') {
+                            alert('参数错误！');
+                            location.href = '/register/registerStep1';
+                        } else {
+                            $("#sendCode").css('cursor', 'default');
+                            $.get('/pass/sendCode', { phone, identify_code }, function (data) {
+                                timer = 11;
+                                Countdown();
+                                if (data.success) {
+                                    alert('验证码发送成功');
+                                } else {
+                                    alert(data.msg);
+                                }
+                            });
+                        }
+                    });
+
+                    //验证验证码
+                    $("#nextStep").click(function (e) {
+                        var sign = $('#sign').val().trim();
+                        var phone_code = $('#phone_code').val().trim();
+
+                        if (phone_code === '') {
+                            alert('请输入验证码！');
+                            return;
+                        }
+
+                        if (sign === '') {
+                            alert('参数错误！');
+                            return;
+                        }
+
+                        $.get('/pass/validatePhoneCode', { sign, phone_code }, function (data) {
+                            if (data.success) {
+                                location.href = "/register/registerStep3?sign=" + data.sign + '&phone_code=' + phone_code;
+                            } else {
+                                $('#phone_code').val('');
+                                alert(data.msg);
+                            }
+                        });
+                    });
+
+                    $('#returnButton').click(function () {
+                        location.href = '/register/registerStep1';
+                    });
+                });
+            </script>
+        </div>
+    </div>
+
+</body>
+
+</html>

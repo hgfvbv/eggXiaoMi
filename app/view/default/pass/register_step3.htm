@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>用户注册</title>
+    <link rel="stylesheet" href="/public/default/css/login.css" />
+    <link rel="shortcut icon" href="/public/favicon.ico" type="image/x-icon">
+
+    <script src="/public/default/js/jquery-1.10.1.js"></script>
+</head>
+
+<body class="register_page">
+
+    <div class="regist">
+        <div class="regist_center">
+
+            <div class="logo">
+                <img src="/public/default/image/favicon.png" alt="商城">
+            </div>
+            <div class="regist_top">
+                <h2>注册商城账户</h2>
+            </div>
+            <div class="regist_main center">
+                <p>请输入您注册账户的密码</p>
+                <br>
+
+                <form action="/pass/doRegister?_csrf={{csrf}}" method="post" id="form">
+                    <input type="hidden" name="sign" value="{{sign}}" />
+                    <input type="hidden" name="phone_code" value="{{phone_code}}" />
+                    <div>
+                        <input class="form_input" type="password" id="password" name="password" placeholder="请输入密码" />
+                    </div>
+
+                    <div>
+                        <input class="form_input" type="password" id="rpassword" name="rpassword"
+                            placeholder="请输入确认密码" />
+                    </div>
+
+                    {% if msg %}
+                    <p style="color:red">{{msg}}</p>
+                    {% endif %}
+
+                    <div class="regist_submit">
+                        <input class="submit" id="nextStep" type="submit" name="submit" value="下一步">
+                        <input class="return" id="returnButton" type="button" name="return" value="返回首页">
+                    </div>
+                </form>
+            </div>
+
+
+        </div>
+    </div>
+    <script>
+
+        $(function () {
+            $("#form").submit(function () {
+                var password = $('#password').val().trim();
+                var rpassword = $('#rpassword').val().trim();
+
+                if (password.length < 6) {
+                    alert('密码长度不能小于6位');
+                    return false;
+                }
+
+                if (password !== rpassword) {
+                    $('#rpassword').val('');
+                    alert('密码和确认密码不一致');
+                    return false;
+                }
+                return true;
+            });
+
+            $('#returnButton').click(function () {
+                location.href = '/';
+            });
+        });
+    </script>
+</body>
+
+</html>
