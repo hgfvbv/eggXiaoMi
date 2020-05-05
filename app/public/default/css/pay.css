@@ -112,7 +112,7 @@
 }
 
 .order-info .post-info-hide {
-	visibility: hidden
+	/* visibility: hidden */
 }
 
 .order-info .total {

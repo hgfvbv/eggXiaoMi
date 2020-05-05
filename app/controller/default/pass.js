@@ -15,7 +15,7 @@ class PassController extends BaseController {
             password = params.password.trim() || '',
             phone = params.username.trim() || '';
 
-        if (identify_code === '' || identify_code !== ctx.session.identify_code || phone === '' || password === '') {
+        if (identify_code === '' || identify_code !== ctx.session.identify_code || phone === '' || !/^[\d]{11}$/.test(phone) || password === '') {
             ctx.session.identify_code = '';
             ctx.body = {
                 success: false,

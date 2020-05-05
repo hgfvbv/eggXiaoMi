@@ -134,11 +134,18 @@ class ToolsService extends Service {
 
     //短信随机码
     async getRandomNum(count = 4) {
-        var random_str = '';
-        for (var i = 0; i < count; i++) {
+        let random_str = '';
+        for (let i = 0; i < count; i++) {
             random_str += Math.floor(Math.random() * 10);
         }
         return random_str;
+    }
+
+    //生成订单号
+    async getOrderId() {
+        let nowTime = await this.getTime();
+        let randomNum = await this.getRandomNum(6);
+        return nowTime.toString() + randomNum.toString();
     }
 }
 

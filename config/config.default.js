@@ -107,6 +107,9 @@ module.exports = appInfo => {
     //手机验证码有效时间，单位：分钟，默认30
     config.validTime = 15;
 
+    //最多收货地址数量，默认20  
+    config.addressCount = 10;
+
     exports.proxy = true;
 
     exports.mongoose = {
