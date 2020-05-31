@@ -19,9 +19,9 @@
             <div class="gouwuche fr"><a href="/cart">购物车</a></div>
             <div class="fr">
                 <ul>
-                    {% if userInfo %}
+                    {% if user %}
                         <li class="userinfo">
-                            <a href="#">{{userInfo.phone}}</a>
+                            <a href="#">{{user.phone}}</a>
                                 <i class="i"></i>
                                 <ol>
                                     <li><a href="#">个人中心</a></li>
@@ -30,7 +30,7 @@
                                 </ol>
                         </li>
                         <li>|</li>
-                        <li><a href="#" target="_blank">我的订单</a></li>
+                        <li><a href="/user/order" target="_blank">我的订单</a></li>
                     {% else %}
                         <li><a href="/login" target="_blank">登录</a></li>
                         <li>|</li>

@@ -8,7 +8,7 @@ class BuyController extends BaseController {
         let orderList = [],
             allPrice = 0,
             count = 0,
-            cartList = await ctx.model.Cart.find({ userId: ctx.state.userInfo._id }),
+            cartList = await ctx.model.Cart.find({ userId: service.cookies.get('userInfo')._id }),
             orderSign = await service.tools.md5(await service.tools.getRandomNum(6));
 
         //用于验证是否重复提交订单的签名
@@ -48,7 +48,8 @@ class BuyController extends BaseController {
 
         if (orderSign !== ctx.session.orderSign) {
             ctx.session.orderSign = null;
-            return false;
+            await this.error('/buy/checkout', '哎呀！网页开小差了！要不稍后再试试？');
+            return;
         }
         ctx.session.orderSign = null;
 
@@ -63,6 +64,7 @@ class BuyController extends BaseController {
                 all_price += element.price * element.num;
             }
 
+            // 注意：订单表和订单详情表的order_id有区别，订单表的order_id是给用户看的，订单详情表的order_id是用来关联订单表的主键_id的
             let order = new ctx.model.Order({
                 uid,
                 all_price,
@@ -81,6 +83,7 @@ class BuyController extends BaseController {
 
             if (order && order._id) {
                 let insertArray = [];
+                // 注意：订单表和订单详情表的order_id有区别，订单表的order_id是给用户看的，订单详情表的order_id是用来关联订单表的主键_id的
                 for (let i = 0; i < cartList.length; i++) {
                     const element = cartList[i];
                     insertArray.push(new ctx.model.OrderItem({
@@ -123,10 +126,9 @@ class BuyController extends BaseController {
             await this.error('/buy/checkout', '哎呀！网页开小差了！要不稍后再试试？');
             return;
         }
-
-        let orderResult = await ctx.model.Order.findOne({ _id, uid });
+        let orderResult = await ctx.model.Order.findOne({ _id, uid }, '_id all_price order_id name phone address');
         if (orderResult) {
-            let orderItemResult = await ctx.model.OrderItem.find({ order_id: _id });
+            let orderItemResult = await ctx.model.OrderItem.find({ order_id: _id }, 'product_title product_color product_num');
 
             await this.ctx.render('default/confirm.htm', {
                 orderResult,
@@ -134,6 +136,42 @@ class BuyController extends BaseController {
             });
         } else {
             await this.error('/', '哎呀！网页开小差了！要不稍后再试试？');
+        }
+    }
+
+    //执行多次 查询订单是否更新
+    async  getOrderPayStatus() {
+        const { ctx, service } = this;
+        const _id = ctx.query.id || '',
+            uid = service.cookies.get('userInfo') ? service.cookies.get('userInfo')._id : '';
+
+        if (_id === '' || uid === '') {
+            ctx.body = {
+                success: false,
+                message: '未支付'
+            };
+            return;
+        }
+
+        try {
+            let orderResult = await ctx.model.Order.findOne({ _id, uid }, 'pay_status order_status');
+            if (orderResult && orderResult.pay_status === 1 && orderResult.order_status === 1) {
+                ctx.body = {
+                    success: true,
+                    message: '已支付'
+                };
+            } else {
+                ctx.body = {
+                    success: false,
+                    message: '未支付'
+                };
+            }
+        } catch (e) {
+            console.log(e);
+            ctx.body = {
+                success: false,
+                message: '未支付'
+            };
         }
     }
 }

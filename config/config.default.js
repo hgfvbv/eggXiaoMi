@@ -81,7 +81,7 @@ module.exports = appInfo => {
         csrf: {
             // 判断是否需要 ignore 的方法，请求上下文 context 作为第一个参数
             ignore: ctx => {
-                if (ctx.request.url == '/admin/goods/goodsUploadImage' || ctx.request.url == '/admin/goods/goodsUploadPhoto' || ctx.request.url == '/admin/goods/goodsUploadVideo' || ctx.request.url == '/admin/goods/goodsUploadImg' || ctx.request.url == '/admin/articleCate/articleCateUploadImg' || ctx.request.url == '/admin/article/articleUploadImage' || ctx.request.url == '/admin/article/articleUploadVideo' || ctx.request.url == '/admin/article/articleUploadImg' || ctx.request.url == '/admin/setting/siteIcoUploadImg' || ctx.request.url == '/admin/setting/siteLogoUploadImg' || ctx.request.url == '/admin/setting/noPictureUploadImg') {
+                if (ctx.request.url == '/admin/goods/goodsUploadImage' || ctx.request.url == '/admin/goods/goodsUploadPhoto' || ctx.request.url == '/admin/goods/goodsUploadVideo' || ctx.request.url == '/admin/goods/goodsUploadImg' || ctx.request.url == '/admin/articleCate/articleCateUploadImg' || ctx.request.url == '/admin/article/articleUploadImage' || ctx.request.url == '/admin/article/articleUploadVideo' || ctx.request.url == '/admin/article/articleUploadImg' || ctx.request.url == '/admin/setting/siteIcoUploadImg' || ctx.request.url == '/admin/setting/siteLogoUploadImg' || ctx.request.url == '/admin/setting/noPictureUploadImg' || ctx.request.url === '/alipay/alipayNotify' || ctx.request.url === '/weChatPay/weChatPayNotify') {
                     return true;
                 }
                 return false;
@@ -109,6 +109,28 @@ module.exports = appInfo => {
 
     //最多收货地址数量，默认20  
     config.addressCount = 10;
+
+    config.alipayOptions = {
+        appId: '需要配置',
+        privateKey: "需要配置",
+        alipayPublicKey: "需要配置"
+    };
+    exports.alipayBasicParams = {
+        returnUrl: 'http://www.hgfvbv.xyz/alipay/alipayReturn', //支付成功返回地址
+        notifyUrl: 'http://www.hgfvbv.xyz/alipay/alipayNotify' //支付成功异步通知地址
+    }
+
+    //微信支付的配置
+    exports.weixinPayConfig = {
+        mch_id: '商户号',
+        wxappid: "需要配置",
+        wxpaykey: '需要配置'
+    }
+
+    exports.weixinpayBasicParams = {
+        //注意回调地址必须在  微信商户平台配置
+        notify_url: "http://www.hgfvbv.xyz/weChatPay/weChatPayNotify'"
+    }
 
     exports.proxy = true;
 

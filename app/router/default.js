@@ -9,6 +9,7 @@ module.exports = app => {
     //路由中间件
     let initMiddleware = app.middleware.init({}, app);
     let userauthMiddleware = app.middleware.userauth({}, app);
+    let xmlparseMiddleware = app.middleware.xmlparse({}, app);
 
     router.get('/', initMiddleware, controller.default.index.index);
     router.get('/plist', initMiddleware, controller.default.product.list);
@@ -46,11 +47,27 @@ module.exports = app => {
     //确认订单去支付
     router.get('/buy/confirm', initMiddleware, userauthMiddleware, controller.default.buy.confirm);
 
+    //支付
+    router.get('/alipay/pay', initMiddleware, userauthMiddleware, controller.default.alipay.pay);
+    //支付成功回调
+    router.get('/alipay/alipayReturn', initMiddleware, controller.default.alipay.alipayReturn);
+    //支付成功异步通知   注意关闭csrf验证
+    router.post('/alipay/alipayNotify', initMiddleware, xmlparseMiddleware, controller.default.alipay.alipayNotify);
+    // 微信支付
+    router.get('/weChatPay/pay', initMiddleware, userauthMiddleware, controller.default.weChatPay.pay);
+    //异步通知   注意关闭csrf验证
+    router.post('/weChatPay/weChatPayNotify', initMiddleware, xmlparseMiddleware, controller.default.weChatPay.weChatPayNotify);
+
+    //检测订单是否支付
+    router.get('/buy/getOrderPayStatus', initMiddleware, userauthMiddleware, controller.default.buy.getOrderPayStatus);
+
     // address   收货地址（api接口）
     router.post('/user/addAddress', initMiddleware, userauthMiddleware, controller.default.address.addAddress);
     router.get('/user/getOneAddressList', initMiddleware, userauthMiddleware, controller.default.address.getOneAddressList);
     router.get('/user/changeDefaultAddress', initMiddleware, userauthMiddleware, controller.default.address.changeDefaultAddress);
     router.post('/user/editAddress', initMiddleware, userauthMiddleware, controller.default.address.editAddress);
     router.get('/user/delAddress', initMiddleware, userauthMiddleware, controller.default.address.delAddress);
+
+    router.get('/user/order', initMiddleware, userauthMiddleware, controller.default.user.order);
 
 };

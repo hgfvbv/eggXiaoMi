@@ -3,7 +3,7 @@ module.exports = (options, app) => {
         const { service } = ctx;
 
         ctx.state.csrf = ctx.csrf;   //全局变量
-        ctx.state.userInfo = service.cookies.get('userInfo');
+        ctx.state.user = service.cookies.get('userInfo');
 
         let navTop = await service.cache.get('index_navTop');
         if (!navTop || navTop == '') {

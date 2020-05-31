@@ -5,7 +5,7 @@ module.exports = app => {
     const Order = new Schema({
         uid: { type: Schema.Types.ObjectId },
         all_price: { type: Number },
-        order_id: { type: Number },
+        order_id: { type: String },
         name: { type: String },
         phone: { type: String },
         address: { type: String },

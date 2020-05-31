@@ -145,7 +145,7 @@ class ToolsService extends Service {
     async getOrderId() {
         let nowTime = await this.getTime();
         let randomNum = await this.getRandomNum(6);
-        return nowTime.toString() + randomNum.toString();
+        return 'ZLZK' + nowTime.toString() + randomNum.toString();
     }
 }
 
