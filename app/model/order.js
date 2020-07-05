@@ -1,7 +1,7 @@
 module.exports = app => {
     const mongoose = app.mongoose,
         Schema = mongoose.Schema;
-
+    const d = new Date();
     const Order = new Schema({
         uid: { type: Schema.Types.ObjectId },
         all_price: { type: Number },
@@ -17,7 +17,35 @@ module.exports = app => {
         },
         add_time: {
             type: Number
-        }
+        },
+        pay_time: {
+            type: Number,
+            default: d.getTime()
+        },
+        peihuo_time: {
+            type: Number,
+            default: d.getTime()
+        },
+        chuku_time: {
+            type: Number,
+            default: d.getTime()
+        },
+        success_time: {
+            type: Number,
+            default: d.getTime()
+        },
+        wuliuCompany: {
+            type: String,
+            default: '顺丰(杭州)'
+        },
+        wuliuHost: {
+            type: String,
+            default: 'http://www.sf-express.com'
+        },
+        wuliuNo: {
+            type: String,
+            default: '199384067236'
+        },
     });
 
     return mongoose.model('Order', Order, 'order');

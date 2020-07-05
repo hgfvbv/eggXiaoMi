@@ -87,6 +87,7 @@ class BuyController extends BaseController {
                 for (let i = 0; i < cartList.length; i++) {
                     const element = cartList[i];
                     insertArray.push(new ctx.model.OrderItem({
+                        uid,
                         order_id: order._id,
                         product_title: element.title,
                         product_color: element.color,

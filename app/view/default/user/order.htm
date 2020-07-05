@@ -1,0 +1,137 @@
+{%- include "../public/page_header.htm" %}
+<!--end header -->
+
+<!-- start banner_x -->
+{%- include "../public/page_aside.htm" %}
+{%- include "../public/page_mNav.htm" %}
+<!-- end banner_x -->
+
+<script src="/public/default/js/jqPaginator.js"></script>
+
+<link rel="stylesheet" href="/public/default/css/order.css" />
+
+
+<!-- self_info -->
+<div class="grzxbj">
+    <div class="selfinfo center">
+        <div class="lfnav fl">
+            {%- include  "./user_left.htm" %}
+        </div>
+        <div class="rtcont fr">
+            <h1>我的订单</h1>
+
+            <div class="uc-content-box">
+
+                <div class="box-hd">
+                    <div class="more clearfix">
+                        <ul class="filter-list J_orderType">
+                            <li class="first active"><a href="/user/order">全部有效订单</a></li>
+                            <li><a href="/user/order?page={{page}}&order_status=0">待支付</a></li>
+                            <li><a href="/user/order?page={{page}}&order_status=1">已支付</a></li>
+                            <li><a href="/user/order?page={{page}}&order_status=3">待收货</a></li>
+                            <li><a href="/user/order?page={{page}}&order_status=4">已完成</a></li>
+                            <li><a href="/user/order?page={{page}}&order_status=6">已关闭</a></li>
+                        </ul>
+                        <form id="J_orderSearchForm" class="search-form clearfix" action="#" method="get">
+
+                            <input class="search-text" type="search" id="J_orderSearchKeywords" name="keywords"
+                                autocomplete="off" placeholder="输入商品名称" value='{{keywords}}'>
+                            <input type="submit" style='cursor:pointer;' class="search-btn iconfont" value="搜索">
+                        </form>
+                    </div>
+                </div>
+                <div class="box-bd">
+                    {% if list.length>0 %}
+                    <table class="table">
+                        {% for item in list %}
+                        <tr {% if item.pay_status==0 %}class="order_pay" {% endif %}>
+                            <td colspan="2">
+                                <div class="order-summary">
+                                    <h2>
+                                        {% if item.order_status==0 %}
+                                        已下单 未支付
+                                        {% elseif item.order_status==1 %}
+                                        已付款
+                                        {% elseif item.order_status==2 %}
+                                        已配货
+                                        {% elseif item.order_status==3 %}
+                                        已发货
+                                        {% elseif item.order_status==4 %}
+                                        交易成功
+                                        {% elseif item.order_status==5 %}
+                                        已退货
+                                        {% elseif item.order_status==6 %}
+                                        无效 已取消
+                                        {% endif %}
+                                    </h2>
+
+                                    {{helper.formartTime(item.add_time) }} | {{item.name}} |
+                                    订单号：{{item.order_id}} | 在线支付 实付金额：{{item.all_price}}元
+                                </div>
+
+                                {% for orderItem in item.orderItems %}
+                                <div class="order-info clearfix">
+                                    <div class="col_pic">
+                                        <img src="{{orderItem.product_img}}" />
+                                    </div>
+                                    <div class="col_title">
+                                        <p>{{orderItem.product_title}}</p>
+                                        <p>{{orderItem.product_price}}元 ×
+                                            {{orderItem.product_num}}</p>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </td>
+
+                            <td>
+                                <span>
+                                    {% if item.pay_status==1 %}
+                                    <a class="delete btn" href="/user/orderinfo?id={{item._id}}">订单详情</a>
+                                    <br>
+                                    <br>
+                                    <a class="delete btn" href="#">申请售后</a>
+                                    {% else %}
+                                    <a class="delete btn btn-primary" href="/buy/confirm?id={{item._id}}">去支付</a>
+                                    <br>
+                                    <br>
+                                    <a class="delete btn" href="/user/orderinfo?id={{item._id}}">订单详情</a>
+                                    {% endif %}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+
+                    <div id="page" class="pagination fr"></div>
+                    {% else %}
+                    <p style="text-align:center; padding-top:100px;">没有查找到任何订单！</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <script>
+
+                $('#page').jqPaginator({
+                    totalPages: {{ totalPages }},
+                    visiblePages: 8,
+                    currentPage: {{ page }},
+                    onPageChange: function (num, type) {
+                        console.log('当前第' + num + '页', type);
+                        if (type == 'change') {
+                            location.href = "/user/order?page=" + num + '&order_status={{order_status}}&keywords={{keywords}}';
+                        }
+                    }
+                    });
+
+            </script>
+
+        </div>
+        <div class="clear"></div>
+    </div>
+</div>
+<!-- self_info -->
+
+{%- include "../public/footer.htm" %}
+</body>
+
+</html>

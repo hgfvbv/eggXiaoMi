@@ -70,6 +70,8 @@ module.exports = appInfo => {
     config.accessPageSize = 2;
     //权限分页每页数量 默认为2
     config.articleCatePageSize = 2;
+    //前台订单分页 默认为2
+    config.orderPageSize = 2;
 
     exports.multipart = {
         whitelist: ['.png', '.jfif', '.jpg', '.jpeg', '.bmp', '.psd', '.gif', '.mp4', '.avi'],

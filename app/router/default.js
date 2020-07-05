@@ -68,6 +68,9 @@ module.exports = app => {
     router.post('/user/editAddress', initMiddleware, userauthMiddleware, controller.default.address.editAddress);
     router.get('/user/delAddress', initMiddleware, userauthMiddleware, controller.default.address.delAddress);
 
+    // 用户中心
+    router.get(['/user', '/user/welcome'], initMiddleware, userauthMiddleware, controller.default.user.welcome);
     router.get('/user/order', initMiddleware, userauthMiddleware, controller.default.user.order);
+    router.get('/user/orderinfo', initMiddleware, userauthMiddleware, controller.default.user.orderinfo);
 
 };

@@ -3,6 +3,7 @@ module.exports = app => {
         Schema = mongoose.Schema;
 
     const OrderItem = new Schema({
+        uid: { type: Schema.Types.ObjectId },
         order_id: { type: Schema.Types.ObjectId },
         product_title: { type: String },
         product_color: { type: String },

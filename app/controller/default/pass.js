@@ -5,7 +5,9 @@ const BaseController = require('./base');
 class PassController extends BaseController {
     async login() {
         const { ctx } = this;
-        await ctx.render('/default/pass/login.htm');
+        let returnUrl = ctx.query.returnUrl;
+        returnUrl = returnUrl ? decodeURIComponent(returnUrl) : '/';
+        await ctx.render('/default/pass/login.htm', { returnUrl });
     }
 
     async doLogin() {

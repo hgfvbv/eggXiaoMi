@@ -1,8 +1,11 @@
+const url = require('url');
+
 module.exports = (options, app) => {
     return async function userauth(ctx, next) {
 
         //判断前台用户是否登录   如果登录可以进入 （ 去结算  用户中心）    如果没有登录直接跳转到登录
-        let userInfo = ctx.service.cookies.get('userInfo');
+        const userInfo = ctx.service.cookies.get('userInfo');
+        ctx.state.url = url.parse(ctx.request.url).pathname;
 
         if (userInfo && userInfo._id && userInfo.phone) {
             //判断数据库里面有没有当前用户                
@@ -12,10 +15,14 @@ module.exports = (options, app) => {
                 await next();
             } else {
                 ctx.service.cookies.set('userInfo', '');
-                ctx.redirect('/login');
+                const req = ctx.request;
+                const prevPage = 'http://' + req.headers.host + req.url;
+                ctx.redirect('/login?returnUrl=' + encodeURIComponent(prevPage));
             }
         } else {
-            ctx.redirect('/login');
+            const req = ctx.request;
+            const prevPage = 'http://' + req.headers.host + req.url;
+            ctx.redirect('/login?returnUrl=' + encodeURIComponent(prevPage));
         }
     };
 };
