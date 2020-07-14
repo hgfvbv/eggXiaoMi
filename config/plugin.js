@@ -19,3 +19,8 @@ exports.redis = {
   enable: true,
   package: 'egg-redis',
 };
+
+exports.elasticsearch = {
+    enable: true,
+    package: 'egg-es'
+  };

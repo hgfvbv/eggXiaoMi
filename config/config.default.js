@@ -143,6 +143,12 @@ module.exports = appInfo => {
         }
     };
 
+    //全文搜索引擎  Api:https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/api-reference.html
+    exports.elasticsearch = {
+        host: 'localhost:9200',
+        apiVersion: '7.x'
+    };
+
     config.view = {
         mapping: {
             '.html': 'ejs',
