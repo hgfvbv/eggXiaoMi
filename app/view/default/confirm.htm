@@ -149,14 +149,19 @@
         });
 
         $("#alipay").click(function () {
+            alert('此网站为测试网站！支付接口已关闭！');
+            return;
             $('#alipayModel').modal('show');
         });
 
         $("#weChatPay").click(function () {
+            alert('此网站为测试网站！支付接口已关闭！');
+            return;
             $('#weChatPayModel').modal('show');
         });
 
         setInterval(function () {
+            return;
             $.get('/buy/getOrderPayStatus?id={{orderResult._id}}', function (response) {
                 console.log(response);
                 if (response.success) {

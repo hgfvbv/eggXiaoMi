@@ -1,288 +1,287 @@
 {%- include "./public/page_header.htm" %}
 
 <body>
-	{%- include "./public/page_aside.htm" %}
+    {%- include "./public/page_aside.htm" %}
 
-	<!-- start banner_x -->
-	<div class="banner_x center">
-		<a href="/" target="_blank">
-			<div class="logo fl"></div>
-		</a>
-		<a href="">
-			<div class="ad_top fl"></div>
-		</a>
-		<div class="nav fl">
-			<ul class="clearfix" id="nav_list">
-				{% for item in navMiddle%}
-				<li>
-					<a href="{{item.link}}" {% if item.is_opennew==2%}target="_blank" {% endif %}>{{item.title}}</a>
+    <!-- start banner_x -->
+    <div class="banner_x center">
+        <a href="/" target="_blank">
+            <div style="float:left;background-attachment:fix;background: url('{{setting.site_logo}}');background-repeat: no-repeat;
+            background-size: 100% 100%;margin-top:1.1%;width: 70px;height: 70px;"></div>
+        </a>
+        <a href="">
+            <div class="ad_top fl"></div>
+        </a>
+        <div class="nav fl">
+            <ul class="clearfix" id="nav_list">
+                {% for item in navMiddle%}
+                <li>
+                    <a href="{{item.link}}" {% if item.is_opennew==2%}target="_blank" {% endif %}>{{item.title}}</a>
 
-					{% if item.subGoods.length>0 %}
-					<ol class="children-list clearfix">
-						{% for item1 in item.subGoods%}
-						<li>
-							<a href="#">
-								<img
-									src="{{item1.goods_img}}_180x180{{helper.getExtName(item1.goods_img if item1.goods_img else '')}}" />
-								<p>{{item1.shop_price}}元</p>
-							</a>
-						</li>
-						{% endfor %}
-					</ol>
-					{% endif %}
-				</li>
-				{% else %}
-				<li><a href="http://www.hgfvbv.xyz" target="_blank">小米商城</a></li>
-				{% endfor %}
-			</ul>
-		</div>
-		<div class="search fr">
-			<form action="" method="post">
-				<div class="text fl">
-					<input type="text" class="shuru" placeholder="小米6&nbsp;小米MIX现货">
-				</div>
-				<div class="submit fl">
-					<input type="submit" class="sousuo" value="搜索" />
-				</div>
-				<div class="clear"></div>
-			</form>
-			<div class="clear"></div>
-		</div>
-	</div>
-	<!-- end banner_x -->
-	<!-- start banner_y -->
-	<div class="banner_y center">
-		<div class="nav">
-			<ul>
-				{% for item in goodsCate %}
-				<li>
-					{% if item.link %}
-					<a href="{{item.link}}">{{item.title}}</a>
-					{% else %}
-					<a href="/plist?cid={{item._id}}">{{item.title}}</a>
-					{% endif %}
-					<div class="pop">
-						<ol class="cate_list clear">
-							{% for item1 in item.child %}
-							<li>
-								<div class="xuangou_left">
-									{% if item1.link %}
-									<a href="{{item1.link}}" target="_blank">
-										<div class="img fl">
-											<img src="{{item1.cate_img}}_180x180{{helper.getExtName(item1.cate_img if item1.cate_img else '')}}"
-												alt="{{item1.keywords}}" /></div>
-										<span class="fl">{{item1.title}}</span>
-									</a>
-									{% else %}
-									<a href="/plist?cid={{item1._id}}" target="_blank">
-										<div class="img fl">
-											<img src="{{item1.cate_img}}_180x180{{helper.getExtName(item1.cate_img if item1.cate_img else '')}}"
-												alt="{{item1.keywords}}" /></div>
-										<span class="fl">{{item1.title}}</span>
-									</a>
-									{% endif %}
-								</div>
-							</li>
-							{% endfor %}
-						</ol>
-					</div>
-				</li>
-				{% endfor %}
-			</ul>
-		</div>
-
-
-		<div class="swiper-container">
-			<div class="swiper-wrapper">
-				{% for item in focus %}
-				<div class="swiper-slide">
-					<a href="{{item.link}}">
-						<img src="{{item.focus_img}}" alt="{{item.title}}" />
-					</a>
-				</div>
-				{% endfor %}
-			</div>
-			<!-- Add Arrows -->
-			<div class="swiper-button-next"></div>
-			<div class="swiper-button-prev"></div>
-		</div>
-
-	</div>
-
-	<div class="sub_banner center">
-		<div class="sidebar fl">
-			<div class="fl"><a href=""><img src="/public/default/image/hjh_01.gif"></a></div>
-			<div class="fl"><a href=""><img src="/public/default/image/hjh_02.gif"></a></div>
-			<div class="fl"><a href=""><img src="/public/default/image/hjh_03.gif"></a></div>
-			<div class="fl"><a href=""><img src="/public/default/image/hjh_04.gif"></a></div>
-			<div class="fl"><a href=""><img src="/public/default/image/hjh_05.gif"></a></div>
-			<div class="fl"><a href=""><img src="/public/default/image/hjh_06.gif"></a></div>
-			<div class="clear"></div>
-		</div>
-		<div class="datu fl"><a href=""><img src="/public/default/image/hongmi4x.png" alt=""></a></div>
-		<div class="datu fl"><a href=""><img src="/public/default/image/xiaomi5.jpg" alt=""></a></div>
-		<div class="datu fr"><a href=""><img src="/public/default/image/pinghengche.jpg" alt=""></a></div>
-		<div class="clear"></div>
+                    {% if item.subGoods.length>0 %}
+                    <ol class="children-list clearfix">
+                        {% for item1 in item.subGoods%}
+                        <li>
+                            <a target="_blank" href="/pinfo?id={{item1._id}}">
+                                <img
+                                    src="{{item1.goods_img}}_180x180{{helper.getExtName(item1.goods_img if item1.goods_img else '')}}" />
+                                <p>{{item1.shop_price}}元</p>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ol>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="search fr">
+            <form action="" method="post">
+                <div class="text fl">
+                    <input type="text" class="shuru" placeholder="小米6&nbsp;小米MIX现货">
+                </div>
+                <div class="submit fl">
+                    <input type="submit" class="sousuo" value="搜索" />
+                </div>
+                <div class="clear"></div>
+            </form>
+            <div class="clear"></div>
+        </div>
+    </div>
+    <!-- end banner_x -->
+    <!-- start banner_y -->
+    <div class="banner_y center">
+        <div class="nav">
+            <ul>
+                {% for item in goodsCate %}
+                <li>
+                    {% if item.link %}
+                    <a href="{{item.link}}">{{item.title}}</a>
+                    {% else %}
+                    <a href="/plist?cid={{item._id}}">{{item.title}}</a>
+                    {% endif %}
+                    <div class="pop">
+                        <ol class="cate_list clear">
+                            {% for item1 in item.child %}
+                            <li>
+                                <div class="xuangou_left">
+                                    {% if item1.link %}
+                                    <a href="{{item1.link}}" target="_blank">
+                                        <div class="img fl">
+                                            <img src="{{item1.cate_img}}_180x180{{helper.getExtName(item1.cate_img if item1.cate_img else '')}}"
+                                                alt="{{item1.keywords}}" /></div>
+                                        <span class="fl">{{item1.title}}</span>
+                                    </a>
+                                    {% else %}
+                                    <a href="/plist?cid={{item1._id}}" target="_blank">
+                                        <div class="img fl">
+                                            <img src="{{item1.cate_img}}_180x180{{helper.getExtName(item1.cate_img if item1.cate_img else '')}}"
+                                                alt="{{item1.keywords}}" /></div>
+                                        <span class="fl">{{item1.title}}</span>
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ol>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
 
 
-	</div>
-	<!-- end banner -->
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+                {% for item in focus %}
+                <div class="swiper-slide">
+                    <a href="{{item.link}}">
+                        <img src="{{item.focus_img}}" alt="{{item.title}}" />
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+            <!-- Add Arrows -->
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
 
-	<!-- start danpin -->
-	<div class="danpin center">
+    </div>
 
-		<div class="title center">小米明星单品</div>
-		<div class="main center">
-			{% for item in tvGoods %}
-			<div class="mingxing fl">
-				<div class="sub_mingxing"><a href=""><img
-							src="{{item.goods_img}}_180x180{{helper.getExtName(item.goods_img if item.goods_img else '')}}"
-							alt="{{item.title}}"></a></div>
-				<div class="pinpai"><a href="">{{item.title}}</a></div>
-				<div class="youhui">{{item.sub_title}}</div>
-				<div class="jiage">{{item.shop_price}}元起</div>
-			</div>
-			{% endfor %}
-			<div class="clear"></div>
-		</div>
-	</div>
-
-
-
-	<!-- 手机 -->
-
-	<div class="category_item w">
-		<div class="title center">手机</div>
-		<div class="main center">
-
-
-			<div class="category_item_left">
-
-				<img src="/public/default/image/shouji.jpg" alt="手机">
-			</div>
+    <div class="sub_banner center">
+        <div class="sidebar fl">
+            <div class="fl"><a href=""><img src="/public/default/image/hjh_01.gif"></a></div>
+            <div class="fl"><a href=""><img src="/public/default/image/hjh_02.gif"></a></div>
+            <div class="fl"><a href=""><img src="/public/default/image/hjh_03.gif"></a></div>
+            <div class="fl"><a href=""><img src="/public/default/image/hjh_04.gif"></a></div>
+            <div class="fl"><a href=""><img src="/public/default/image/hjh_05.gif"></a></div>
+            <div class="fl"><a href=""><img src="/public/default/image/hjh_06.gif"></a></div>
+            <div class="clear"></div>
+        </div>
+        <div class="datu fl"><a href=""><img src="/public/default/image/hongmi4x.png" alt=""></a></div>
+        <div class="datu fl"><a href=""><img src="/public/default/image/xiaomi5.jpg" alt=""></a></div>
+        <div class="datu fr"><a href=""><img src="/public/default/image/pinghengche.jpg" alt=""></a></div>
+        <div class="clear"></div>
 
 
-			<div class="category_item_right">
+    </div>
+    <!-- end banner -->
 
-				{% for item in phoneGoods%}
-				<div class="hot fl">
-					<div class="xinpin"><span>新品</span></div>
-					<div class="tu"><a href=""><img
-								src="{{item.goods_img}}_180x180{{helper.getExtName(item.goods_img if item.goods_img else '')}}"
-								alt="{{item.title}}"></a></div>
-					<div class="miaoshu"><a href="">{{item.title}}</a></div>
-					<div class="jiage">{{item.shop_price}}元</div>
-					<!-- <div class="pingjia">372人评价</div> -->
-					<div class="piao">
-						<a href="">
-							<span>{{item.sub_title}}</span>
-						</a>
-					</div>
-				</div>
-				{% endfor %}
-			</div>
+    <!-- start danpin -->
+    <div class="danpin center">
 
-
-		</div>
-	</div>
+        <div class="title center">小米精品</div>
+        <div class="main center">
+            {% for item in tvGoods %}
+            <div class="mingxing fl">
+                <div class="sub_mingxing"><a href="/pinfo?id={{item._id}}"><img
+                            src="{{item.goods_img}}_180x180{{helper.getExtName(item.goods_img if item.goods_img else '')}}"
+                            alt="{{item.title}}"></a></div>
+                <div class="pinpai"><a href="/pinfo?id={{item._id}}">{{item.title}}</a></div>
+                <div class="youhui">{{item.sub_title}}</div>
+                <div class="jiage">{{item.shop_price}}元起</div>
+            </div>
+            {% endfor %}
+            <div class="clear"></div>
+        </div>
+    </div>
 
 
 
-	<!-- 配件 -->
-	<div class="category_item w">
-		<div class="title center">配件</div>
-		<div class="main center">
-			<div class="content">
-				<div class="hot fl"><a href=""><img src="/public/default/image/peijian1.jpg"></a>
-				</div>
-				<div class="hot fl">
-					<div class="xinpin"><span>新品</span></div>
-					<div class="tu"><a href=""><img src="/public/default/image/peijian2.jpg"></a></div>
-					<div class="miaoshu"><a href="">小米6 硅胶保护套</a></div>
-					<div class="jiage">49元</div>
-					<div class="pingjia">372人评价</div>
-					<div class="piao">
-						<a href="">
-							<span>发货速度很快！很配小米6！</span>
-							<span>来至于mi狼牙的评价</span>
-						</a>
-					</div>
-				</div>
-				<div class="hot fl">
-					<div class="xinpin"><span style="background:#fff"></span></div>
-					<div class="tu"><a href=""><img src="/public/default/image/peijian3.jpg"></a></div>
-					<div class="miaoshu"><a href="">小米手机4c 小米4c 智能</a></div>
-					<div class="jiage">29元</div>
-					<div class="pingjia">372人评价</div>
-				</div>
-				<div class="hot fl">
-					<div class="xinpin"><span style="background:red">享6折</span></div>
-					<div class="tu"><a href=""><img src="/public/default/image/peijian4.jpg"></a></div>
-					<div class="miaoshu"><a href="">红米NOTE 4X 红米note4X</a></div>
-					<div class="jiage">19元</div>
-					<div class="pingjia">372人评价</div>
-					<div class="piao">
-						<a href="">
-							<span>发货速度很快！很配小米6！</span>
-							<span>来至于mi狼牙的评价</span>
-						</a>
-					</div>
-				</div>
-				<div class="hot fl">
-					<div class="xinpin"><span style="background:#fff"></span></div>
-					<div class="tu"><a href=""><img src="/public/default/image/peijian5.jpg"></a></div>
-					<div class="miaoshu"><a href="">小米支架式自拍杆</a></div>
-					<div class="jiage">89元</div>
-					<div class="pingjia">372人评价</div>
-					<div class="piao">
-						<a href="">
-							<span>发货速度很快！很配小米6！</span>
-							<span>来至于mi狼牙的评价</span>
-						</a>
-					</div>
-				</div>
-				<div class="clear"></div>
-			</div>
-			<div class="content">
-				<div class="hot fl"><a href=""><img src="/public/default/image/peijian6.png"></a>
-				</div>
-				<div class="hot fl">
-					<div class="xinpin"><span style="background:#fff"></span></div>
-					<div class="tu"><a href=""><img src="/public/default/image/peijian7.jpg"></a></div>
-					<div class="miaoshu"><a href="">小米指环支架</a></div>
-					<div class="jiage">19元</div>
-					<div class="pingjia">372人评价</div>
-					<div class="piao">
-						<a href="">
-							<span>发货速度很快！很配小米6！</span>
-							<span>来至于mi狼牙的评价</span>
-						</a>
-					</div>
-				</div>
-				<div class="hot fl">
-					<div class="xinpin"><span style="background:#fff"></span></div>
-					<div class="tu"><a href=""><img src="/public/default/image/peijian8.jpg"></a></div>
-					<div class="miaoshu"><a href="">米家随身风扇</a></div>
-					<div class="jiage">19.9元</div>
-					<div class="pingjia">372人评价</div>
-				</div>
-				<div class="hot fl">
-					<div class="xinpin"><span style="background:#fff"></span></div>
-					<div class="tu"><a href=""><img src="/public/default/image/peijian9.jpg"></a></div>
-					<div class="miaoshu"><a href="">红米4X 高透软胶保护套</a></div>
-					<div class="jiage">59元</div>
-					<div class="pingjia">775人评价</div>
-				</div>
-				<div class="hotlast fr">
-					<div class="hongmi"><a href=""><img src="/public/default/image/hongmin4.png" alt=""></a></div>
-					<div class="liulangengduo"><a href=""><img src="/public/default/image/liulangengduo.png" alt=""></a>
-					</div>
-				</div>
-				<div class="clear"></div>
-			</div>
-		</div>
-	</div>
-	{%- include "./public/footer.htm" %}
+    <!-- 手机 -->
+
+    <div class="category_item w">
+        <div class="title center">手机</div>
+        <div class="main center">
+
+
+            <div class="category_item_left">
+
+                <img src="/public/default/image/shouji.jpg" alt="手机">
+            </div>
+
+
+            <div class="category_item_right">
+
+                {% for item in phoneGoods%}
+                <div class="hot fl">
+                    <div class="xinpin"><span style="background:#fff"></span></div>
+                    <div class="tu"><a href="/pinfo?id={{item._id}}"><img
+                                src="{{item.goods_img}}_180x180{{helper.getExtName(item.goods_img if item.goods_img else '')}}"
+                                alt="{{item.title}}"></a></div>
+                    <div class="miaoshu"><a href="/pinfo?id={{item._id}}">{{item.title}}</a></div>
+                    <div class="jiage">{{item.shop_price}}元</div>
+                    <!-- <div class="pingjia">372人评价</div> -->
+                    <!-- <div class="piao">
+                        <a href="/pinfo?id={{item._id}}">
+                            <span>{{item.sub_title}}</span>
+                        </a>
+                    </div> -->
+                </div>
+                {% endfor %}
+            </div>
+
+
+        </div>
+    </div>
+
+
+
+    <!-- 配件 -->
+    <div class="category_item w">
+        <div class="title center">配件</div>
+        <div class="main center">
+            <div class="content">
+                <div class="hot fl"><a href=""><img src="/public/default/image/peijian1.jpg"></a>
+                </div>
+                <div class="hot fl">
+                    <div class="xinpin"><span>新品</span></div>
+                    <div class="tu"><a href=""><img src="/public/default/image/peijian2.jpg"></a></div>
+                    <div class="miaoshu"><a href="">小米6 硅胶保护套</a></div>
+                    <div class="jiage">49元</div>
+                    <div class="pingjia">372人评价</div>
+                    <div class="piao">
+                        <a href="">
+                            <span>发货速度很快！很配小米6！</span>
+                            <span>来至于mi狼牙的评价</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="hot fl">
+                    <div class="xinpin"><span style="background:#fff"></span></div>
+                    <div class="tu"><a href=""><img src="/public/default/image/peijian3.jpg"></a></div>
+                    <div class="miaoshu"><a href="">小米手机4c 小米4c 智能</a></div>
+                    <div class="jiage">29元</div>
+                    <div class="pingjia">372人评价</div>
+                </div>
+                <div class="hot fl">
+                    <div class="xinpin"><span style="background:red">享6折</span></div>
+                    <div class="tu"><a href=""><img src="/public/default/image/peijian4.jpg"></a></div>
+                    <div class="miaoshu"><a href="">红米NOTE 4X 红米note4X</a></div>
+                    <div class="jiage">19元</div>
+                    <div class="pingjia">372人评价</div>
+                    <div class="piao">
+                        <a href="">
+                            <span>发货速度很快！很配小米6！</span>
+                            <span>来至于mi狼牙的评价</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="hot fl">
+                    <div class="xinpin"><span style="background:#fff"></span></div>
+                    <div class="tu"><a href=""><img src="/public/default/image/peijian5.jpg"></a></div>
+                    <div class="miaoshu"><a href="">小米支架式自拍杆</a></div>
+                    <div class="jiage">89元</div>
+                    <div class="pingjia">372人评价</div>
+                    <div class="piao">
+                        <a href="">
+                            <span>发货速度很快！很配小米6！</span>
+                            <span>来至于mi狼牙的评价</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div class="content">
+                <div class="hot fl"><a href=""><img src="/public/default/image/peijian6.png"></a>
+                </div>
+                <div class="hot fl">
+                    <div class="xinpin"><span style="background:#fff"></span></div>
+                    <div class="tu"><a href=""><img src="/public/default/image/peijian7.jpg"></a></div>
+                    <div class="miaoshu"><a href="">小米指环支架</a></div>
+                    <div class="jiage">19元</div>
+                    <div class="pingjia">372人评价</div>
+                    <div class="piao">
+                        <a href="">
+                            <span>发货速度很快！很配小米6！</span>
+                            <span>来至于mi狼牙的评价</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="hot fl">
+                    <div class="xinpin"><span style="background:#fff"></span></div>
+                    <div class="tu"><a href=""><img src="/public/default/image/peijian8.jpg"></a></div>
+                    <div class="miaoshu"><a href="">米家随身风扇</a></div>
+                    <div class="jiage">19.9元</div>
+                    <div class="pingjia">372人评价</div>
+                </div>
+                <div class="hot fl">
+                    <div class="xinpin"><span style="background:#fff"></span></div>
+                    <div class="tu"><a href=""><img src="/public/default/image/peijian9.jpg"></a></div>
+                    <div class="miaoshu"><a href="">红米4X 高透软胶保护套</a></div>
+                    <div class="jiage">59元</div>
+                    <div class="pingjia">775人评价</div>
+                </div>
+                <div class="hotlast fr">
+                    <div class="hongmi"><a href=""><img src="/public/default/image/hongmin4.png" alt=""></a></div>
+                    <div class="liulangengduo"><a href=""><img src="/public/default/image/liulangengduo.png" alt=""></a>
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
+    {%- include "./public/footer.htm" %}
 </body>
 
 </html>

@@ -123,7 +123,7 @@
                         <button type="submit" class="btn btn-primary"
                             <%=result._id.toString()==await?"disabled=false":""%>>提交</button>
                         <button type="button" class="btn btn-default"
-                            onclick="javascript:location.href='/admin/access';">返回</button>
+                        onclick="javascript:location.href='<%=ctx.state.prevPage%>';">返回</button>
                     </li>
                 </ul>
             </form>

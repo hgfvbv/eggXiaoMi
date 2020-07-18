@@ -73,6 +73,11 @@ module.exports = appInfo => {
     //前台订单分页 默认为2
     config.orderPageSize = 2;
 
+    //前台首页小米精品Id = 商品类型电视类型的id
+    config.starId = '5bbf05ac9079450a903cb77c';
+    //前台首页手机Id = 商品类型手机类型的id
+    config.phoneId = '5bbf058f9079450a903cb77b';
+
     exports.multipart = {
         whitelist: ['.png', '.jfif', '.jpg', '.jpeg', '.bmp', '.psd', '.gif', '.mp4', '.avi'],
         fields: '50'  //配置表单数量

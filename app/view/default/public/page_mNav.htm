@@ -1,12 +1,13 @@
 <!-- start banner_x -->
 <div class="banner_x center">
     <a href="/" target="_blank">
-        <div class="logo fl"></div>
+        <div style="float:left;background-attachment:fix;background: url('{{setting.site_logo}}');background-repeat: no-repeat;
+        background-size: 100% 100%;margin-top:1.1%;width: 70px;height: 70px;"></div>
     </a>
     <div class="nav fl">
         <ul class="clearfix" id="nav_list">
             <li class="link-category">
-                <a href="#">全部商品分类</a>
+                <a href="/">全部商品分类</a>
                 <div class="banner_y center">
                     <div class="nav">
                         <ul>
@@ -56,7 +57,7 @@
                 <ol class="children-list clearfix">
                     {% for item1 in item.subGoods%}
                     <li>
-                        <a href="#">
+                        <a target="_blank" href="/pinfo?id={{item1._id}}">
                             <img
                                 src="{{item1.goods_img}}_180x180{{helper.getExtName(item1.goods_img if item1.goods_img else '')}}" />
                             <p>{{item1.shop_price}}元</p>
@@ -67,7 +68,7 @@
                 {% endif %}
             </li>
             {% else %}
-            <li><a href="http://www.hgfvbv.xyz" target="_blank">小米商城</a></li>
+            <li><a href="http://www.zhenlinzhike.cn" target="_blank">小米商城</a></li>
             {% endfor %}
         </ul>
     </div>

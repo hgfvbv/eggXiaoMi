@@ -4,7 +4,10 @@ const Controller = require('egg').Controller;
 
 class IndexController extends Controller {
     async index() {
-        const { ctx, service } = this;
+        const { ctx, service, config } = this;
+
+        const starId = config.starId || '',
+            phoneId = config.phoneId || '';
 
         //清除注册可能没有清空的session
         ctx.session.identify_code = '';
@@ -21,14 +24,14 @@ class IndexController extends Controller {
         }
 
         let phoneGoods = await service.cache.get('index_phoneGoods');
-        if (!phoneGoods || phoneGoods == '') {
-            phoneGoods = await ctx.service.goods.get_category_recommend_goods('5bbf058f9079450a903cb77b', 'best', 8);
+        if (!phoneGoods || phoneGoods == '' && phoneId !== '') {
+            phoneGoods = await ctx.service.goods.get_category_recommend_goods(phoneId, 'best', 8);
             await service.cache.set('index_phoneGoods', phoneGoods);
         }
 
         let tvGoods = await service.cache.get('index_tvGoods');
-        if (!tvGoods || tvGoods == '') {
-            tvGoods = await ctx.service.goods.get_category_recommend_goods('5bbf05ac9079450a903cb77c', 'best', 8);
+        if (!tvGoods || tvGoods == '' && starId !== '') {
+            tvGoods = await ctx.service.goods.get_category_recommend_goods(starId, 'best', 8);
             await service.cache.set('index_tvGoods', tvGoods);
         }
 

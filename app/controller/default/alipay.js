@@ -5,6 +5,10 @@ const BaseController = require('./base');
 class AlipayController extends BaseController {
     async pay() {
         const { ctx, service, config } = this;
+
+        await this.error('/buy/checkout', '此网站为测试网站，支付接口已关闭！');
+        return;
+
         const _id = ctx.query.id || '',
             uid = service.cookies.get('userInfo') ? service.cookies.get('userInfo')._id : '';
 
@@ -25,10 +29,10 @@ class AlipayController extends BaseController {
             //         subject += element.product_title + ' ' + element.product_color + ',';
             //     }
             // }
-            
+
             // 支付宝参考 https://www.yuque.com/chenqiu/alipay-node-sdk/with_biz_content
             // https://opendocs.alipay.com/apis/api_1/alipay.trade.page.pay
-            const data =  {
+            const data = {
                 notifyUrl: config.alipayBasicParams.notifyUrl,
                 returnUrl: config.alipayBasicParams.returnUrl,
                 // 通过 bizContent 传递请求参数
@@ -38,7 +42,7 @@ class AlipayController extends BaseController {
                     totalAmount: orderResult.all_price,
                     productCode: 'FAST_INSTANT_TRADE_PAY',
                 },
-              };
+            };
 
             const url = await service.alipay.doPay(data);
             ctx.redirect(url);
@@ -49,12 +53,17 @@ class AlipayController extends BaseController {
     }
 
     async alipayReturn() {
+        await this.error('/buy/checkout', '此网站为测试网站，支付接口已关闭！');
+        return;
+
         // 跳转到订单页面
         this.ctx.redirect('/user/order');
     }
 
     //支付成功以后更新订单   必须正式上线
     async alipayNotify() {
+        await this.error('/buy/checkout', '此网站为测试网站，支付接口已关闭！');
+        return;
         const { ctx, service } = this;
         const params = ctx.request.body;
         console.log(params);

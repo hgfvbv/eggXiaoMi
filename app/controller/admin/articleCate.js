@@ -189,7 +189,7 @@ class ArticleCateController extends BaseController {
             sort = params.sort ? params.sort.trim() : '',
             status = params.status ? 1 : 0,
             cate_img = params.cate_img ? params.cate_img : '',
-            prevPage = (params.prevPage && !params.prevPage.indexOf('/admin/articleCate/doEdit')) ? params.prevPage : '/admin/articleCate';
+            prevPage = params.prevPage ? params.prevPage : '/admin/articleCate';
 
         if (id == '') {
             await this.error(prevPage, '对不起！服务器繁忙！要不稍后再试试？');

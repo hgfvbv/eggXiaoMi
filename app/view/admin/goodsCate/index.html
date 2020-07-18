@@ -42,9 +42,14 @@
             <%for(let i=0;i<list.length;i++){%>
             <tr>
                 <td><%=list[i].title%></td>
-                <td class="text-center"><img class="pic"
+                <td class="text-center">
+                    <% if(list[i].cate_img) { %>
+                    <img class="pic"
                         src="<%=list[i].cate_img%>_64x64<%=helper.getExtName(list[i].cate_img?list[i].cate_img:'')%>"
-                        alt="分类图片"></td>
+                        alt="分类图片">
+                    <% }else{ %>
+                    无图片
+                    <%}%></td>
                 <td class="text-center"><%=helper.formartTime(list[i].add_time)%></td>
                 <td class="text-center">
                     <span

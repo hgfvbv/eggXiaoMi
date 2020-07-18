@@ -1,0 +1,34 @@
+{%- include "./public/page_header.htm" %}
+	<body>
+		{%- include "./public/page_aside.htm" %}
+		{%- include "./public/page_mNav.htm" %}
+
+
+
+	<!-- start danpin -->
+		<div class="danpin center">
+			
+			<div class="biaoti center">我是红米6 Pro自定义界面</div>
+			<div class="main center">
+				{% for item in goods %}
+				<div class="mingxing fl mb20" style="border:2px solid #fff;width:230px;cursor:pointer;" onmouseout="this.style.border='2px solid #fff'" onmousemove="this.style.border='2px solid red'">
+					<div class="sub_mingxing"><a href="/pinfo?id={{item._id}}" target="_blank"><img src="{{item.goods_img}}_180x180{{helper.getExtName(item.goods_img if item.goods_img else '')}}" alt="{{item.title}}"></a></div>
+					<div class="pinpai"><a href="/pinfo?id={{item._id}}" target="_blank">{{item.title}}</a></div>
+					<div class="youhui">{{item.sub_title}}</div>
+					<div class="jiage">{{item.shop_price}}元</div>
+				</div>
+				{% endfor %}
+
+				<div class="clear"></div>
+			</div>
+			
+			
+		</div>
+		
+
+		{%- include "./public/footer.htm" %}
+	<!-- end danpin -->
+
+
+	</body>
+</html>

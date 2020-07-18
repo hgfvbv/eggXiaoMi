@@ -166,7 +166,7 @@ class GoodsController extends BaseController {
                     writeStream = fs.createWriteStream(dir.uploadDir);
 
                 await pump(stream, writeStream);
-console.log(jimpSizes)
+
                 //生成缩略图
                 service.tools.jimpImg(dir.uploadDir, 100, jimpSizes);
 
@@ -275,7 +275,7 @@ console.log(jimpSizes)
     }
 
     async doAdd() {
-        const { app, ctx } = this;
+        const { app, ctx, service } = this;
         //金钱和数字正则表达式
         let money = /(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/,
             num = /^\d+$/;
@@ -390,6 +390,8 @@ console.log(jimpSizes)
                 }
             }
 
+            const result = await service.search.create('goods', goods._id, { title, content: `${title},${sub_title}` });
+            console.log('增加ElasticSearch数据：' + result);
             await ctx.redirect('/admin/goods');
         } catch (err) {
             console.log(err)
@@ -508,7 +510,7 @@ console.log(jimpSizes)
     }
 
     async doEdit() {
-        const { app, ctx } = this;
+        const { app, ctx, service } = this;
         //金钱和数字正则表达式
         let money = /(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/,
             num = /^\d+$/,
@@ -527,7 +529,7 @@ console.log(jimpSizes)
             market_price = params.market_price ? params.market_price.trim() : '',
             sort = params.sort ? params.sort.trim() : '',
             goods_img = params.goods_img ? params.goods_img : '',
-            prevPage = (params.prevPage && !params.prevPage.indexOf('/admin/goods/doEdit')) ? params.prevPage : '/admin/goods',
+            prevPage = params.prevPage ? params.prevPage : '/admin/goods',
             goods_content = params.goods_content ? params.goods_content.trim() : '';
 
         if (id == '') {
@@ -645,6 +647,8 @@ console.log(jimpSizes)
                 return;
             }
 
+            const result = await service.search.update('goods', params.id, { title, content: `${title},${sub_title}` });
+            console.log('修改ElasticSearch数据：' + result);
             await ctx.redirect(prevPage);
         } else {
             await this.error(`/admin/goods/edit?id=${params.id}`, '编辑商品失败！');
@@ -652,7 +656,7 @@ console.log(jimpSizes)
     }
 
     async delete() {
-        const { ctx } = this;
+        const { ctx, service } = this;
         let params = ctx.query,
             id = params.id ? params.id.trim() : '',
             where = {};
@@ -678,6 +682,8 @@ console.log(jimpSizes)
                     for (let i = 0; i < goodsImages.length; i++) {
                         await ctx.service.tools.deleteFile(goodsImages[i].img_url, true);
                     }
+                    const result = await service.search.delete('goods', id);
+                    console.log('删除ElasticSearch数据：' + result);
                     await ctx.redirect(ctx.state.prevPage);
                 } else {
                     await this.error(ctx.state.prevPage, '删除商品失败！');

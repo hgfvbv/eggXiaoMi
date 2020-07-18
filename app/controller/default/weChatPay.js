@@ -6,6 +6,8 @@ const xml2js = require('xml2js').parseString;
 
 class WeChatPayController extends BaseController {
     async pay() {
+        await this.error('/buy/checkout', '此网站为测试网站，支付接口已关闭！');
+        return;
         const { ctx, service } = this;
         const _id = ctx.query.id || '',
             uid = service.cookies.get('userInfo') ? service.cookies.get('userInfo')._id : '';
@@ -47,6 +49,8 @@ class WeChatPayController extends BaseController {
 
     //支付成功以后更新订单   必须正式上线
     async weChatPayNotify() {
+        await this.error('/buy/checkout', '此网站为测试网站，支付接口已关闭！');
+        return;
         const { ctx, service } = this;
         let data = '';
         ctx.req.on('data', function (chunk) {
