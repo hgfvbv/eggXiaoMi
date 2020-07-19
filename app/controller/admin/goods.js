@@ -390,7 +390,7 @@ class GoodsController extends BaseController {
                 }
             }
 
-            const result = await service.search.create('goods', goods._id, { title, content: `${title},${sub_title}` });
+            const result = await service.search.create('goods', goods._id, { id: goods._id, title, content: `${title},${sub_title}`, shop_price, goods_img });
             console.log('增加ElasticSearch数据：' + result);
             await ctx.redirect('/admin/goods');
         } catch (err) {
@@ -647,7 +647,7 @@ class GoodsController extends BaseController {
                 return;
             }
 
-            const result = await service.search.update('goods', params.id, { title, content: `${title},${sub_title}` });
+            const result = await service.search.update('goods', params.id, { id: params.id, title, content: `${title},${sub_title}`, shop_price, goods_img });
             console.log('修改ElasticSearch数据：' + result);
             await ctx.redirect(prevPage);
         } else {

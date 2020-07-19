@@ -73,5 +73,5 @@ module.exports = app => {
     router.get('/user/order', initMiddleware, userauthMiddleware, controller.default.user.order);
     router.get('/user/orderinfo', initMiddleware, userauthMiddleware, controller.default.user.orderinfo);
 
-    router.get('/search', controller.default.search.index);
+    router.get('/search', initMiddleware, controller.default.search.index);
 };

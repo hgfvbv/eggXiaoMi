@@ -19,12 +19,23 @@ class SearchController extends Controller {
         // const result = await service.search.find('news', { content: '中国' });
 
         //分页
-        const result = await service.search.find('news', { content: '中国' }, { isPage: true, page: 1, pageSize: 1 });
+        //const result = await service.search.find('news', { content: '中国' }, { isPage: true, page: 1, pageSize: 1 });
 
         //统计总数量
         // const result = await service.search.count('news', { content: '中国' });
 
-        ctx.body = result;
+        let params = ctx.query,
+            content = params.txtVal || '',
+            goods = [];
+
+        if (content) {
+            const result = await service.search.find('goods', { content });
+            result.forEach(item => {
+                goods.push({ _id: item.id, goods_img: item.goods_img, title: item.title, sub_title: item.content.split(',')[1], shop_price: item.shop_price });
+            });
+        }
+
+        await ctx.render('/default/product_list.htm', { goods, title: content || ctx.state.setting.site_title });
     }
 }
 
